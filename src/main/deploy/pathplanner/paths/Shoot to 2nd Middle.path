@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.857852447068292,
+        "y": 6.492011195555453
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.525311745935992,
+        "y": 6.1272089190812995
+      },
+      "isLocked": false,
+      "linkedName": "Shoot Point Amp Side"
+    },
+    {
+      "anchor": {
+        "x": 7.623391889812625,
+        "y": 5.624928333390321
+      },
+      "prevControl": {
+        "x": 6.431371245554992,
+        "y": 5.6372128603632214
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "2nd Middle"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Down",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake Down"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 9.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source Side",
+  "previewStartingState": {
+    "rotation": -160.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
