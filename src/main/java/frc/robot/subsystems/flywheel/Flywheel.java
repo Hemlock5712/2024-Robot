@@ -44,6 +44,6 @@ public class Flywheel extends SubsystemBase {
 
   @AutoLogOutput(key = "Flywheel/TargetSpeed")
   public double getTargetSpeed() {
-    return targetSpeed
+    return targetSpeed;
   }
 }
