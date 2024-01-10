@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
+/*
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -96,3 +97,4 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     leader.getConfigurator().apply(config);
   }
 }
+ */
