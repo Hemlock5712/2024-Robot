@@ -14,6 +14,7 @@ public class Intake extends SubsystemBase {
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
+  private boolean isDown = False;
   /** Creates a new Intake. */
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
@@ -22,46 +23,64 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     // This method will be called once per scheduler run
     actuatorIO.updateInputs(actuatorInputs);
     wheelsIO.updateInputs(wheelsInputs);
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
+    
+    wheelsIO.runRPM(getTargetSpeed());
+    if(getIsDown()) {
+      actuatorIO.intakeDown();
+    }
+    else {
+      actuatorIO.intakeUp();
+    }
   }
 
   public void intake() {
     targetSpeed = 1000;
-    wheelsIO.runRPM(targetSpeed);
+    
   }
 
   public void outtake() {
     targetSpeed = -1000;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void stopIntake() {
     targetSpeed = 0;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void setSpeed(double speedRPM) {
     targetSpeed = speedRPM;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void intakeDown() {
-    actuatorIO.intakeDown();
+    isDown = True;
   }
 
   public void intakeUp() {
-    actuatorIO.intakeUp();
+    isDown = Flase;
   }
 
   public void intakeToggle() {
-    if (actuatorInputs.isDown) {
-      actuatorIO.intakeUp();
-    } else {
-      actuatorIO.intakeDown();
+    if (isDown){
+      isDown = False;
+    }
+    else {
+      isDown = True;
     }
   }
+
+  @AutoLogOutput(key = "Intake/TargetSpeed")
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
+
+  @AutoLogOutput(key = "Intake/IsDown")
+  public double getIsDown() {
+    return isDown;
+  }
+
 }
