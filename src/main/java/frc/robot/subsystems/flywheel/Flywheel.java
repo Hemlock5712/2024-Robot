@@ -30,16 +30,20 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
+    io.setSpeedRPM(getTargetSpeed())
   }
 
   public void setSpeedRPM(double speedRPM) {
     targetSpeed = speedRPM;
-    io.setSpeedRPM(targetSpeed);
   }
 
   /** Stops the flywheel. */
   public void stop() {
     targetSpeed = 0;
-    io.setSpeedRPM(targetSpeed);
+  }
+
+  @AutoLogOutput(key = "Flywheel/TargetSpeed")
+  public double getTargetSpeed() {
+    return targetSpeed
   }
 }
