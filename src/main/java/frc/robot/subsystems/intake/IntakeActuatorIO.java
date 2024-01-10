@@ -6,13 +6,10 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.flywheel.FlywheelIO.FlywheelIOInputs;
-
 public interface IntakeActuatorIO {
   @AutoLog
   public static class IntakeActuatorIOInputs {
-    public boolean isDown  = false;
+    public boolean isDown = false;
   }
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeActuatorIOInputs inputs) {}

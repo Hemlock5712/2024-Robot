@@ -4,9 +4,8 @@
 
 package frc.robot.subsystems.intake;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import frc.robot.subsystems.intake.IntakeActuatorIO.IntakeActuatorIOInputs;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeWheelsIO {
   @AutoLog
@@ -15,9 +14,10 @@ public interface IntakeWheelsIO {
     public double velocityRadPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
+
   }
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(IntakeActuatorIOInputs inputs) {}
+  public default void updateInputs(IntakeWheelsIOInputs inputs) {}
 
-  public default void run(double speed) {}
+  public default void runRPM(double speedRPM) {}
 }
