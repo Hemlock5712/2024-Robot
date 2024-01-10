@@ -30,7 +30,7 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    io.setSpeedRPM(getTargetSpeed())
+    io.setSpeedRPM(getTargetSpeed());
   }
 
   public void setSpeedRPM(double speedRPM) {
