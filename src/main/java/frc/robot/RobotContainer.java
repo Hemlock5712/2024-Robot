@@ -17,16 +17,25 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DistanceTrackWithArm;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.MoveArmToIntakePosition;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -54,6 +63,8 @@ public class RobotContainer {
   private final Drive drive;
   private final Flywheel flywheel;
   private AprilTagVision aprilTagVision;
+  // private final Flywheel flywheel;
+  private Arm arm;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -83,7 +94,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        aprilTagVision = new AprilTagVision(new AprilTagVisionIOLimelight("limelight"));
+        arm = new Arm(new ArmIO() {});
         break;
 
       case SIM:
@@ -101,7 +112,9 @@ public class RobotContainer {
                 new AprilTagVisionIOPhotonVisionSIM(
                     "photonCamera1",
                     new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
-                    drive::getDrive));
+                    drive::getPose));
+        // flywheel = new Flywheel(new FlywheelIOSim());
+        arm = new Arm(new ArmIOSim() {});
         break;
 
       default:
@@ -115,9 +128,19 @@ public class RobotContainer {
                 new ModuleIO() {});
         flywheel = new Flywheel(new FlywheelIO() {});
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
-
+        // flywheel = new Flywheel(new FlywheelIO() {});
+        arm = new Arm(new ArmIO() {});
         break;
     }
+
+    // Set up named commands for PathPlanner
+    // NamedCommands.registerCommand(
+    //     "Run Flywheel",
+    //     Commands.startEnd(
+    //         () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
+    // flywheel).withTimeout(5.0));
+
+    NamedCommands.registerCommand("Intake", new MoveArmToIntakePosition(arm).withTimeout(0.75));
 
     // Set up auto routines
     NamedCommands.registerCommand(
@@ -167,6 +190,8 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
+    arm.setDefaultCommand(new DistanceTrackWithArm(arm, drive));
+    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
         .x()
         .whileTrue(
@@ -178,19 +203,21 @@ public class RobotContainer {
                 () -> DriveCommands.setSpeakerMode(drive::getPose),
                 DriveCommands::disableDriveHeading));
     // controller
-    //     .b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //                 () ->
-    //                     drive.setPose(
-    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-    //                 drive)
-    //             .ignoringDisable(true));
+    //     .a()
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel));
+    controller.pov(0).onTrue(Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(60))));
     controller
-        .a()
-        .whileTrue(
-            Commands.startEnd(
-                () -> flywheel.setSpeedRPM(flywheelSpeedInput.get()), flywheel::stop, flywheel));
+        .pov(180)
+        .onTrue(Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(-35))));
+    controller
+        .pov(90)
+        .onTrue(Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(0))));
+    controller
+        .pov(270)
+        .onTrue(Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(-40))));
+    controller.x().toggleOnTrue(new MoveArmToIntakePosition(arm));
   }
 
   /**
