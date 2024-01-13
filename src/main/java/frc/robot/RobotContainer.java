@@ -19,6 +19,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -29,10 +30,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoFlywheel;
 import frc.robot.commands.DistanceTrackWithArm;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.MoveArmToIntakePosition;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.ShotVisualizer;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -49,6 +53,7 @@ import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
+import frc.robot.util.visualizer.NoteVisualizer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -63,7 +68,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Flywheel flywheel;
   private AprilTagVision aprilTagVision;
-  // private final Flywheel flywheel;
+  private final Flywheel flywheel;
   private Arm arm;
 
   // Controller
@@ -94,6 +99,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        flywheel = new Flywheel(new FlywheelIO() {});
         arm = new Arm(new ArmIO() {});
         break;
 
@@ -113,7 +119,7 @@ public class RobotContainer {
                     "photonCamera1",
                     new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
                     drive::getPose));
-        // flywheel = new Flywheel(new FlywheelIOSim());
+        flywheel = new Flywheel(new FlywheelIOSim());
         arm = new Arm(new ArmIOSim() {});
         break;
 
@@ -128,7 +134,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         flywheel = new Flywheel(new FlywheelIO() {});
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
-        // flywheel = new Flywheel(new FlywheelIO() {});
+        flywheel = new Flywheel(new FlywheelIO() {});
         arm = new Arm(new ArmIO() {});
         break;
     }
@@ -140,7 +146,21 @@ public class RobotContainer {
     //         () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
     // flywheel).withTimeout(5.0));
 
+    NoteVisualizer.setRobotPoseSupplier(
+        () ->
+            new Pose3d(
+                new Translation3d(
+                    drive.getPoseEstimatorPose().getTranslation().getX(),
+                    drive.getPoseEstimatorPose().getTranslation().getY(),
+                    0),
+                new Rotation3d(0, 0, drive.getPoseEstimatorPose().getRotation().getRadians())));
+
     NamedCommands.registerCommand("Intake", new MoveArmToIntakePosition(arm).withTimeout(0.75));
+    NamedCommands.registerCommand("AutoFlywheel", new AutoFlywheel(flywheel, drive));
+    NamedCommands.registerCommand(
+        "Shoot",
+        new Shoot(flywheel).alongWith(new ShotVisualizer(drive, arm, flywheel)).withTimeout(0.5));
+    NamedCommands.registerCommand("AutoArm", new DistanceTrackWithArm(arm, drive).withTimeout(0.5));
 
     // Set up auto routines
     NamedCommands.registerCommand(
@@ -191,6 +211,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
     arm.setDefaultCommand(new DistanceTrackWithArm(arm, drive));
+    flywheel.setDefaultCommand(new AutoFlywheel(flywheel, drive));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller
         .x()

@@ -111,4 +111,20 @@ public class Flywheel extends SubsystemBase {
   public double getTargetSpeed() {
     return targetSpeed;
   }
+
+  @AutoLogOutput(key = "Flywheel/TargetSpeedRadPerSec")
+  public double getTargetSpeedRadPerSec() {
+    // Convert RPM to RadPerSec
+    return targetSpeed / 60.0 * 2.0 * Math.PI;
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(inputs.velocityRadPerSec - getTargetSpeedRadPerSec()) < 100;
+  }
+
+  @AutoLogOutput(key = "Flywheel/VelocityMetersPerSec")
+  public double getVelocityMetersPerSec() {
+    // Convert Radians per second to Meters per second
+    return inputs.velocityRadPerSec * .0254;
+  }
 }

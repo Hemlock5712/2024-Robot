@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.LinearInterpolationTable;
+import java.awt.geom.Point2D;
 
 public class DistanceTrackWithArm extends Command {
   Drive drive;
@@ -23,6 +25,13 @@ public class DistanceTrackWithArm extends Command {
     this.arm = arm;
     addRequirements(arm);
   }
+
+  LinearInterpolationTable table =
+      new LinearInterpolationTable(
+          new Point2D.Double(0, Units.degreesToRadians(0)),
+          new Point2D.Double(5, Units.degreesToRadians(5)),
+          new Point2D.Double(8, Units.degreesToRadians(20)),
+          new Point2D.Double(10, Units.degreesToRadians(30)));
 
   Pose3d targetRed = new Pose3d(16.3, 5.54, 2, new Rotation3d());
   Pose3d targetBlue = new Pose3d(0.3, 5.54, 2, new Rotation3d());
@@ -50,7 +59,7 @@ public class DistanceTrackWithArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d robotPose = drive.getPose();
+    Pose2d robotPose = drive.getPoseEstimatorPose();
     double distance =
         robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
     double heightDifference = target.getTranslation().getZ() - Units.inchesToMeters(24);
@@ -62,6 +71,7 @@ public class DistanceTrackWithArm extends Command {
         robotPose.getTranslation().getDistance(stageRed.getTranslation().toTranslation2d());
     double stageBlueDistance =
         robotPose.getTranslation().getDistance(stageBlue.getTranslation().toTranslation2d());
+
     if (stageRedDistance < stageRadius || stageBlueDistance < stageRadius) {
       arm.setArmTarget(Units.degreesToRadians(-10));
       arm.setWristTarget(Units.degreesToRadians(0));
@@ -76,8 +86,10 @@ public class DistanceTrackWithArm extends Command {
       return;
     }
 
+    double additionalAngle = table.getOutput(distance);
+
     arm.setArmTarget(distance > 5 ? Units.degreesToRadians(-15) : Units.degreesToRadians(0));
-    arm.setWristTarget(-angle);
+    arm.setWristTarget(-angle - additionalAngle);
   }
 
   // Called once the command ends or is interrupted.

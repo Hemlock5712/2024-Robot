@@ -43,4 +43,16 @@ public class Arm extends SubsystemBase {
   public void setWristTarget(double target) {
     wristTarget = target;
   }
+
+  public double getWristAngleRelative() {
+    return inputs.wristRelativePositionRad;
+  }
+
+  public double getWristAngleAbsolute() {
+    return inputs.wristAbsolutePositionRad;
+  }
+
+  public double getArmAngle() {
+    return inputs.armRelativePositionRad;
+  }
 }
