@@ -4,14 +4,14 @@
 
 package frc.robot.subsystems.intake;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeActuatorIO actuatorIO;
   private final IntakeWheelsIO wheelsIO;
-  private final IntakeActuatorIOInputsAutoLogged actuatorInputs = new IntakeActuatorIOInputsAutoLogged();
+  private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
+      new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
   /** Creates a new Intake. */
@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     targetSpeed = -1000;
     wheelsIO.runRPM(targetSpeed);
   }
-  
+
   public void stopIntake() {
     targetSpeed = 0;
     wheelsIO.runRPM(targetSpeed);
@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
     targetSpeed = speedRPM;
     wheelsIO.runRPM(targetSpeed);
   }
-  
+
   public void intakeDown() {
     actuatorIO.intakeDown();
   }
@@ -58,12 +58,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeToggle() {
-    if (actuatorInputs.isDown){
+    if (actuatorInputs.isDown) {
       actuatorIO.intakeUp();
-    }
-    else {
+    } else {
       actuatorIO.intakeDown();
     }
   }
-
 }
