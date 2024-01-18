@@ -5,6 +5,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -14,7 +15,7 @@ public class Intake extends SubsystemBase {
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
-  private boolean isDown = False;
+  private boolean isDown = false;
   /** Creates a new Intake. */
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
@@ -23,25 +24,23 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+
     // This method will be called once per scheduler run
     actuatorIO.updateInputs(actuatorInputs);
     wheelsIO.updateInputs(wheelsInputs);
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
-    
+
     wheelsIO.runRPM(getTargetSpeed());
-    if(getIsDown()) {
+    if (getIsDown()) {
       actuatorIO.intakeDown();
-    }
-    else {
+    } else {
       actuatorIO.intakeUp();
     }
   }
 
   public void intake() {
     targetSpeed = 1000;
-    
   }
 
   public void outtake() {
@@ -57,19 +56,18 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeDown() {
-    isDown = True;
+    isDown = true;
   }
 
   public void intakeUp() {
-    isDown = Flase;
+    isDown = false;
   }
 
   public void intakeToggle() {
-    if (isDown){
-      isDown = False;
-    }
-    else {
-      isDown = True;
+    if (isDown) {
+      isDown = false;
+    } else {
+      isDown = true;
     }
   }
 
@@ -79,8 +77,7 @@ public class Intake extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Intake/IsDown")
-  public double getIsDown() {
+  public boolean getIsDown() {
     return isDown;
   }
-
 }
