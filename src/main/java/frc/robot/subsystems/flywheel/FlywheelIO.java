@@ -25,5 +25,17 @@ public interface FlywheelIO {
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
 
+  /** Run open loop at the specified voltage. */
+  public default void setVoltage(double volts) {}
+
+  /** Run closed loop at the specified velocity. */
+  public default void setVelocity(double velocityRadPerSec, double ffVolts) {}
+
+  /** Stop in open loop. */
+  public default void stop() {}
+
+  /** Set velocity PID constants. */
+  public default void configurePID(double kP, double kI, double kD) {}
+
   public default void setSpeedRPM(double speedRPM) {}
 }

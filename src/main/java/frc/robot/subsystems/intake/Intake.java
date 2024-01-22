@@ -5,6 +5,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -14,6 +15,7 @@ public class Intake extends SubsystemBase {
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
+  private boolean isDown = false;
   /** Creates a new Intake. */
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
@@ -22,46 +24,60 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
     actuatorIO.updateInputs(actuatorInputs);
     wheelsIO.updateInputs(wheelsInputs);
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
+
+    wheelsIO.runRPM(getTargetSpeed());
+    if (getIsDown()) {
+      actuatorIO.intakeDown();
+    } else {
+      actuatorIO.intakeUp();
+    }
   }
 
   public void intake() {
     targetSpeed = 1000;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void outtake() {
     targetSpeed = -1000;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void stopIntake() {
     targetSpeed = 0;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void setSpeed(double speedRPM) {
     targetSpeed = speedRPM;
-    wheelsIO.runRPM(targetSpeed);
   }
 
   public void intakeDown() {
-    actuatorIO.intakeDown();
+    isDown = true;
   }
 
   public void intakeUp() {
-    actuatorIO.intakeUp();
+    isDown = false;
   }
 
   public void intakeToggle() {
-    if (actuatorInputs.isDown) {
-      actuatorIO.intakeUp();
+    if (isDown) {
+      isDown = false;
     } else {
-      actuatorIO.intakeDown();
+      isDown = true;
     }
+  }
+
+  @AutoLogOutput(key = "Intake/TargetSpeed")
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
+
+  @AutoLogOutput(key = "Intake/IsDown")
+  public boolean getIsDown() {
+    return isDown;
   }
 }
