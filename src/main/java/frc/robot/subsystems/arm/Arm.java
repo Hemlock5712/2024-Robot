@@ -27,13 +27,13 @@ public class Arm extends SubsystemBase {
     io.updateInputs(inputs);
     double realWristTarget = wristTarget - inputs.armAbsolutePositionRad;
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", -armTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
     io.setArmTarget(armTarget);
     io.setWristTarget(realWristTarget);
     // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(armTarget, realWristTarget);
+    visualizerSetpoint.update(-armTarget, -realWristTarget);
   }
 
   public void setArmTarget(double target) {

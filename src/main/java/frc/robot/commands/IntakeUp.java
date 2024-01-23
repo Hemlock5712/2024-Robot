@@ -4,30 +4,28 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.intake.Intake;
 
-public class MoveArmToIntakePosition extends Command {
+public class IntakeUp extends Command {
 
-  Arm arm;
+  Intake intake;
 
-  /** Creates a new MoveArmToIntakePosition. */
-  public MoveArmToIntakePosition(Arm arm) {
-    this.arm = arm;
-    addRequirements(arm);
+  /** Creates a new IntakeDown. */
+  public IntakeUp(Intake intake) {
+    this.intake = intake;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    intake.intakeUp();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    arm.setArmTarget(Units.degreesToRadians(-25));
-    arm.setWristTarget(Units.degreesToRadians(-38));
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

@@ -8,12 +8,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 
-public class MoveArmToIntakePosition extends Command {
+public class ArmToAmpPositionBack extends Command {
 
   Arm arm;
 
-  /** Creates a new MoveArmToIntakePosition. */
-  public MoveArmToIntakePosition(Arm arm) {
+  /** Creates a new ArmToAmpPosition. */
+  public ArmToAmpPositionBack(Arm arm) {
     this.arm = arm;
     addRequirements(arm);
   }
@@ -25,8 +25,8 @@ public class MoveArmToIntakePosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setArmTarget(Units.degreesToRadians(-25));
-    arm.setWristTarget(Units.degreesToRadians(-38));
+    arm.setArmTarget(Units.degreesToRadians(80));
+    arm.setWristTarget(Units.degreesToRadians(-45));
   }
 
   // Called once the command ends or is interrupted.

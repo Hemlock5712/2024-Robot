@@ -53,9 +53,9 @@ public class ArmIOSim implements ArmIO {
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     var slot0Configs = armConfig.Slot0;
-    slot0Configs.kP = 3;
+    slot0Configs.kP = 6;
     slot0Configs.kI = 0;
-    slot0Configs.kD = 0.5;
+    slot0Configs.kD = 1;
     slot0Configs.kS = 0.25;
     slot0Configs.kV = 0.01;
     slot0Configs.kA = 0.001;
@@ -64,7 +64,7 @@ public class ArmIOSim implements ArmIO {
     armConfig.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
     armConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     armConfig.Feedback.SensorToMechanismRatio = 1;
-    armConfig.Feedback.RotorToSensorRatio = 5;
+    armConfig.Feedback.RotorToSensorRatio = 10;
 
     var motionMagicConfig = armConfig.MotionMagic;
     motionMagicConfig.MotionMagicCruiseVelocity = 0.5;
@@ -77,16 +77,16 @@ public class ArmIOSim implements ArmIO {
     wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     var slot0ConfigsWrist = wristConfig.Slot0;
-    slot0ConfigsWrist.kP = 12;
-    slot0ConfigsWrist.kD = 0.5;
-    slot0ConfigsWrist.kS = 0.25;
+    slot0ConfigsWrist.kP = 8;
+    slot0ConfigsWrist.kD = 0.3;
+    slot0ConfigsWrist.kS = 0.3;
     slot0ConfigsWrist.kV = 0.01;
     slot0ConfigsWrist.kA = 0.001;
 
     wristConfig.Feedback.FeedbackRemoteSensorID = wristEncoder.getDeviceID();
     wristConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     wristConfig.Feedback.SensorToMechanismRatio = 1;
-    wristConfig.Feedback.RotorToSensorRatio = 5;
+    wristConfig.Feedback.RotorToSensorRatio = 10;
 
     wristMotor.getConfigurator().apply(wristConfig);
 
@@ -98,8 +98,8 @@ public class ArmIOSim implements ArmIO {
     armSim =
         new SingleJointedArmSim(
             DCMotor.getKrakenX60Foc(2),
-            5,
-            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), Units.lbsToKilograms(8)),
+            10,
+            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(20), Units.lbsToKilograms(23)),
             Units.inchesToMeters(20),
             Units.degreesToRadians(-175),
             Units.degreesToRadians(175),
@@ -108,12 +108,12 @@ public class ArmIOSim implements ArmIO {
     wristSim =
         new SingleJointedArmSim(
             DCMotor.getKrakenX60Foc(2),
-            5,
-            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(10), Units.lbsToKilograms(3)),
+            10,
+            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(10), Units.lbsToKilograms(18)),
             Units.inchesToMeters(20),
             Units.degreesToRadians(-180),
             Units.degreesToRadians(180),
-            true,
+            false,
             Units.degreesToRadians(90));
   }
 
@@ -133,7 +133,8 @@ public class ArmIOSim implements ArmIO {
     inputs.armVelocityRadPerSec = armEncoder.getVelocity().getValue();
     inputs.armCurrentAmps = new double[] {armMotorSim.getSupplyCurrent()};
     inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().getValue()};
-    inputs.wristAbsolutePositionRad = wristEncoder.getPosition().getValue() * Math.PI * 2;
+    inputs.wristAbsolutePositionRad =
+        inputs.armRelativePositionRad + wristEncoder.getPosition().getValue() * Math.PI * 2;
     inputs.wristRelativePositionRad = wristEncoder.getPosition().getValue() * Math.PI * 2;
     inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristMotorSim.getSupplyCurrent()};
@@ -143,7 +144,7 @@ public class ArmIOSim implements ArmIO {
   public void setArmTarget(double target) {
     var control = new PositionVoltage(0);
     armMotor.setControl(
-        control.withPosition(Units.radiansToRotations(target)).withSlot(0).withEnableFOC(true));
+        control.withPosition(-Units.radiansToRotations(target)).withSlot(0).withEnableFOC(true));
   }
 
   public void setWristTarget(double target) {

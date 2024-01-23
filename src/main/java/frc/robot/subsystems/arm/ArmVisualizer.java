@@ -22,7 +22,7 @@ public class ArmVisualizer {
   private final MechanismLigament2d wristLigament;
   private final MechanismLigament2d wristLigamentBack;
 
-  double armLength = Units.inchesToMeters(20);
+  double armLength = Units.inchesToMeters(18);
 
   public ArmVisualizer(String logKey, Color8Bit color) {
     this.logKey = logKey;
@@ -60,7 +60,7 @@ public class ArmVisualizer {
     Logger.recordOutput("Mechanism3d/" + logKey, armPose, wristPose);
   }
 
-  Translation2d armRoot = new Translation2d(0.31115, 0.64);
+  Translation2d armRoot = new Translation2d(-0.31, 0.64);
 
   private Pose3d getArmPose(double armAngle) {
     return new Pose3d(armRoot.getX(), 0, armRoot.getY(), new Rotation3d(0, armAngle, 0));
@@ -71,6 +71,6 @@ public class ArmVisualizer {
    */
   private Pose3d getWristPose(double armAngle, double wristAngle) {
     return getArmPose(armAngle)
-        .transformBy(new Transform3d(-armLength, 0, 0, new Rotation3d(0, wristAngle, 0)));
+        .transformBy(new Transform3d(armLength, 0, 0, new Rotation3d(0, wristAngle, 0)));
   }
 }

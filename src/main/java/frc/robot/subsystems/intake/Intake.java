@@ -16,10 +16,14 @@ public class Intake extends SubsystemBase {
   private double targetSpeed = 0;
   private boolean isDown = false;
 
+  IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
+  IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");
+
   /** Creates a new Intake. */
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
     this.wheelsIO = wheelsIO;
+    intakeUp();
   }
 
   @Override
@@ -37,6 +41,8 @@ public class Intake extends SubsystemBase {
     } else {
       actuatorIO.intakeUp();
     }
+    visualizerMeasured.update(actuatorInputs.angle);
+    visualizerSetpoint.update(0);
   }
 
   public void intake() {

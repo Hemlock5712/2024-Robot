@@ -10,6 +10,8 @@ public interface IntakeActuatorIO {
   @AutoLog
   public static class IntakeActuatorIOInputs {
     public boolean isDown = false;
+    public double angle = 0;
+    public double targetAngle = 0;
   }
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeActuatorIOInputs inputs) {}

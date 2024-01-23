@@ -25,15 +25,22 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ArmToAmpPositionBack;
+import frc.robot.commands.ArmToAmpPositionFront;
 import frc.robot.commands.AutoFlywheel;
 import frc.robot.commands.DistanceTrackWithArm;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.IntakeDown;
+import frc.robot.commands.IntakeUp;
 import frc.robot.commands.MoveArmToIntakePosition;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShotVisualizer;
@@ -49,11 +56,16 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorSim;
+import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 import frc.robot.util.visualizer.NoteVisualizer;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -70,6 +82,7 @@ public class RobotContainer {
   private AprilTagVision aprilTagVision;
   private final Flywheel flywheel;
   private Arm arm;
+  private Intake intake;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -101,6 +114,7 @@ public class RobotContainer {
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         flywheel = new Flywheel(new FlywheelIO() {});
         arm = new Arm(new ArmIO() {});
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         break;
 
       case SIM:
@@ -121,6 +135,7 @@ public class RobotContainer {
                     drive::getPose));
         flywheel = new Flywheel(new FlywheelIOSim());
         arm = new Arm(new ArmIOSim() {});
+        intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIO() {});
         break;
 
       default:
@@ -136,6 +151,7 @@ public class RobotContainer {
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         flywheel = new Flywheel(new FlywheelIO() {});
         arm = new Arm(new ArmIO() {});
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         break;
     }
 
@@ -155,7 +171,11 @@ public class RobotContainer {
                     0),
                 new Rotation3d(0, 0, drive.getPoseEstimatorPose().getRotation().getRadians())));
 
-    NamedCommands.registerCommand("Intake", new MoveArmToIntakePosition(arm).withTimeout(0.75));
+    NamedCommands.registerCommand(
+        "Intake",
+        new ParallelDeadlineGroup(new IntakeDown(intake), new MoveArmToIntakePosition(arm))
+            .withTimeout(0.75)
+            .andThen(new IntakeUp(intake)));
     NamedCommands.registerCommand("AutoFlywheel", new AutoFlywheel(flywheel, drive));
     NamedCommands.registerCommand(
         "Shoot",
@@ -239,6 +259,24 @@ public class RobotContainer {
         .pov(270)
         .onTrue(Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(-40))));
     controller.x().toggleOnTrue(new MoveArmToIntakePosition(arm));
+    controller
+        .rightBumper()
+        .whileTrue(new IntakeDown(intake).alongWith(new MoveArmToIntakePosition(arm)))
+        .onFalse(new IntakeUp(intake));
+    BooleanSupplier ampFront =
+        () -> {
+          boolean redAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+          if (redAlliance) {
+            return drive.getPoseEstimatorPose().getRotation().getDegrees() < 0;
+          } else {
+            return drive.getPoseEstimatorPose().getRotation().getDegrees() > 0;
+          }
+        };
+    controller
+        .leftBumper()
+        .whileTrue(
+            Commands.either(
+                new ArmToAmpPositionFront(arm), new ArmToAmpPositionBack(arm), ampFront));
   }
 
   /**

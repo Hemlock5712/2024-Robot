@@ -36,9 +36,7 @@ public class NoteVisualizer {
     // Rotate note 90 degrees around x axis to make it oriented the right way
     Pose3d rotatedPose =
         new Pose3d(
-            pose.getTranslation(),
-            pose.getRotation()
-                .rotateBy(new Rotation3d(Math.PI / 2, 0, 0)));
+            pose.getTranslation(), pose.getRotation().rotateBy(new Rotation3d(Math.PI / 2, 0, 0)));
 
     // Pose in robot space
     Pose3d robotPose = poseSupplier.get();

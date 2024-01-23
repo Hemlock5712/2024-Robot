@@ -81,14 +81,14 @@ public class DistanceTrackWithArm extends Command {
     // If on other side of midpoint, move arm to intake position
     if ((isRed && robotPose.getTranslation().getX() <= midpoint)
         || (!isRed && robotPose.getTranslation().getX() > midpoint)) {
-      arm.setArmTarget(Units.degreesToRadians(-15));
-      arm.setWristTarget(Units.degreesToRadians(-45));
+      arm.setArmTarget(Units.degreesToRadians(-25));
+      arm.setWristTarget(Units.degreesToRadians(-38));
       return;
     }
 
     double additionalAngle = table.getOutput(distance);
 
-    arm.setArmTarget(distance > 5 ? Units.degreesToRadians(-15) : Units.degreesToRadians(0));
+    arm.setArmTarget(Units.degreesToRadians(-25));
     arm.setWristTarget(-angle - additionalAngle);
   }
 
