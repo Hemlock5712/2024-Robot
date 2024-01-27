@@ -11,7 +11,8 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
   private final IntakeActuatorIO actuatorIO;
   private final IntakeWheelsIO wheelsIO;
-  private final IntakeActuatorIOInputsAutoLogged actuatorInputs = new IntakeActuatorIOInputsAutoLogged();
+  private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
+      new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
   private boolean isDown = false;

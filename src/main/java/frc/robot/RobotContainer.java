@@ -48,6 +48,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -83,14 +84,15 @@ public class RobotContainer {
   private final Flywheel flywheel;
   private Arm arm;
   private Intake intake;
+  private DriveController driveController;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-  private final LoggedDashboardNumber flywheelSpeedInput =
-      new LoggedDashboardNumber("Flywheel Speed", 1500.0);
+  // private final LoggedDashboardNumber flywheelSpeedInput =
+  // new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -157,9 +159,9 @@ public class RobotContainer {
 
     // Set up named commands for PathPlanner
     // NamedCommands.registerCommand(
-    //     "Run Flywheel",
-    //     Commands.startEnd(
-    //         () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
+    // "Run Flywheel",
+    // Commands.startEnd(
+    // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
     // flywheel).withTimeout(5.0));
 
     NoteVisualizer.setRobotPoseSupplier(
@@ -189,28 +191,18 @@ public class RobotContainer {
                 () -> flywheel.setSpeedRPM(flywheelSpeedInput.get()), flywheel::stop, flywheel)
             .withTimeout(5.0));
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Flywheel SysId (Quasistatic Forward)",
-        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Flywheel SysId (Quasistatic Reverse)",
-        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Flywheel SysId (Dynamic Forward)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Flywheel SysId (Dynamic Reverse)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption("S Curve", AutoBuilder.buildAuto("Example Auto"));
+    autoChooser.addOption("Choreo Test", new PathPlannerAuto("Choreo Auto"));
+    // Set up FF characterization routines
+    autoChooser.addDefaultOption(
+        "Drive FF Characterization",
+        new FeedForwardCharacterization(
+            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
+    // autoChooser.addOption(
+    // "Flywheel FF Characterization",
+    // new FeedForwardCharacterization(
+    // flywheel, flywheel::runCharacterizationVolts,
+    // flywheel::getCharacterizationVelocity));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
@@ -227,12 +219,18 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            driveController,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
     arm.setDefaultCommand(new DistanceTrackWithArm(arm, drive));
     flywheel.setDefaultCommand(new AutoFlywheel(flywheel, drive));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller
+        .a()
+        .whileTrue(
+            Commands.startEnd(
+                () -> driveController.setHeadingSupplier(() -> Rotation2d.fromDegrees(90)),
+                () -> driveController.disableHeadingSupplier()));
     controller
         .x()
         .whileTrue(
