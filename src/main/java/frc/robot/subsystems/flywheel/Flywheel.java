@@ -30,6 +30,9 @@ public class Flywheel extends SubsystemBase {
   private final SimpleMotorFeedforward ffModel;
   private final SysIdRoutine sysId;
 
+  private double targetSpeed = 0.0;
+  private boolean voltageMode = false;
+
   /** Creates a new Flywheel. */
   public Flywheel(FlywheelIO io) {
     this.io = io;
@@ -66,11 +69,21 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    io.setSpeedRPM(getTargetSpeed());
+    if(!voltageMode) {
+      io.setSpeedRPM(targetSpeed);
+    } else {
+      io.setVoltage(targetSpeed);
+    }
   }
 
   public void setSpeedRPM(double speedRPM) {
+    voltageMode = false;
     targetSpeed = speedRPM;
+  }
+
+  public void runVolts(double volts) {
+    voltageMode = true;
+    targetSpeed = volts;
   }
 
   /** Stops the flywheel. */
