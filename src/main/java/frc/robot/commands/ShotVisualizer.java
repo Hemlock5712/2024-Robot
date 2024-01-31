@@ -29,14 +29,13 @@ public class ShotVisualizer extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Pose2d robotPosition = drive.getPoseEstimatorPose();
+    Pose2d robotPosition = drive.getPose();
 
-    Pose3d robotPosition3d =
-        new Pose3d(
-            robotPosition.getTranslation().getX(),
-            robotPosition.getTranslation().getY(),
-            0.5,
-            new Rotation3d(0, 0, robotPosition.getRotation().getRadians()));
+    Pose3d robotPosition3d = new Pose3d(
+        robotPosition.getTranslation().getX(),
+        robotPosition.getTranslation().getY(),
+        0.5,
+        new Rotation3d(0, 0, robotPosition.getRotation().getRadians()));
 
     NoteVisualizer.shootNote(
         robotPosition3d, -arm.getWristAngleAbsolute(), flywheel.getVelocityMetersPerSec());
@@ -50,7 +49,8 @@ public class ShotVisualizer extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

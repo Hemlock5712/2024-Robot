@@ -26,12 +26,11 @@ public class DistanceTrackWithArm extends Command {
     addRequirements(arm);
   }
 
-  LinearInterpolationTable table =
-      new LinearInterpolationTable(
-          new Point2D.Double(0, Units.degreesToRadians(0)),
-          new Point2D.Double(5, Units.degreesToRadians(5)),
-          new Point2D.Double(8, Units.degreesToRadians(20)),
-          new Point2D.Double(10, Units.degreesToRadians(30)));
+  LinearInterpolationTable table = new LinearInterpolationTable(
+      new Point2D.Double(0, Units.degreesToRadians(0)),
+      new Point2D.Double(5, Units.degreesToRadians(5)),
+      new Point2D.Double(8, Units.degreesToRadians(20)),
+      new Point2D.Double(10, Units.degreesToRadians(30)));
 
   Pose3d targetRed = new Pose3d(16.3, 5.54, 2, new Rotation3d());
   Pose3d targetBlue = new Pose3d(0.3, 5.54, 2, new Rotation3d());
@@ -59,18 +58,15 @@ public class DistanceTrackWithArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d robotPose = drive.getPoseEstimatorPose();
-    double distance =
-        robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
+    Pose2d robotPose = drive.getPose();
+    double distance = robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
     double heightDifference = target.getTranslation().getZ() - Units.inchesToMeters(24);
     // Calculate angle to target from distance and height difference
     double angle = Math.atan2(heightDifference, distance);
 
     // If within 1.5m of stage, move arm to stage position
-    double stageRedDistance =
-        robotPose.getTranslation().getDistance(stageRed.getTranslation().toTranslation2d());
-    double stageBlueDistance =
-        robotPose.getTranslation().getDistance(stageBlue.getTranslation().toTranslation2d());
+    double stageRedDistance = robotPose.getTranslation().getDistance(stageRed.getTranslation().toTranslation2d());
+    double stageBlueDistance = robotPose.getTranslation().getDistance(stageBlue.getTranslation().toTranslation2d());
 
     if (stageRedDistance < stageRadius || stageBlueDistance < stageRadius) {
       arm.setArmTarget(Units.degreesToRadians(-10));
@@ -94,7 +90,8 @@ public class DistanceTrackWithArm extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

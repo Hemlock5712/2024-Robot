@@ -19,12 +19,11 @@ public class AutoFlywheel extends Command {
   Flywheel flywheel;
   Drive drive;
 
-  LinearInterpolationTable table =
-      new LinearInterpolationTable(
-          new Point2D.Double(0, 8000),
-          new Point2D.Double(5, 12000),
-          new Point2D.Double(8, 16000),
-          new Point2D.Double(10, 18000));
+  LinearInterpolationTable table = new LinearInterpolationTable(
+      new Point2D.Double(0, 8000),
+      new Point2D.Double(5, 12000),
+      new Point2D.Double(8, 16000),
+      new Point2D.Double(10, 18000));
 
   Pose3d targetRed = new Pose3d(16.3, 5.54, 2, new Rotation3d());
   Pose3d targetBlue = new Pose3d(0.3, 5.54, 2, new Rotation3d());
@@ -57,16 +56,16 @@ public class AutoFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d robotPose = drive.getPoseEstimatorPose();
-    double distance =
-        robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
+    Pose2d robotPose = drive.getPose();
+    double distance = robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
 
     flywheel.setSpeedRPM(table.getOutput(distance));
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
