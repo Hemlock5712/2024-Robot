@@ -49,7 +49,6 @@ public class DriveCommands {
    */
   public static Command joystickDrive(
       Drive drive,
-      DriveController driveController,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
@@ -62,8 +61,8 @@ public class DriveCommands {
     return Commands.run(
         () -> {
           double omega = 0;
-          if (driveController.isHeadingControlled()) {
-            final var thata = driveController.getHeadingAngle();
+          if (driveMode.isHeadingControlled()) {
+            final var thata = driveMode.getHeadingAngle();
 
             omega =
                 thetaController.calculate(
@@ -124,10 +123,11 @@ public class DriveCommands {
     setDriveHeading(
         () ->
             new Rotation2d(
-                poseSupplier.get().getX()
-                    - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getX(),
-                poseSupplier.get().getY()
-                    - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getY()));
+                    poseSupplier.get().getX()
+                        - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getX(),
+                    poseSupplier.get().getY()
+                        - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getY())
+                .rotateBy(Rotation2d.fromDegrees(180)));
     driveMode.setDriveMode(DriveController.DriveModeType.SPEAKER);
   }
 
