@@ -1,67 +1,63 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot.subsystems.flywheel;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class FlywheelIOSim implements FlywheelIO {
-  private FlywheelSim sim = new FlywheelSim(DCMotor.getNEO(1), 1.5, 0.004);
-  private PIDController pid = new PIDController(0.0, 0.0, 0.0);
 
-  private boolean closedLoop = false;
-  private double ffVolts = 0.0;
-  private double appliedVolts = 0.0;
+  TalonFX leader = new TalonFX(40);
+  TalonFX follower = new TalonFX(41);
+  TalonFXSimState leaderSim = leader.getSimState();
+  TalonFXSimState followerSim = follower.getSimState();
+
+  FlywheelSim flywheelSim;
+
+  public FlywheelIOSim() {
+    leaderSim = leader.getSimState();
+    followerSim = follower.getSimState();
+
+    follower.setControl(new Follower(leader.getDeviceID(), false));
+
+    flywheelSim = new FlywheelSim(DCMotor.getKrakenX60Foc(2), 1.0 / 3.0, 0.01);
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    var slot0Configs = config.Slot0;
+    slot0Configs.kP = 3.2;
+    slot0Configs.kI = 0;
+    slot0Configs.kD = 0;
+
+    config.Feedback.SensorToMechanismRatio = 1.0 / 3.0;
+
+    leader.getConfigurator().apply(config);
+    follower.getConfigurator().apply(config);
+  }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
-    if (closedLoop) {
-      appliedVolts =
-          MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
-      sim.setInputVoltage(appliedVolts);
-    }
+    flywheelSim.setInput(leaderSim.getMotorVoltage());
+    flywheelSim.update(0.02);
+    leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
+    leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
-    sim.update(0.02);
-
-    inputs.velocityRadPerSec = sim.getAngularVelocityRadPerSec();
-    inputs.appliedVolts = appliedVolts;
-    inputs.currentAmps = new double[] {sim.getCurrentDrawAmps()};
+    inputs.velocityRadPerSec = leader.getVelocity().getValue() * (Math.PI * 2.0);
+    inputs.appliedVolts = leaderSim.getMotorVoltage();
+    inputs.currentAmps =
+        new double[] {leaderSim.getSupplyCurrent(), followerSim.getSupplyCurrent()};
   }
 
   @Override
-  public void setVoltage(double volts) {
-    closedLoop = false;
-    appliedVolts = volts;
-    sim.setInputVoltage(volts);
-  }
-
-  @Override
-  public void setVelocity(double velocityRadPerSec, double ffVolts) {
-    closedLoop = true;
-    pid.setSetpoint(velocityRadPerSec);
-    this.ffVolts = ffVolts;
-  }
-
-  @Override
-  public void stop() {
-    setVoltage(0.0);
-  }
-
-  @Override
-  public void configurePID(double kP, double kI, double kD) {
-    pid.setPID(kP, kI, kD);
+  public void setSpeedRPM(double speedRPM) {
+    double speedRPS = speedRPM / 60.0;
+    leader.setControl(
+        new VelocityVoltage(0)
+            .withVelocity(speedRPS)
+            .withEnableFOC(true)
+            .withFeedForward(speedRPS * 0.0135));
   }
 }

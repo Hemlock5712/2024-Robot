@@ -25,6 +25,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Flywheel extends SubsystemBase {
+
   private final FlywheelIO io;
   private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
   private final SimpleMotorFeedforward ffModel;
@@ -56,20 +57,26 @@ public class Flywheel extends SubsystemBase {
 
     // Configure SysId
     sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("Flywheel/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+      new SysIdRoutine(
+        new SysIdRoutine.Config(
+          null,
+          null,
+          null,
+          state -> Logger.recordOutput("Flywheel/SysIdState", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(
+          voltage -> runVolts(voltage.in(Volts)),
+          null,
+          this
+        )
+      );
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    if(!voltageMode) {
+    if (!voltageMode) {
       io.setSpeedRPM(targetSpeed);
     } else {
       io.setVoltage(targetSpeed);
@@ -110,5 +117,21 @@ public class Flywheel extends SubsystemBase {
   @AutoLogOutput(key = "Flywheel/TargetSpeed")
   public double getTargetSpeed() {
     return targetSpeed;
+  }
+
+  @AutoLogOutput(key = "Flywheel/TargetSpeedRadPerSec")
+  public double getTargetSpeedRadPerSec() {
+    // Convert RPM to RadPerSec
+    return targetSpeed / 60.0 * 2.0 * Math.PI;
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(inputs.velocityRadPerSec - getTargetSpeedRadPerSec()) < 100;
+  }
+
+  @AutoLogOutput(key = "Flywheel/VelocityMetersPerSec")
+  public double getVelocityMetersPerSec() {
+    // Convert Radians per second to Meters per second
+    return inputs.velocityRadPerSec * .0254;
   }
 }

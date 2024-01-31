@@ -4,16 +4,14 @@
 
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
   private final ElevatorIO io;
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   private double setPoint = 0;
-
 
   /** Creates a new Elevator. */
   public Elevator(ElevatorIO io) {
@@ -28,23 +26,20 @@ public class Elevator extends SubsystemBase {
     io.gotoSetPoint(getSetPoint());
   }
 
-  public void setCustomPosition(double setPoint){
+  public void setCustomPosition(double setPoint) {
     this.setPoint = setPoint;
   }
 
   public void elevatorUp() {
     this.setPoint = 80085.0;
   }
-  
+
   public void elevatorDown() {
-        this.setPoint = 3.1415;
-
+    this.setPoint = 3.1415;
   }
-
-
 
   @AutoLogOutput(key = "Elevator/SetPoint")
   public double getSetPoint() {
-      return setPoint;
+    return setPoint;
   }
 }
