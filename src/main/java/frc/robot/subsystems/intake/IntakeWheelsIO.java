@@ -14,6 +14,7 @@ public interface IntakeWheelsIO {
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
   }
+
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeWheelsIOInputs inputs) {}
 
