@@ -17,7 +17,6 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -61,7 +60,6 @@ import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
-import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 import frc.robot.util.visualizer.NoteVisualizer;
 import java.util.function.BooleanSupplier;
@@ -69,12 +67,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -92,26 +87,21 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-  private final LoggedDashboardNumber flywheelSpeedInput = new LoggedDashboardNumber(
-    "Flywheel Speed",
-    1500.0
-  );
+  private final LoggedDashboardNumber flywheelSpeedInput =
+      new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getMode()) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive =
-          new Drive(
-            new GyroIOPigeon2(false),
-            new ModuleIOTalonFX(moduleConfigs[0]),
-            new ModuleIOTalonFX(moduleConfigs[1]),
-            new ModuleIOTalonFX(moduleConfigs[2]),
-            new ModuleIOTalonFX(moduleConfigs[3])
-          );
+            new Drive(
+                new GyroIOPigeon2(false),
+                new ModuleIOTalonFX(moduleConfigs[0]),
+                new ModuleIOTalonFX(moduleConfigs[1]),
+                new ModuleIOTalonFX(moduleConfigs[2]),
+                new ModuleIOTalonFX(moduleConfigs[3]));
         flywheel = new Flywheel(new FlywheelIO() {});
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -126,38 +116,31 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =
-          new Drive(
-            new GyroIO() {},
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim()
-          );
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
         flywheel = new Flywheel(new FlywheelIOSim());
         aprilTagVision =
-          new AprilTagVision(
-            new AprilTagVisionIOPhotonVisionSIM(
-              "photonCamera1",
-              new Transform3d(
-                new Translation3d(0.5, 0.0, 0.5),
-                new Rotation3d(0, 0, 0)
-              ),
-              drive::getPose
-            )
-          );
+            new AprilTagVision(
+                new AprilTagVisionIOPhotonVisionSIM(
+                    "photonCamera1",
+                    new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
+                    drive::getPose));
         arm = new Arm(new ArmIOSim() {});
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIO() {});
         break;
       default:
         // Replayed robot, disable IO implementations
         drive =
-          new Drive(
-            new GyroIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {}
-          );
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         flywheel = new Flywheel(new FlywheelIO() {});
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         arm = new Arm(new ArmIO() {});
@@ -172,59 +155,33 @@ public class RobotContainer {
     // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
     // flywheel).withTimeout(5.0));
 
-    NoteVisualizer.setRobotPoseSupplier(() ->
-      new Pose3d(
-        new Translation3d(
-          drive.getPose().getTranslation().getX(),
-          drive.getPose().getTranslation().getY(),
-          0
-        ),
-        new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())
-      )
-    );
+    NoteVisualizer.setRobotPoseSupplier(
+        () ->
+            new Pose3d(
+                new Translation3d(
+                    drive.getPose().getTranslation().getX(),
+                    drive.getPose().getTranslation().getY(),
+                    0),
+                new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
     NamedCommands.registerCommand(
-      "Intake",
-      new ParallelDeadlineGroup(
-        new IntakeDown(intake),
-        new MoveArmToIntakePosition(arm)
-      )
-        .withTimeout(0.75)
-        .andThen(new IntakeUp(intake))
-    );
+        "Intake",
+        new ParallelDeadlineGroup(new IntakeDown(intake), new MoveArmToIntakePosition(arm))
+            .withTimeout(0.75)
+            .andThen(new IntakeUp(intake)));
+    NamedCommands.registerCommand("AutoFlywheel", new AutoFlywheel(flywheel, drive));
     NamedCommands.registerCommand(
-      "AutoFlywheel",
-      new AutoFlywheel(flywheel, drive)
-    );
-    NamedCommands.registerCommand(
-      "Shoot",
-      new Shoot(flywheel)
-        .alongWith(new ShotVisualizer(drive, arm, flywheel))
-        .withTimeout(0.5)
-    );
-    NamedCommands.registerCommand(
-      "AutoArm",
-      new DistanceTrackWithArm(arm, drive).withTimeout(0.5)
-    );
+        "Shoot",
+        new Shoot(flywheel).alongWith(new ShotVisualizer(drive, arm, flywheel)).withTimeout(0.5));
+    NamedCommands.registerCommand("AutoArm", new DistanceTrackWithArm(arm, drive).withTimeout(0.5));
 
     // Set up auto routines
     NamedCommands.registerCommand(
-      "Run Flywheel",
-      Commands
-        .startEnd(
-          () -> flywheel.setSpeedRPM(flywheelSpeedInput.get()),
-          flywheel::stop,
-          flywheel
-        )
-        .withTimeout(5.0)
-    );
-    autoChooser =
-      new LoggedDashboardChooser<>(
-        "Auto Choices",
-        AutoBuilder.buildAutoChooser()
-      );
-    autoChooser.addOption("S Curve", AutoBuilder.buildAuto("Example Auto"));
-    autoChooser.addOption("Choreo Test", new PathPlannerAuto("Choreo Auto"));
+        "Run Flywheel",
+        Commands.startEnd(
+                () -> flywheel.setSpeedRPM(flywheelSpeedInput.get()), flywheel::stop, flywheel)
+            .withTimeout(5.0));
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
     // "Flywheel FF Characterization",
     // new FeedForwardCharacterization(
@@ -237,102 +194,72 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     drive.setDefaultCommand(
-      DriveCommands.joystickDrive(
-        drive,
-        driveController,
-        () -> -controller.getLeftY(),
-        () -> -controller.getLeftX(),
-        () -> -controller.getRightX()
-      )
-    );
+        DriveCommands.joystickDrive(
+            drive,
+            driveController,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
     arm.setDefaultCommand(new DistanceTrackWithArm(arm, drive));
     flywheel.setDefaultCommand(new AutoFlywheel(flywheel, drive));
     controller
-      .a()
-      .whileTrue(
-        Commands.startEnd(
-          () ->
-            driveController.setHeadingSupplier(() -> Rotation2d.fromDegrees(90)
-            ),
-          () -> driveController.disableHeadingSupplier()
-        )
-      );
+        .a()
+        .whileTrue(
+            Commands.startEnd(
+                () -> driveController.setHeadingSupplier(() -> Rotation2d.fromDegrees(90)),
+                () -> driveController.disableHeadingSupplier()));
     controller
-      .x()
-      .whileTrue(
-        Commands.startEnd(
-          DriveCommands::setAmpMode,
-          DriveCommands::disableDriveHeading
-        )
-      );
+        .x()
+        .whileTrue(
+            Commands.startEnd(DriveCommands::setAmpMode, DriveCommands::disableDriveHeading));
     controller
-      .b()
-      .whileTrue(
-        Commands.startEnd(
-          () -> DriveCommands.setSpeakerMode(drive::getPose),
-          DriveCommands::disableDriveHeading
-        )
-      );
+        .b()
+        .whileTrue(
+            Commands.startEnd(
+                () -> DriveCommands.setSpeakerMode(drive::getPose),
+                DriveCommands::disableDriveHeading));
     // controller
     // .a()
     // .whileTrue(
     // Commands.startEnd(
     // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
     // flywheel));
+    controller.pov(0).onTrue(Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(60))));
     controller
-      .pov(0)
-      .onTrue(
-        Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(60)))
-      );
+        .pov(180)
+        .onTrue(Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(-35))));
     controller
-      .pov(180)
-      .onTrue(
-        Commands.runOnce(() -> arm.setArmTarget(Units.degreesToRadians(-35)))
-      );
+        .pov(90)
+        .onTrue(Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(0))));
     controller
-      .pov(90)
-      .onTrue(
-        Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(0)))
-      );
-    controller
-      .pov(270)
-      .onTrue(
-        Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(-40)))
-      );
+        .pov(270)
+        .onTrue(Commands.runOnce(() -> arm.setWristTarget(Units.degreesToRadians(-40))));
     controller.x().toggleOnTrue(new MoveArmToIntakePosition(arm));
     controller
-      .rightBumper()
-      .whileTrue(
-        new IntakeDown(intake).alongWith(new MoveArmToIntakePosition(arm))
-      )
-      .onFalse(new IntakeUp(intake));
-    BooleanSupplier ampFront = () -> {
-      boolean redAlliance =
-        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
-      if (redAlliance) {
-        return drive.getPose().getRotation().getDegrees() < 0;
-      } else {
-        return drive.getPose().getRotation().getDegrees() > 0;
-      }
-    };
+        .rightBumper()
+        .whileTrue(new IntakeDown(intake).alongWith(new MoveArmToIntakePosition(arm)))
+        .onFalse(new IntakeUp(intake));
+    BooleanSupplier ampFront =
+        () -> {
+          boolean redAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+          if (redAlliance) {
+            return drive.getPose().getRotation().getDegrees() < 0;
+          } else {
+            return drive.getPose().getRotation().getDegrees() > 0;
+          }
+        };
     controller
-      .leftBumper()
-      .whileTrue(
-        Commands.either(
-          new ArmToAmpPositionFront(arm),
-          new ArmToAmpPositionBack(arm),
-          ampFront
-        )
-      );
+        .leftBumper()
+        .whileTrue(
+            Commands.either(
+                new ArmToAmpPositionFront(arm), new ArmToAmpPositionBack(arm), ampFront));
   }
 
   /**
