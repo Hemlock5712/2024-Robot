@@ -34,7 +34,6 @@ import java.util.function.DoubleSupplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static DriveController driveMode = new DriveController();
 
   private DriveCommands() {}
 
@@ -43,7 +42,7 @@ public class DriveCommands {
    */
   public static Command joystickDrive(
       Drive drive,
-      DriveController driveController,
+      DriveController driveMode,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
@@ -56,8 +55,8 @@ public class DriveCommands {
     return Commands.run(
         () -> {
           double omega = 0;
-          if (driveController.isHeadingControlled()) {
-            final var thata = driveController.getHeadingAngle();
+          if (driveMode.isHeadingControlled()) {
+            final var thata = driveMode.getHeadingAngle();
 
             omega =
                 thetaController.calculate(
@@ -79,7 +78,6 @@ public class DriveCommands {
                   Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;
 

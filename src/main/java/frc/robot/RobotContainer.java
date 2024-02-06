@@ -18,6 +18,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -80,6 +81,7 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
   private final LoggedDashboardNumber flywheelSpeedInput =
       new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
@@ -90,7 +92,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(false),
+                new GyroIOPigeon2(true),
                 new ModuleIOTalonFX(moduleConfigs[0]),
                 new ModuleIOTalonFX(moduleConfigs[1]),
                 new ModuleIOTalonFX(moduleConfigs[2]),
@@ -183,10 +185,40 @@ public class RobotContainer {
     // new FeedForwardCharacterization(
     // flywheel, flywheel::runCharacterizationVolts,
     // flywheel::getCharacterizationVelocity));
+    // NamedCommands.registerCommand(
+    //     "Run Flywheel",
+    //     Commands.startEnd(
+    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel)
+    //         .withTimeout(5.0));
+
+    // Set up SysId routines
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Flywheel SysId (Quasistatic Forward)",
+    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Flywheel SysId (Quasistatic Reverse)",
+    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Flywheel SysId (Dynamic Forward)",
+    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Flywheel SysId (Dynamic Reverse)",
+    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
     driveController = new DriveController();
+    driveController.setPoseSupplier(drive::getPose);
     driveController.disableHeadingControl();
     configureButtonBindings();
   }
@@ -214,8 +246,15 @@ public class RobotContainer {
         .a()
         .whileTrue(
             Commands.startEnd(
-                () -> driveController.enableHeadingControl(),
+                () -> driveController.setHeadingSupplier(() -> Rotation2d.fromDegrees(90)),
                 () -> driveController.disableHeadingControl()));
+    controller
+        .x()
+        .whileTrue(Commands.runOnce(() -> driveController.setDriveMode(DriveModeType.AMP)));
+    controller.leftBumper().whileTrue(Commands.runOnce(() -> driveController.toggleDriveMode()));
+
+    controller.rightBumper().whileTrue(new PathFinderAndFollow(driveController.getDriveModeType()));
+
     controller
         .b()
         .whileTrue(
