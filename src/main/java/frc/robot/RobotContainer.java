@@ -48,6 +48,7 @@ import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
+import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.vision.AprilTagVision;
@@ -129,7 +130,7 @@ public class RobotContainer {
         arm = new Arm(new ArmIOSim() {});
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
-        lineBreak = new LineBreak(new LineBreakIODigitalInput());
+        lineBreak = new LineBreak(new LineBreakIOSim());
         break;
       default:
         // Replayed robot, disable IO implementations
