@@ -17,8 +17,8 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -38,19 +38,21 @@ import frc.robot.commands.ArmToAmpPositionFront;
 import frc.robot.commands.AutoFlywheel;
 import frc.robot.commands.DistanceTrackWithArm;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveToPoint;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.MoveArmToIntakePosition;
+import frc.robot.commands.MultiDistanceShot;
+import frc.robot.commands.PathFinderAndFollow;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShotVisualizer;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
-import frc.robot.commands.DriveToPoint;
-import frc.robot.commands.MultiDistanceShot;
-import frc.robot.commands.PathFinderAndFollow;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveController;
+import frc.robot.subsystems.drive.DriveController.DriveModeType;
+import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -65,9 +67,9 @@ import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.visualizer.NoteVisualizer;
 import java.util.function.BooleanSupplier;
-import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -93,8 +95,8 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-    private final LoggedDashboardNumber flywheelSpeedInput =
-        new LoggedDashboardNumber("Flywheel Speed", 1500.0);
+  private final LoggedDashboardNumber flywheelSpeedInput =
+      new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -198,7 +200,6 @@ public class RobotContainer {
     //     Commands.startEnd(
     //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel)
     //         .withTimeout(5.0));
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
     // autoChooser.addOption(
@@ -255,8 +256,7 @@ public class RobotContainer {
                 () -> driveController.disableHeadingControl()));
     controller
         .x()
-        .whileTrue(
-            Commands.startEnd(DriveCommands::setAmpMode, DriveCommands::disableDriveHeading));
+        .whileTrue(Commands.runOnce(() -> driveController.setDriveMode(DriveModeType.AMP)));
     controller.leftBumper().whileTrue(Commands.runOnce(() -> driveController.toggleDriveMode()));
 
     controller.rightBumper().whileTrue(new PathFinderAndFollow(driveController.getDriveModeType()));
@@ -265,7 +265,8 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.startEnd(
-                () -> driveController.enableHeadingControl(), () -> driveController.disableHeadingControl()));
+                () -> driveController.enableHeadingControl(),
+                () -> driveController.disableHeadingControl()));
 
     controller
         .y()

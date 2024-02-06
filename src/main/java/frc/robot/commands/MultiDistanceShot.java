@@ -58,7 +58,7 @@ public class MultiDistanceShot extends Command {
     speed = distanceMap.get(distance);
 
     // Run the flywheel at the calculated speed
-    flywheel.runVelocity(speed);
+    flywheel.setSpeedRPM(speed);
   }
 
   @Override
