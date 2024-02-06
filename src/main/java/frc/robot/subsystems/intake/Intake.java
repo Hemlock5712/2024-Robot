@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -15,7 +16,8 @@ public class Intake extends SubsystemBase {
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
-  private boolean isDown = false;
+  private boolean driverRequestIntakeDown = false;
+  private IntakePositions intakePositions = IntakePositions.UP;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
   IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");
@@ -24,7 +26,6 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
     this.wheelsIO = wheelsIO;
-    intakeUp();
   }
 
   @Override
@@ -37,11 +38,18 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
     wheelsIO.runRPM(getTargetSpeed());
-    if (getIsDown()) {
-      actuatorIO.intakeDown();
-    } else {
-      actuatorIO.intakeUp();
+    switch (intakePositions) {
+      case BUMPER:
+        actuatorIO.setIntakeAngle(Units.degreesToRadians(0));
+        break;
+      case FLOOR:
+        actuatorIO.setIntakeAngle(Units.degreesToRadians(-60));
+        break;
+      case UP:
+        actuatorIO.setIntakeAngle(Units.degreesToRadians(60));
+        break;
     }
+
     visualizerMeasured.update(actuatorInputs.angle);
     visualizerSetpoint.update(0);
   }
@@ -62,20 +70,16 @@ public class Intake extends SubsystemBase {
     targetSpeed = speedRPM;
   }
 
-  public void intakeDown() {
-    isDown = true;
+  public void setIntakeMode(IntakePositions intakePositions) {
+    this.intakePositions = intakePositions;
   }
 
-  public void intakeUp() {
-    isDown = false;
+  public void setDriverRequestIntakeDown(boolean driverRequestIntakeDown) {
+    this.driverRequestIntakeDown = driverRequestIntakeDown;
   }
 
-  public void intakeToggle() {
-    if (isDown) {
-      isDown = false;
-    } else {
-      isDown = true;
-    }
+  public boolean getDriverRequestIntakeDown() {
+    return driverRequestIntakeDown;
   }
 
   @AutoLogOutput(key = "Intake/TargetSpeed")
@@ -83,8 +87,14 @@ public class Intake extends SubsystemBase {
     return targetSpeed;
   }
 
-  @AutoLogOutput(key = "Intake/IsDown")
-  public boolean getIsDown() {
-    return isDown;
+  // @AutoLogOutput(key = "Intake/IntakePositions")
+  // public IntakePositions getIntakePositions() {
+  //   return intakePositions;
+  // }
+
+  public enum IntakePositions {
+    FLOOR,
+    UP,
+    BUMPER
   }
 }

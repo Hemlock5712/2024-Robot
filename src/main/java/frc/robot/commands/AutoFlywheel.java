@@ -7,10 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.LinearInterpolationTable;
 import java.awt.geom.Point2D;
@@ -18,6 +17,7 @@ import java.awt.geom.Point2D;
 public class AutoFlywheel extends Command {
   Flywheel flywheel;
   Drive drive;
+  DriveController driveController;
 
   LinearInterpolationTable table =
       new LinearInterpolationTable(
@@ -36,32 +36,34 @@ public class AutoFlywheel extends Command {
   boolean isRed = false;
 
   /** Creates a new AutoFlywheel. */
-  public AutoFlywheel(Flywheel flywheel, Drive drive) {
+  public AutoFlywheel(Flywheel flywheel, Drive drive, DriveController driveController) {
     this.flywheel = flywheel;
     this.drive = drive;
+    this.driveController = driveController;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-      target = targetRed;
-      isRed = true;
-    } else {
-      target = targetBlue;
-    }
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d robotPose = drive.getPose();
-    double distance =
-        robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
 
-    flywheel.setSpeedRPM(table.getOutput(distance));
+    switch (driveController.getDriveModeType().get()) {
+      case AMP:
+        flywheel.setSpeedRPM(3000);
+        break;
+      case SPEAKER:
+        Pose2d robotPose = drive.getPose();
+        double distance =
+            robotPose.getTranslation().getDistance(target.getTranslation().toTranslation2d());
+
+        flywheel.setSpeedRPM(table.getOutput(distance));
+        break;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -71,6 +73,6 @@ public class AutoFlywheel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return flywheel.atTargetSpeed();
   }
 }

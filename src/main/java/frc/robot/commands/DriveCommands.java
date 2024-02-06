@@ -30,17 +30,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveController;
-import frc.robot.util.FieldConstants;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static DriveController driveMode = new DriveController();
-
-  static {
-    driveMode.disableHeadingSupplier();
-  }
 
   private DriveCommands() {}
 
@@ -67,7 +61,7 @@ public class DriveCommands {
 
             omega =
                 thetaController.calculate(
-                    drive.getPose().getRotation().getRadians(), thata.getRadians());
+                    drive.getPose().getRotation().getRadians(), thata.get().getRadians());
             if (thetaController.atGoal()) {
               omega = 0;
             }
@@ -109,30 +103,5 @@ public class DriveCommands {
                       : drive.getRotation()));
         },
         drive);
-  }
-
-  public static void setDriveHeading(Supplier<Rotation2d> headingSupplier) {
-    driveMode.setHeadingSupplier(headingSupplier);
-  }
-
-  public static void setAmpMode() {
-    setDriveHeading(() -> Rotation2d.fromDegrees(90));
-    driveMode.setDriveMode(DriveController.DriveModeType.AMP);
-  }
-
-  public static void setSpeakerMode(Supplier<Pose2d> poseSupplier) {
-    setDriveHeading(
-        () ->
-            new Rotation2d(
-                poseSupplier.get().getX()
-                    - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getX(),
-                poseSupplier.get().getY()
-                    - FieldConstants.Speaker.centerSpeakerOpening.getTranslation().getY()));
-    driveMode.setDriveMode(DriveController.DriveModeType.SPEAKER);
-  }
-
-  public static void disableDriveHeading() {
-    driveMode.disableHeadingSupplier();
-    driveMode.setDriveMode(DriveController.DriveModeType.STANDARD);
   }
 }

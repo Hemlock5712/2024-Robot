@@ -1,8 +1,10 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -54,5 +56,13 @@ public class Arm extends SubsystemBase {
 
   public double getArmAngle() {
     return inputs.armRelativePositionRad;
+  }
+
+  public BooleanSupplier isArmWristInIntakePosition() {
+    return () ->
+        (Math.abs(ArmConstants.armTargetPostionIntakeMode - getArmAngle())
+                < (Units.degreesToRadians(1)))
+            && (Math.abs(ArmConstants.wristTargetPositionIntakeMode - getWristAngleAbsolute())
+                < (Units.degreesToRadians(1)));
   }
 }
