@@ -6,6 +6,7 @@ package frc.robot.subsystems.lineBreak;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.lineBreak.LineBreakIO.LineBreakIOInputs;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class LineBreak extends SubsystemBase {
   private final LineBreakIO lineBreakIO;
@@ -22,26 +23,32 @@ public class LineBreak extends SubsystemBase {
     lineBreakIO.updateInputs(inputs);
   }
 
+  @AutoLogOutput(key = "/LineBreak/hasGamePiece")
   public boolean hasGamePiece() {
     return inputs.lineBreakValues.hasGamePiece();
   }
 
+  @AutoLogOutput(key = "/LineBreak/hasGamePieceIntake")
   public boolean hasGamePieceIntake() {
     return inputs.lineBreakValues.hasGamePieceIntake();
   }
 
+  @AutoLogOutput(key = "/LineBreak/notInLowerIntake")
   public boolean notInLowerIntake() {
     return inputs.lineBreakValues.notInLowerIntake();
   }
 
+  @AutoLogOutput(key = "/LineBreak/inLowerIntake")
   public boolean inLowerIntake() {
     return !inputs.lineBreakValues.notInLowerIntake();
   }
 
+  @AutoLogOutput(key = "/LineBreak/isShooterLoaded")
   public boolean isShooterLoaded() {
     return inputs.lineBreakValues.isShooterLoaded();
   }
 
+  @AutoLogOutput(key = "/LineBreak/isShooterLong")
   public boolean isShooterLong() {
     return inputs.lineBreakValues.isShooterLong();
   }
