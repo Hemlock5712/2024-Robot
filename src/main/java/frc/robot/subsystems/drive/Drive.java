@@ -17,8 +17,8 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.Matrix;
@@ -41,7 +41,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -105,10 +104,14 @@ public class Drive extends SubsystemBase {
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
         this::getPose,
-        this::setPose,
+        this::setAutoStartPose,
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
+            new PIDConstants(
+                PPtranslationConstants.kP, PPtranslationConstants.kI, PPtranslationConstants.kD),
+            new PIDConstants(
+                PProtationConstants.kP, PProtationConstants.kI, PProtationConstants.kD),
             drivetrainConfig.maxLinearVelocity(),
             drivetrainConfig.driveBaseRadius(),
             new ReplanningConfig()),
@@ -116,7 +119,6 @@ public class Drive extends SubsystemBase {
             DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red,
         this);
-    Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         activePath ->
             Logger.recordOutput(
@@ -245,12 +247,18 @@ public class Drive extends SubsystemBase {
     stop();
   }
 
-  /** Returns a command to run a quasistatic test in the specified direction. */
+  /** Returns a command to run a quasistatic test in the specified direction. 
+   * 
+   * @param direction The direction to run the quasistatic test.
+  */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }
 
-  /** Returns a command to run a dynamic test in the specified direction. */
+  /** Returns a command to run a dynamic test in the specified direction. 
+   * 
+   * @param direction The direction to run the dynamic test.
+  */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysId.dynamic(direction);
   }
@@ -286,14 +294,26 @@ public class Drive extends SubsystemBase {
     return odometryDrive.getEstimatedPosition();
   }
 
-  /** Returns the current odometry rotation. */
+  /** Returns the current poseEstimator rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
   }
 
-  /** Resets the current odometry pose. */
+  /** Resets the current poseEstimator pose. 
+   * 
+   * @param pose The pose to reset to.
+  */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+  }
+
+  /** Resets the current odometry and poseEstimator pose. 
+   * 
+   * @param pose The pose to reset to.
+  */
+  public void setAutoStartPose(Pose2d pose) {
+    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    odometryDrive.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
   /**
@@ -307,7 +327,11 @@ public class Drive extends SubsystemBase {
     poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
   }
 
-  /** Adds vision data to the pose esimation. */
+  /** 
+   * Adds vision data to the pose esimation. 
+   * 
+   * @param visionData The vision data to add.
+   */
   public void addVisionData(List<TimestampedVisionUpdate> visionData) {
     visionData.forEach(
         visionUpdate ->
