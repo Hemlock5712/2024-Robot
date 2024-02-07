@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = wristTarget - inputs.armAbsolutePositionRad;
+    double realWristTarget = getRelativeWristTarget();
     Logger.processInputs("Arm", inputs);
     Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
     io.setWristTarget(realWristTarget);
     // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(-armTarget, -realWristTarget);
+    visualizerSetpoint.update(armTarget, realWristTarget);
   }
 
   public void setArmTarget(double target) {
@@ -58,6 +58,10 @@ public class Arm extends SubsystemBase {
     return inputs.armRelativePositionRad;
   }
 
+  public double getRelativeWristTarget() {
+    return wristTarget + inputs.armAbsolutePositionRad;
+  }
+
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
   public boolean isArmWristInIntakePosition() {
     return (Math.abs(ArmConstants.armTargetPostionIntakeMode - getArmAngle())
@@ -68,7 +72,8 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
-    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(5)))
-        && (Math.abs(-wristTarget - getWristAngleRelative()) < (Units.degreesToRadians(5)));
+    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(1)))
+        && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
+            < (Units.degreesToRadians(1)));
   }
 }
