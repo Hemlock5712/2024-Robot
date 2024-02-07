@@ -8,7 +8,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class MagazineIOSIM implements MagazineIO {
-  TalonFX leader = new TalonFX(40);
+  TalonFX leader = new TalonFX(45);
   TalonFXSimState leaderSim = leader.getSimState();
   FlywheelSim flywheelSim;
 
@@ -17,10 +17,10 @@ public class MagazineIOSIM implements MagazineIO {
     flywheelSim = new FlywheelSim(DCMotor.getNeo550(1), 3.0, 0.01);
     TalonFXConfiguration config = new TalonFXConfiguration();
     var slot0Configs = config.Slot0;
-    slot0Configs.kP = 3.2;
+    slot0Configs.kP = 9.2;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
-    config.Feedback.SensorToMechanismRatio = 1.0 / 3.0;
+    config.Feedback.SensorToMechanismRatio = 3.0;
     leader.getConfigurator().apply(config);
   }
 

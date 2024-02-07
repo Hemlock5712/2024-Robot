@@ -111,14 +111,15 @@ public class DriveController {
     setHeadingSupplier(
         () ->
             new Rotation2d(
-                poseSupplier.get().getX()
-                    - AllianceFlipUtil.apply(
-                            FieldConstants.Speaker.centerSpeakerOpening.getTranslation())
-                        .getX(),
-                poseSupplier.get().getY()
-                    - AllianceFlipUtil.apply(
-                            FieldConstants.Speaker.centerSpeakerOpening.getTranslation())
-                        .getY()));
+                    poseSupplier.get().getX()
+                        - AllianceFlipUtil.apply(
+                                FieldConstants.Speaker.centerSpeakerOpening.getTranslation())
+                            .getX(),
+                    poseSupplier.get().getY()
+                        - AllianceFlipUtil.apply(
+                                FieldConstants.Speaker.centerSpeakerOpening.getTranslation())
+                            .getY())
+                .rotateBy(Rotation2d.fromDegrees(180)));
   }
 
   /** Possible Drive Modes. */

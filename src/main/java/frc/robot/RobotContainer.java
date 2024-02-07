@@ -18,7 +18,6 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -33,7 +32,6 @@ import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveController;
-import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -51,6 +49,7 @@ import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
+import frc.robot.subsystems.magazine.MagazineIOSIM;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
@@ -127,9 +126,9 @@ public class RobotContainer {
                     "photonCamera1",
                     new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
                     drive::getPose));
-        arm = new Arm(new ArmIOSim() {});
+        arm = new Arm(new ArmIOSim());
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIO() {});
-        magazine = new Magazine(new MagazineIO() {});
+        magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
         break;
       default:
@@ -247,11 +246,8 @@ public class RobotContainer {
         .a()
         .whileTrue(
             Commands.startEnd(
-                () -> driveController.setHeadingSupplier(() -> Rotation2d.fromDegrees(90)),
+                () -> driveController.enableHeadingControl(),
                 () -> driveController.disableHeadingControl()));
-    controller
-        .x()
-        .whileTrue(Commands.runOnce(() -> driveController.setDriveMode(DriveModeType.AMP)));
     controller.leftBumper().whileTrue(Commands.runOnce(() -> driveController.toggleDriveMode()));
 
     controller.rightBumper().whileTrue(new PathFinderAndFollow(driveController.getDriveModeType()));
@@ -264,7 +260,7 @@ public class RobotContainer {
                 () -> intake.setDriverRequestIntakeDown(false)));
     controller
         .x()
-        .onTrue(
+        .whileTrue(
             Commands.sequence(
                 Commands.parallel(
                     new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
@@ -272,11 +268,12 @@ public class RobotContainer {
                 Commands.parallel(
                     new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
                     new AutoFlywheel(flywheel, drive, driveController),
-                    new Shoot(magazine))));
+                    new Shoot(magazine).withTimeout(1))));
 
     // controller2.x().onTrue()
-    controller2.a().onTrue(Commands.run(() -> driveController.setDriveMode(DriveModeType.AMP)));
-    controller2.b().onTrue(Commands.run(() -> driveController.setDriveMode(DriveModeType.SPEAKER)));
+    // controller2.a().onTrue(Commands.run(() -> driveController.setDriveMode(DriveModeType.AMP)));
+    // controller2.b().onTrue(Commands.run(() ->
+    // driveController.setDriveMode(DriveModeType.SPEAKER)));
   }
 
   /**

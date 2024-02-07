@@ -59,6 +59,6 @@ public class MoveArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return arm.isArmWristInTargetPose().getAsBoolean();
   }
 }

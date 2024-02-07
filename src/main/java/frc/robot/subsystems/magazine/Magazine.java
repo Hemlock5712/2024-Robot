@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.magazine;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -40,8 +41,14 @@ public class Magazine extends SubsystemBase {
     targetSpeed = speedRPM;
   }
 
-  @AutoLogOutput(key = "Intake/TargetSpeed")
+  @AutoLogOutput(key = "Magazine/TargetSpeed")
   public double getTargetSpeed() {
     return targetSpeed;
+  }
+
+  @AutoLogOutput(key = "Magazine/VelocitRotPerSec")
+  public double VelocitRadsPerSec() {
+    // Convert Radians per second to Meters per second
+    return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
   }
 }
