@@ -28,7 +28,7 @@ public class FlywheelIOSim implements FlywheelIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     var slot0Configs = config.Slot0;
-    slot0Configs.kP = 3.2;
+    slot0Configs.kP = 2.2;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 

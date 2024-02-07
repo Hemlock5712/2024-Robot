@@ -4,7 +4,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
     io.updateInputs(inputs);
     double realWristTarget = wristTarget - inputs.armAbsolutePositionRad;
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", -armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
     io.setArmTarget(armTarget);
     io.setWristTarget(realWristTarget);
@@ -58,17 +58,17 @@ public class Arm extends SubsystemBase {
     return inputs.armRelativePositionRad;
   }
 
-  public BooleanSupplier isArmWristInIntakePosition() {
-    return () ->
-        (Math.abs(ArmConstants.armTargetPostionIntakeMode - getArmAngle())
-                < (Units.degreesToRadians(1)))
-            && (Math.abs(ArmConstants.wristTargetPositionIntakeMode - getWristAngleAbsolute())
-                < (Units.degreesToRadians(1)));
+  @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
+  public boolean isArmWristInIntakePosition() {
+    return (Math.abs(ArmConstants.armTargetPostionIntakeMode - getArmAngle())
+            < (Units.degreesToRadians(1)))
+        && (Math.abs(ArmConstants.wristTargetPositionIntakeMode - getWristAngleAbsolute())
+            < (Units.degreesToRadians(1)));
   }
 
-  public BooleanSupplier isArmWristInTargetPose() {
-    return () ->
-        (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(5)))
-            && (Math.abs(wristTarget - getWristAngleRelative()) < (Units.degreesToRadians(5)));
+  @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
+  public boolean isArmWristInTargetPose() {
+    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(5)))
+        && (Math.abs(-wristTarget - getWristAngleRelative()) < (Units.degreesToRadians(5)));
   }
 }

@@ -239,7 +239,8 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     arm.setDefaultCommand(new MoveArmToIntakePosition(arm));
     flywheel.setDefaultCommand(Commands.run(() -> flywheel.setSpeedRPM(1000), flywheel));
-    intake.setDefaultCommand(new RunIntake(intake, lineBreak, arm.isArmWristInIntakePosition()));
+    intake.setDefaultCommand(
+        new RunIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
     magazine.setDefaultCommand(new RunMagazine(magazine, lineBreak));
 
     controller
