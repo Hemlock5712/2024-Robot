@@ -131,15 +131,16 @@ public class ArmIOSim implements ArmIO {
     wristEncoder.getSimState().setRawPosition(wristSim.getAngleRads() / (Math.PI * 2));
     wristEncoder.getSimState().setVelocity(wristSim.getVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.armAbsolutePositionRad = armEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.armRelativePositionRad = armEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.armVelocityRadPerSec = armEncoder.getVelocity().getValue();
+    inputs.armAbsolutePositionRad = armEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.armRelativePositionRad = armEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.armVelocityRadPerSec = armEncoder.getVelocity().refresh().getValue();
     inputs.armCurrentAmps = new double[] {armMotorSim.getSupplyCurrent()};
     inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().getValue()};
     inputs.wristAbsolutePositionRad =
-        (wristEncoder.getPosition().getValue() * Math.PI * 2) - inputs.armRelativePositionRad;
-    inputs.wristRelativePositionRad = wristEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().getValue() * Math.PI * 2;
+        (wristEncoder.getPosition().refresh().getValue() * Math.PI * 2)
+            - inputs.armRelativePositionRad;
+    inputs.wristRelativePositionRad = wristEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().refresh().getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristMotorSim.getSupplyCurrent()};
     inputs.wristTempCelcius = new double[] {wristMotor.getDeviceTemp().getValue()};
   }

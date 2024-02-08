@@ -45,7 +45,7 @@ public class FlywheelIOSim implements FlywheelIO {
     leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
     leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.velocityRadPerSec = leader.getVelocity().getValue() * (Math.PI * 2.0);
+    inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
     inputs.appliedVolts = leaderSim.getMotorVoltage();
     inputs.currentAmps =
         new double[] {leaderSim.getSupplyCurrent(), followerSim.getSupplyCurrent()};
