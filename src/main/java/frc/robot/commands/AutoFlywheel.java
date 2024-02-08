@@ -6,17 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LinearInterpolationTable;
 import java.awt.geom.Point2D;
+import java.util.function.Supplier;
 
 public class AutoFlywheel extends Command {
   Flywheel flywheel;
-  Drive drive;
+  Supplier<Pose2d> pose;
   DriveController driveController;
 
   LinearInterpolationTable table =
@@ -29,9 +29,9 @@ public class AutoFlywheel extends Command {
   Pose2d target = FieldConstants.Speaker.centerSpeakerOpening;
 
   /** Creates a new AutoFlywheel. */
-  public AutoFlywheel(Flywheel flywheel, Drive drive, DriveController driveController) {
+  public AutoFlywheel(Flywheel flywheel, DriveController driveController, Supplier<Pose2d> pose) {
     this.flywheel = flywheel;
-    this.drive = drive;
+    this.pose = pose;
     this.driveController = driveController;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
@@ -52,8 +52,7 @@ public class AutoFlywheel extends Command {
         flywheel.setSpeedRPM(3000);
         break;
       case SPEAKER:
-        Pose2d robotPose = drive.getPose();
-        double distance = robotPose.getTranslation().getDistance(target.getTranslation());
+        double distance = pose.get().getTranslation().getDistance(target.getTranslation());
 
         flywheel.setSpeedRPM(table.getOutput(distance));
         break;

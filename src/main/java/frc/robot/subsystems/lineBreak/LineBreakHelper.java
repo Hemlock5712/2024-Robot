@@ -20,6 +20,11 @@ public class LineBreakHelper {
           && (upperIntake2 || magazine1 || magazine2 || magazine3);
     }
 
+    public boolean InLowerIntake() {
+      return (lowerIntake || upperIntake1)
+          && !(upperIntake2 || magazine1 || magazine2 || magazine3);
+    }
+
     public boolean hasGamePieceIntake() {
       return lowerIntake || upperIntake1 || upperIntake2;
     }

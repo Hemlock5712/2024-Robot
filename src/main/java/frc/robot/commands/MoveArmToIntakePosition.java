@@ -25,6 +25,7 @@ public class MoveArmToIntakePosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     arm.setArmTarget(Units.degreesToRadians(-25));
     arm.setWristTarget(Units.degreesToRadians(-38));
   }

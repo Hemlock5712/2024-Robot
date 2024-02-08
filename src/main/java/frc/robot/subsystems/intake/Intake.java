@@ -78,6 +78,7 @@ public class Intake extends SubsystemBase {
     this.driverRequestIntakeDown = driverRequestIntakeDown;
   }
 
+  @AutoLogOutput(key = "Intake/DriverRequestIntakeDown")
   public boolean getDriverRequestIntakeDown() {
     return driverRequestIntakeDown;
   }

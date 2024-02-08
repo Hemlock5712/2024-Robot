@@ -44,6 +44,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
+import frc.robot.subsystems.intake.IntakeWheesIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
@@ -127,7 +128,7 @@ public class RobotContainer {
                     new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
                     drive::getPose));
         arm = new Arm(new ArmIOSim());
-        intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIO() {});
+        intake = new Intake(new IntakeActuatorSim(), new IntakeWheesIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
         break;
@@ -167,7 +168,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown(true)));
     NamedCommands.registerCommand(
-        "AutoFlywheel", new AutoFlywheel(flywheel, drive, driveController));
+        "AutoFlywheel", new AutoFlywheel(flywheel, driveController, drive::getPose));
     NamedCommands.registerCommand(
         "Shoot",
         new Shoot(magazine).alongWith(new ShotVisualizer(drive, arm, flywheel)).withTimeout(0.5));
@@ -265,16 +266,11 @@ public class RobotContainer {
             Commands.sequence(
                 Commands.parallel(
                     new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
-                    new AutoFlywheel(flywheel, drive, driveController)),
+                    new AutoFlywheel(flywheel, driveController, drive::getPose)),
                 Commands.parallel(
                     new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
-                    new AutoFlywheel(flywheel, drive, driveController),
+                    new AutoFlywheel(flywheel, driveController, drive::getPose),
                     new Shoot(magazine).withTimeout(1))));
-
-    // controller2.x().onTrue()
-    // controller2.a().onTrue(Commands.run(() -> driveController.setDriveMode(DriveModeType.AMP)));
-    // controller2.b().onTrue(Commands.run(() ->
-    // driveController.setDriveMode(DriveModeType.SPEAKER)));
   }
 
   /**

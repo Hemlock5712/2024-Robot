@@ -40,7 +40,7 @@ public class LineBreak extends SubsystemBase {
 
   @AutoLogOutput(key = "/LineBreak/inLowerIntake")
   public boolean inLowerIntake() {
-    return !inputs.lineBreakValues.notInLowerIntake();
+    return inputs.lineBreakValues.InLowerIntake();
   }
 
   @AutoLogOutput(key = "/LineBreak/isShooterLoaded")
