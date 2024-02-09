@@ -11,8 +11,6 @@ import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
-import frc.robot.util.LinearInterpolationTable;
-import java.awt.geom.Point2D;
 import java.util.function.Supplier;
 
 public class AutoFlywheel extends Command {

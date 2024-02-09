@@ -13,14 +13,14 @@ import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.util.FieldConstants;
 import java.util.function.Supplier;
 
-public class AutoArm extends Command {
+public class SmartArm extends Command {
   Arm arm;
   Supplier<Pose2d> pose;
   Supplier<DriveModeType> driveModeType;
   LineBreak lineBreak;
 
   /** Creates a new moveArm. */
-  public AutoArm(
+  public SmartArm(
       Arm arm, LineBreak lineBreak, Supplier<DriveModeType> driveModeType, Supplier<Pose2d> pose) {
     this.arm = arm;
     this.pose = pose;
@@ -50,8 +50,7 @@ public class AutoArm extends Command {
         arm.setArmTarget(ArmConstants.podium.getArmRadians());
         arm.setWristTarget(-angle - additionalAngle);
       }
-    }
-    else{
+    } else {
       arm.setArmTarget(ArmConstants.intake.getArmRadians());
       arm.setWristTarget(ArmConstants.intake.getArmRadians());
     }

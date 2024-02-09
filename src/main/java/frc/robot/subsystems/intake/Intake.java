@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.intake.IntakeConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,13 +40,13 @@ public class Intake extends SubsystemBase {
     wheelsIO.runRPM(getTargetSpeed());
     switch (intakePositions) {
       case BUMPER:
-        actuatorIO.setIntakeAngle(Units.degreesToRadians(0));
+        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.toRadians());
         break;
       case FLOOR:
-        actuatorIO.setIntakeAngle(Units.degreesToRadians(-60));
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.toRadians());
         break;
       case UP:
-        actuatorIO.setIntakeAngle(Units.degreesToRadians(60));
+        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.toRadians());
         break;
     }
 
@@ -74,8 +74,12 @@ public class Intake extends SubsystemBase {
     this.intakePositions = intakePositions;
   }
 
-  public void setDriverRequestIntakeDown(boolean driverRequestIntakeDown) {
-    this.driverRequestIntakeDown = driverRequestIntakeDown;
+  public void setDriverRequestIntakeDown() {
+    this.driverRequestIntakeDown = true;
+  }
+
+  public void setDriverRequestIntakeUp() {
+    this.driverRequestIntakeDown = false;
   }
 
   @AutoLogOutput(key = "Intake/DriverRequestIntakeDown")
@@ -87,11 +91,6 @@ public class Intake extends SubsystemBase {
   public double getTargetSpeed() {
     return targetSpeed;
   }
-
-  // @AutoLogOutput(key = "Intake/IntakePositions")
-  // public IntakePositions getIntakePositions() {
-  //   return intakePositions;
-  // }
 
   public enum IntakePositions {
     FLOOR,

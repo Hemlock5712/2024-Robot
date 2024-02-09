@@ -27,9 +27,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
-import frc.robot.commands.arm.AutoArm;
+import frc.robot.commands.arm.SmartArm;
 import frc.robot.commands.flywheel.AutoFlywheel;
-import frc.robot.commands.pathFollowing.PathFinderAndFollow;
+import frc.robot.commands.intake.SmartIntake;
+import frc.robot.commands.magazine.SmartMagizine;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -169,7 +170,7 @@ public class RobotContainer {
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
     NamedCommands.registerCommand(
-        "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown(true)));
+        "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
     NamedCommands.registerCommand(
         "AutoFlywheel", new AutoFlywheel(flywheel, driveController, drive::getPose));
     NamedCommands.registerCommand(
@@ -220,8 +221,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
-    driveController = new DriveController();
-    driveController.setPoseSupplier(drive::getPose);
+    driveController = DriveController.getInstance();
     driveController.disableHeadingControl();
     configureButtonBindings();
   }
@@ -240,12 +240,13 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-            
-    arm.setDefaultCommand(new AutoArm(arm, lineBreak, driveController.getDriveModeType(), drive::getPose));
+
+    arm.setDefaultCommand(
+        new SmartArm(arm, lineBreak, driveController.getDriveModeType(), drive::getPose));
     flywheel.setDefaultCommand(Commands.run(() -> flywheel.setSpeedRPM(1000), flywheel));
     intake.setDefaultCommand(
-        new RunIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
-    magazine.setDefaultCommand(new RunMagazine(magazine, lineBreak));
+        new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
+    magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
 
     controller
         .a()
@@ -254,25 +255,32 @@ public class RobotContainer {
                 () -> driveController.enableHeadingControl(),
                 () -> driveController.disableHeadingControl()));
     controller.leftBumper().whileTrue(Commands.runOnce(() -> driveController.toggleDriveMode()));
+    controller
+        .rightBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> driveController.enableHeadingControl(),
+                () -> driveController.disableHeadingControl()));
 
-    controller.rightBumper().whileTrue(new PathFinderAndFollow(driveController.getDriveModeType()));
+    // controller.rightBumper().whileTrue(new
+    // PathFinderAndFollow(driveController.getDriveModeType()));
 
     controller
         .b()
         .whileTrue(
             Commands.startEnd(
-                () -> intake.setDriverRequestIntakeDown(true),
-                () -> intake.setDriverRequestIntakeDown(false)));
+                () -> intake.setDriverRequestIntakeDown(),
+                () -> intake.setDriverRequestIntakeUp()));
     controller
         .x()
         .whileTrue(
             Commands.sequence(
                 Commands.parallel(
-                    new AutoArm(
+                    new SmartArm(
                         arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
                     new AutoFlywheel(flywheel, driveController, drive::getPose)),
                 Commands.parallel(
-                    new AutoArm(
+                    new SmartArm(
                         arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
                     new AutoFlywheel(flywheel, driveController, drive::getPose),
                     new Shoot(magazine).withTimeout(1))));

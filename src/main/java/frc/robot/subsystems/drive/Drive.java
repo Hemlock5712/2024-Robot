@@ -25,8 +25,10 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -54,6 +56,11 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
+
+  private final LinearFilter xFilter = LinearFilter.movingAverage(10);
+  private final LinearFilter yFilter = LinearFilter.movingAverage(10);
+  private double filteredX = 0;
+  private double filteredY = 0;
 
   private static ProfiledPIDController thetaController =
       new ProfiledPIDController(
@@ -202,6 +209,13 @@ public class Drive extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       odometryDrive.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(getModuleStates());
+      Translation2d rawFieldRelativeVelocity =
+          new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+              .rotateBy(getRotation());
+
+      filteredX = xFilter.calculate(rawFieldRelativeVelocity.getX());
+      filteredY = yFilter.calculate(rawFieldRelativeVelocity.getY());
     }
   }
 
@@ -345,5 +359,10 @@ public class Drive extends SubsystemBase {
 
   public static ProfiledPIDController getThetaController() {
     return thetaController;
+  }
+
+  @AutoLogOutput
+  public Translation2d getFieldRelativeVelocity() {
+    return new Translation2d(filteredX, filteredY);
   }
 }

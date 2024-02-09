@@ -2,18 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.magazine;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 
-public class RunMagazine extends Command {
+public class SmartMagizine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
 
   /** Creates a new RunMagazine. */
-  public RunMagazine(Magazine magazine, LineBreak lineBreak) {
+  public SmartMagizine(Magazine magazine, LineBreak lineBreak) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.magazine = magazine;
     this.lineBreak = lineBreak;
