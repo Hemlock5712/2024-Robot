@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
+import frc.robot.commands.arm.AutoArm;
+import frc.robot.commands.flywheel.AutoFlywheel;
+import frc.robot.commands.pathFollowing.PathFinderAndFollow;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -172,7 +175,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot",
         new Shoot(magazine).alongWith(new ShotVisualizer(drive, arm, flywheel)).withTimeout(0.5));
-    NamedCommands.registerCommand("AutoArm", new DistanceTrackWithArm(arm, drive).withTimeout(0.5));
 
     // Set up auto routines
     NamedCommands.registerCommand(
@@ -238,7 +240,8 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    arm.setDefaultCommand(new MoveArmToIntakePosition(arm));
+            
+    arm.setDefaultCommand(new AutoArm(arm, lineBreak, driveController.getDriveModeType(), drive::getPose));
     flywheel.setDefaultCommand(Commands.run(() -> flywheel.setSpeedRPM(1000), flywheel));
     intake.setDefaultCommand(
         new RunIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
@@ -265,10 +268,12 @@ public class RobotContainer {
         .whileTrue(
             Commands.sequence(
                 Commands.parallel(
-                    new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
+                    new AutoArm(
+                        arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
                     new AutoFlywheel(flywheel, driveController, drive::getPose)),
                 Commands.parallel(
-                    new MoveArm(arm, driveController.getDriveModeType(), drive::getPose),
+                    new AutoArm(
+                        arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
                     new AutoFlywheel(flywheel, driveController, drive::getPose),
                     new Shoot(magazine).withTimeout(1))));
   }

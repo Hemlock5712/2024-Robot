@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.flywheel;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveController;
+import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
@@ -18,13 +19,6 @@ public class AutoFlywheel extends Command {
   Flywheel flywheel;
   Supplier<Pose2d> pose;
   DriveController driveController;
-
-  LinearInterpolationTable table =
-      new LinearInterpolationTable(
-          new Point2D.Double(0, 8000),
-          new Point2D.Double(5, 12000),
-          new Point2D.Double(8, 16000),
-          new Point2D.Double(10, 18000));
 
   Pose2d target = FieldConstants.Speaker.centerSpeakerOpening;
 
@@ -46,16 +40,11 @@ public class AutoFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    switch (driveController.getDriveModeType().get()) {
-      case AMP:
-        flywheel.setSpeedRPM(3000);
-        break;
-      case SPEAKER:
-        double distance = pose.get().getTranslation().getDistance(target.getTranslation());
-
-        flywheel.setSpeedRPM(table.getOutput(distance));
-        break;
+    if (driveController.getDriveModeType().get() == DriveModeType.AMP) {
+      flywheel.setSpeedRPM(3000);
+    } else {
+      double distance = pose.get().getTranslation().getDistance(target.getTranslation());
+      flywheel.setSpeedRPM(FlywheelConstants.table.getOutput(distance));
     }
   }
 

@@ -16,14 +16,11 @@ package frc.robot.commands;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,22 +43,16 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
-
-    ProfiledPIDController thetaController =
-        new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(8, 8));
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Units.degreesToRadians(1.5));
-
     return Commands.run(
         () -> {
           double omega = 0;
           if (driveMode.isHeadingControlled()) {
             final var thata = driveMode.getHeadingAngle();
-
             omega =
-                thetaController.calculate(
-                    drive.getPose().getRotation().getRadians(), thata.get().getRadians());
-            if (thetaController.atGoal()) {
+                Drive.getThetaController()
+                    .calculate(
+                        drive.getPose().getRotation().getRadians(), thata.get().getRadians());
+            if (Drive.getThetaController().atGoal()) {
               omega = 0;
             }
             omega = Math.copySign(Math.min(1, Math.abs(omega)), omega);

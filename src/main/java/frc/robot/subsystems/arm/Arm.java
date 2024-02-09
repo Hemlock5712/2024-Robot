@@ -4,6 +4,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.arm.ArmConstants;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -64,9 +66,9 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
   public boolean isArmWristInIntakePosition() {
-    return (Math.abs(ArmConstants.armTargetPostionIntakeMode - getArmAngle())
+    return (Math.abs(ArmConstants.intake.getArmRadians() - getArmAngle())
             < (Units.degreesToRadians(1)))
-        && (Math.abs(ArmConstants.wristTargetPositionIntakeMode - getWristAngleAbsolute())
+        && (Math.abs(ArmConstants.intake.getWristRadians() - getWristAngleAbsolute())
             < (Units.degreesToRadians(1)));
   }
 
