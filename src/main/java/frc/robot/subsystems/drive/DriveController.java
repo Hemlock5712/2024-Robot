@@ -81,7 +81,7 @@ public class DriveController {
    *
    * @return True if the heading is being controlled, false otherwise.
    */
-  public boolean isHeadingControlled() {
+  public boolean isSmartControlEnabled() {
     return this.headingSupplier;
   }
 
@@ -113,12 +113,12 @@ public class DriveController {
   }
 
   /** Enables heading control based on the current drive mode. */
-  public void enableHeadingControl() {
+  public void enableSmartControl() {
     this.headingSupplier = true;
   }
 
   /** Disables heading control (heading control is disabled). */
-  public void disableHeadingControl() {
+  public void disableSmartControl() {
     this.headingSupplier = false;
   }
 

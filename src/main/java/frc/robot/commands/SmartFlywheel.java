@@ -16,8 +16,6 @@ public class SmartFlywheel extends Command {
   Flywheel flywheel;
   Supplier<Pose2d> pose;
 
-  Pose2d target = FieldConstants.Speaker.centerSpeakerOpening;
-
   /** Creates a new AutoFlywheel. */
   public SmartFlywheel(Flywheel flywheel, Supplier<Pose2d> pose) {
     this.flywheel = flywheel;
@@ -28,14 +26,12 @@ public class SmartFlywheel extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    target = AllianceFlipUtil.apply(target);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!DriveController.getInstance().isHeadingControlled()) {
+    if (!DriveController.getInstance().isSmartControlEnabled()) {
       flywheel.setSpeedRPM(0);
     } else {
       flywheel.setSpeedRPM(

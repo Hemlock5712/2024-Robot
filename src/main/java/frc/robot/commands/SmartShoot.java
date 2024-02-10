@@ -35,13 +35,13 @@ public class SmartShoot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DriveController.getInstance().enableHeadingControl();
+    DriveController.getInstance().enableSmartControl();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (DriveController.getInstance().isHeadingControlled()
+    if (DriveController.getInstance().isSmartControlEnabled()
         && arm.isArmWristInTargetPose()
         && Math.abs(
                 pose.get()
@@ -57,7 +57,7 @@ public class SmartShoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriveController.getInstance().disableHeadingControl();
+    DriveController.getInstance().disableSmartControl();
   }
 
   // Returns true when the command should end.

@@ -84,9 +84,6 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final LoggedDashboardNumber flywheelSpeedInput =
-      new LoggedDashboardNumber("Flywheel Speed", 1500.0);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getMode()) {
@@ -175,12 +172,6 @@ public class RobotContainer {
             .alongWith(new ShotVisualizer(drive, arm, flywheel))
             .withTimeout(0.5));
 
-    // Set up auto routines
-    NamedCommands.registerCommand(
-        "Run Flywheel",
-        Commands.startEnd(
-                () -> flywheel.setSpeedRPM(flywheelSpeedInput.get()), flywheel::stop, flywheel)
-            .withTimeout(5.0));
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
     // "Flywheel FF Characterization",
@@ -219,7 +210,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
-    DriveController.getInstance().disableHeadingControl();
+    DriveController.getInstance().disableSmartControl();
     configureButtonBindings();
   }
 
@@ -250,8 +241,8 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> DriveController.getInstance().enableHeadingControl(),
-                () -> DriveController.getInstance().disableHeadingControl()));
+                () -> DriveController.getInstance().enableSmartControl(),
+                () -> DriveController.getInstance().disableSmartControl()));
 
     // controller.rightBumper().whileTrue(new
     // PathFinderAndFollow(DriveController.getInstance().getDriveModeType()));

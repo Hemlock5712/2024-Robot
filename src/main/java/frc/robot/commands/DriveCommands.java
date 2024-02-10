@@ -78,7 +78,7 @@ public class DriveCommands {
           linearMagnitude = linearMagnitude * linearMagnitude;
           omega = Math.copySign(omega * omega, omega);
 
-          if (DriveController.getInstance().isHeadingControlled()) {
+          if (DriveController.getInstance().isSmartControlEnabled()) {
             linearMagnitude = Math.min(linearMagnitude, 0.75);
           }
 
@@ -100,7 +100,7 @@ public class DriveCommands {
           double robotRelativeYVel = linearVelocity.getY() * drivetrainConfig.maxLinearVelocity();
 
           // Speaker Mode
-          if (DriveController.getInstance().isHeadingControlled()
+          if (DriveController.getInstance().isSmartControlEnabled()
               && DriveController.getInstance().getDriveModeType().get() == DriveModeType.SPEAKER) {
             measuredGyroAngle = drive.getPose().getRotation();
             Translation2d deadbandFieldRelativeVelocity =
@@ -115,7 +115,7 @@ public class DriveCommands {
             feedForwardRadialVelocity = calculatedAim.radialVelocity();
           }
           // Amp Mode
-          else if (DriveController.getInstance().isHeadingControlled()
+          else if (DriveController.getInstance().isSmartControlEnabled()
               && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
             DriveController.getInstance().calculateAmp();
             AimingParameters calculatedAim =
@@ -126,7 +126,7 @@ public class DriveCommands {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   robotRelativeXVel,
                   robotRelativeYVel,
-                  DriveController.getInstance().isHeadingControlled() && targetGyroAngle.isPresent()
+                  DriveController.getInstance().isSmartControlEnabled() && targetGyroAngle.isPresent()
                       ? feedForwardRadialVelocity
                           + aimController.calculate(
                               measuredGyroAngle.getRadians(), targetGyroAngle.get().getRadians())

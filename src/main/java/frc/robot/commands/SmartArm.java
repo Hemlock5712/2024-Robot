@@ -29,13 +29,14 @@ public class SmartArm extends Command {
   @Override
   public void execute() {
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
-      if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
-        arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
-        arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
-      } else {
+      if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.SPEAKER) {
         arm.setArmTarget(ArmConstants.shoot.getArmRadians());
         arm.setWristTarget(
             DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      }
+      else if(DriveController.getInstance().isSmartControlEnabled() && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP){
+        arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
+        arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       }
     } else {
       arm.setArmTarget(ArmConstants.intake.getArmRadians());
