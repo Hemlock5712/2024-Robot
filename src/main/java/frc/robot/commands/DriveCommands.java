@@ -108,7 +108,7 @@ public class DriveCommands {
                     ? new Translation2d(0, 0)
                     : drive.getFieldRelativeVelocity();
             DriveController.getInstance()
-                .calculate(drive.getPose().getTranslation(), deadbandFieldRelativeVelocity);
+                .calculateSpeaker(drive.getPose().getTranslation(), deadbandFieldRelativeVelocity);
             AimingParameters calculatedAim =
                 DriveController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
@@ -117,7 +117,10 @@ public class DriveCommands {
           // Amp Mode
           else if (DriveController.getInstance().isHeadingControlled()
               && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
-            targetGyroAngle = Optional.of(Rotation2d.fromDegrees(90));
+            DriveController.getInstance().calculateAmp();
+            AimingParameters calculatedAim =
+                DriveController.getInstance().getTargetAimingParameters();
+            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
           }
           ChassisSpeeds chassisSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(

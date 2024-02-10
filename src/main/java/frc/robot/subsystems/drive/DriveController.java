@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import frc.robot.commands.ArmConstants;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import java.util.function.Supplier;
@@ -121,7 +122,8 @@ public class DriveController {
     this.headingSupplier = false;
   }
 
-  public void calculate(Translation2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
+  public void calculateSpeaker(
+      Translation2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     Translation2d effectiveAimingPose = new Translation2d();
@@ -152,6 +154,15 @@ public class DriveController {
             radialVelocity,
             shooterSpeedMap.get(effectiveDistanceToSpeaker),
             new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker))));
+  }
+
+  public void calculateAmp() {
+    setTargetAimingParameters(
+        new AimingParameters(
+            Rotation2d.fromDegrees(90),
+            0.0,
+            1000,
+            Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist())));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {

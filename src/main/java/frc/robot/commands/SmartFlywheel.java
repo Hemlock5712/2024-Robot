@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveController;
-import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
@@ -38,8 +37,6 @@ public class SmartFlywheel extends Command {
   public void execute() {
     if (!DriveController.getInstance().isHeadingControlled()) {
       flywheel.setSpeedRPM(0);
-    } else if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
-      flywheel.setSpeedRPM(3000);
     } else {
       flywheel.setSpeedRPM(
           DriveController.getInstance().getTargetAimingParameters().shooterSpeed());
