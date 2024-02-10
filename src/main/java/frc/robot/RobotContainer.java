@@ -27,10 +27,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
-import frc.robot.commands.arm.SmartArm;
-import frc.robot.commands.flywheel.SmartFlywheel;
-import frc.robot.commands.intake.SmartIntake;
-import frc.robot.commands.magazine.SmartMagizine;
+import frc.robot.commands.SmartArm;
+import frc.robot.commands.SmartFlywheel;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -170,7 +168,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
     NamedCommands.registerCommand(
-        "AutoFlywheel", new SmartFlywheel(flywheel, lineBreak, drive::getPose));
+        "AutoFlywheel", new SmartFlywheel(flywheel, drive::getPose));
     NamedCommands.registerCommand(
         "Shoot",
         new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
@@ -242,7 +240,7 @@ public class RobotContainer {
     arm.setDefaultCommand(
         new SmartArm(
             arm, lineBreak, DriveController.getInstance().getDriveModeType(), drive::getPose));
-    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak, drive::getPose));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, drive::getPose));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
     magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
@@ -268,7 +266,8 @@ public class RobotContainer {
                 () -> intake.setDriverRequestIntakeUp()));
     controller
         .x()
-        .whileTrue(Commands.run(() -> new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)));
+        .whileTrue(
+            Commands.run(() -> new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)));
 
     // controller
     // .x()

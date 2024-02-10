@@ -1,4 +1,4 @@
-package frc.robot.commands.intake;
+package frc.robot.commands;
 
 import edu.wpi.first.math.util.Units;
 

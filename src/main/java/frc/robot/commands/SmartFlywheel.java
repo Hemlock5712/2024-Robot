@@ -2,29 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.flywheel;
+package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import java.util.function.Supplier;
 
 public class SmartFlywheel extends Command {
   Flywheel flywheel;
-  LineBreak lineBreak;
   Supplier<Pose2d> pose;
 
   Pose2d target = FieldConstants.Speaker.centerSpeakerOpening;
 
   /** Creates a new AutoFlywheel. */
-  public SmartFlywheel(Flywheel flywheel, LineBreak lineBreak, Supplier<Pose2d> pose) {
+  public SmartFlywheel(Flywheel flywheel, Supplier<Pose2d> pose) {
     this.flywheel = flywheel;
-    this.lineBreak = lineBreak;
     this.pose = pose;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
@@ -39,13 +36,12 @@ public class SmartFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!(lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
+    if (!DriveController.getInstance().isHeadingControlled()) {
       flywheel.setSpeedRPM(0);
     } else if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
       flywheel.setSpeedRPM(3000);
     } else {
-      double distance = pose.get().getTranslation().getDistance(target.getTranslation());
-      flywheel.setSpeedRPM(DriveController.getInstance().getShooterSpeed(distance));
+      flywheel.setSpeedRPM(DriveController.getInstance().getTargetAimingParameters().shooterSpeed());
     }
   }
 

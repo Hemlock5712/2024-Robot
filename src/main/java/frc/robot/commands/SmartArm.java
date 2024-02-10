@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.arm;
+package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
@@ -38,18 +38,8 @@ public class SmartArm extends Command {
         arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
         arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       } else {
-        double distance =
-            pose.get()
-                .getTranslation()
-                .getDistance(FieldConstants.Speaker.centerSpeakerOpening3d.toTranslation2d());
-        double heightDifference =
-            FieldConstants.Speaker.centerSpeakerOpening3d.getZ() - Units.inchesToMeters(24);
-        double angle = Math.atan2(heightDifference, distance);
-
-        double additionalAngle = DriveController.getInstance().getShooterAngle(distance);
-
         arm.setArmTarget(ArmConstants.shoot.getArmRadians());
-        arm.setWristTarget(-angle - additionalAngle);
+        arm.setWristTarget(DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
       }
     } else {
       arm.setArmTarget(ArmConstants.intake.getArmRadians());

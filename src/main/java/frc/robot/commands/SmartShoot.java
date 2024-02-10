@@ -21,7 +21,8 @@ public class SmartShoot extends Command {
   LineBreak lineBreak;
 
   /** Creates a new Shoot. */
-  public SmartShoot(Arm arm, Flywheel flywheel, Magazine magazine, LineBreak lineBreak, Supplier<Pose2d> pose) {
+  public SmartShoot(
+      Arm arm, Flywheel flywheel, Magazine magazine, LineBreak lineBreak, Supplier<Pose2d> pose) {
     this.arm = arm;
     this.flywheel = flywheel;
     this.magazine = magazine;
@@ -33,7 +34,9 @@ public class SmartShoot extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    DriveController.getInstance().enableHeadingControl();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -53,7 +56,9 @@ public class SmartShoot extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    DriveController.getInstance().disableHeadingControl();
+  }
 
   // Returns true when the command should end.
   @Override
