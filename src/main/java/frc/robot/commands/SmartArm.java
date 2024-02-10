@@ -15,15 +15,12 @@ import java.util.function.Supplier;
 public class SmartArm extends Command {
   Arm arm;
   Supplier<Pose2d> pose;
-  Supplier<DriveModeType> driveModeType;
   LineBreak lineBreak;
 
   /** Creates a new moveArm. */
-  public SmartArm(
-      Arm arm, LineBreak lineBreak, Supplier<DriveModeType> driveModeType, Supplier<Pose2d> pose) {
+  public SmartArm(Arm arm, LineBreak lineBreak, Supplier<Pose2d> pose) {
     this.arm = arm;
     this.pose = pose;
-    this.driveModeType = driveModeType;
     this.lineBreak = lineBreak;
     addRequirements(arm);
   }
@@ -32,7 +29,7 @@ public class SmartArm extends Command {
   @Override
   public void execute() {
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
-      if (driveModeType.get() == DriveModeType.AMP) {
+      if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
         arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
         arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       } else {
