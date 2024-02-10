@@ -20,7 +20,7 @@ public class DriveController {
 
   private DriveModeType driveModeType = DriveModeType.SPEAKER;
   private AimingParameters targetAimingParameters;
-  private boolean headingSupplier = false;
+  private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
@@ -82,7 +82,7 @@ public class DriveController {
    * @return True if the heading is being controlled, false otherwise.
    */
   public boolean isSmartControlEnabled() {
-    return this.headingSupplier;
+    return this.smartControl;
   }
 
   /**
@@ -114,12 +114,12 @@ public class DriveController {
 
   /** Enables heading control based on the current drive mode. */
   public void enableSmartControl() {
-    this.headingSupplier = true;
+    this.smartControl = true;
   }
 
   /** Disables heading control (heading control is disabled). */
   public void disableSmartControl() {
-    this.headingSupplier = false;
+    this.smartControl = false;
   }
 
   public void calculateSpeaker(

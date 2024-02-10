@@ -244,7 +244,7 @@ public class RobotContainer {
                 () -> DriveController.getInstance().enableSmartControl(),
                 () -> DriveController.getInstance().disableSmartControl()));
 
-    controller.rightBumper().whileTrue(new PathFinderAndFollow());
+    controller.a().whileTrue(new PathFinderAndFollow());
 
     controller
         .b()
@@ -252,10 +252,7 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> intake.setDriverRequestIntakeDown(),
                 () -> intake.setDriverRequestIntakeUp()));
-    controller
-        .x()
-        .whileTrue(
-            Commands.run(() -> new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)));
+    controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
 
     // controller
     // .x()
