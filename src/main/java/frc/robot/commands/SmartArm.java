@@ -33,8 +33,8 @@ public class SmartArm extends Command {
         arm.setArmTarget(ArmConstants.shoot.getArmRadians());
         arm.setWristTarget(
             DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-      }
-      else if(DriveController.getInstance().isSmartControlEnabled() && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP){
+      } else if (DriveController.getInstance().isSmartControlEnabled()
+          && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
         arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
         arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       }

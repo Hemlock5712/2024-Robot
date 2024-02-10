@@ -48,18 +48,17 @@ import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheesIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
-import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
+import frc.robot.subsystems.lineBreak.LineBreakIO;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
+import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 import frc.robot.util.visualizer.NoteVisualizer;
-import frc.robot.util.visualizer.ShotVisualizer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -107,7 +106,13 @@ public class RobotContainer {
         arm = new Arm(new ArmIO() {});
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
-        lineBreak = new LineBreak(new LineBreakIODigitalInput());
+        lineBreak = new LineBreak(new LineBreakIO() {});
+        aprilTagVision =
+            new AprilTagVision(
+                new AprilTagVisionIOLimelight("limelight-fr"),
+                new AprilTagVisionIOLimelight("limelight-br"),
+                new AprilTagVisionIOLimelight("limelight-bl"),
+                new AprilTagVisionIOLimelight("limelight-fl"));
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -166,11 +171,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
     NamedCommands.registerCommand("AutoFlywheel", new SmartFlywheel(flywheel, drive::getPose));
-    NamedCommands.registerCommand(
-        "Shoot",
-        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
-            .alongWith(new ShotVisualizer(drive, arm, flywheel))
-            .withTimeout(0.5));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
@@ -244,8 +244,7 @@ public class RobotContainer {
                 () -> DriveController.getInstance().enableSmartControl(),
                 () -> DriveController.getInstance().disableSmartControl()));
 
-    // controller.rightBumper().whileTrue(new
-    // PathFinderAndFollow(DriveController.getInstance().getDriveModeType()));
+    controller.rightBumper().whileTrue(new PathFinderAndFollow());
 
     controller
         .b()

@@ -126,7 +126,8 @@ public class DriveCommands {
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   robotRelativeXVel,
                   robotRelativeYVel,
-                  DriveController.getInstance().isSmartControlEnabled() && targetGyroAngle.isPresent()
+                  DriveController.getInstance().isSmartControlEnabled()
+                          && targetGyroAngle.isPresent()
                       ? feedForwardRadialVelocity
                           + aimController.calculate(
                               measuredGyroAngle.getRadians(), targetGyroAngle.get().getRadians())
