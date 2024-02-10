@@ -23,7 +23,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,8 +35,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,14 +58,6 @@ public class Drive extends SubsystemBase {
   private final LinearFilter yFilter = LinearFilter.movingAverage(10);
   private double filteredX = 0;
   private double filteredY = 0;
-
-  private static ProfiledPIDController thetaController =
-      new ProfiledPIDController(
-          headingControllerConstants.Kp(),
-          0,
-          headingControllerConstants.Kd(),
-          new TrapezoidProfile.Constraints(
-              drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration()));
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -149,8 +138,6 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Units.degreesToRadians(1.5));
   }
 
   @Override
@@ -355,10 +342,6 @@ public class Drive extends SubsystemBase {
         visionUpdate ->
             addVisionMeasurement(
                 visionUpdate.pose(), visionUpdate.timestamp(), visionUpdate.stdDevs()));
-  }
-
-  public static ProfiledPIDController getThetaController() {
-    return thetaController;
   }
 
   @AutoLogOutput

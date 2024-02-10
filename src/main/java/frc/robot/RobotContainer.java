@@ -76,13 +76,11 @@ public class RobotContainer {
   private AprilTagVision aprilTagVision;
   private Arm arm;
   private Intake intake;
-  private DriveController driveController;
   private LineBreak lineBreak;
   private Magazine magazine;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController controller2 = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -172,10 +170,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
     NamedCommands.registerCommand(
-        "AutoFlywheel", new AutoFlywheel(flywheel, driveController, drive::getPose));
+        "AutoFlywheel", new AutoFlywheel(flywheel, lineBreak, drive::getPose));
     NamedCommands.registerCommand(
         "Shoot",
-        new Shoot(magazine).alongWith(new ShotVisualizer(drive, arm, flywheel)).withTimeout(0.5));
+        new SmartShoot(arm, flywheel, magazine, drive::getPose)
+            .alongWith(new ShotVisualizer(drive, arm, flywheel))
+            .withTimeout(0.5));
 
     // Set up auto routines
     NamedCommands.registerCommand(
@@ -221,8 +221,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
-    driveController = DriveController.getInstance();
-    driveController.disableHeadingControl();
+    DriveController.getInstance().disableHeadingControl();
     configureButtonBindings();
   }
 
@@ -236,34 +235,30 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            driveController,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
     arm.setDefaultCommand(
-        new SmartArm(arm, lineBreak, driveController.getDriveModeType(), drive::getPose));
+        new SmartArm(
+            arm, lineBreak, DriveController.getInstance().getDriveModeType(), drive::getPose));
     flywheel.setDefaultCommand(Commands.run(() -> flywheel.setSpeedRPM(1000), flywheel));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
     magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
 
     controller
-        .a()
-        .whileTrue(
-            Commands.startEnd(
-                () -> driveController.enableHeadingControl(),
-                () -> driveController.disableHeadingControl()));
-    controller.leftBumper().whileTrue(Commands.runOnce(() -> driveController.toggleDriveMode()));
+        .leftBumper()
+        .whileTrue(Commands.runOnce(() -> DriveController.getInstance().toggleDriveMode()));
     controller
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> driveController.enableHeadingControl(),
-                () -> driveController.disableHeadingControl()));
+                () -> DriveController.getInstance().enableHeadingControl(),
+                () -> DriveController.getInstance().disableHeadingControl()));
 
     // controller.rightBumper().whileTrue(new
-    // PathFinderAndFollow(driveController.getDriveModeType()));
+    // PathFinderAndFollow(DriveController.getInstance().getDriveModeType()));
 
     controller
         .b()
@@ -273,17 +268,23 @@ public class RobotContainer {
                 () -> intake.setDriverRequestIntakeUp()));
     controller
         .x()
-        .whileTrue(
-            Commands.sequence(
-                Commands.parallel(
-                    new SmartArm(
-                        arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
-                    new AutoFlywheel(flywheel, driveController, drive::getPose)),
-                Commands.parallel(
-                    new SmartArm(
-                        arm, lineBreak, driveController.getDriveModeType(), drive::getPose),
-                    new AutoFlywheel(flywheel, driveController, drive::getPose),
-                    new Shoot(magazine).withTimeout(1))));
+        .whileTrue(Commands.run(() -> new SmartShoot(arm, flywheel, magazine, drive::getPose)));
+
+    // controller
+    // .x()
+    // .whileTrue(
+    //     Commands.sequence(
+    //         Commands.parallel(
+    //             new SmartArm(
+    //                 arm, lineBreak, DriveController.getInstance().getDriveModeType(),
+    // drive::getPose),
+    //             new AutoFlywheel(flywheel, driveController, drive::getPose)),
+    //         Commands.parallel(
+    //             new SmartArm(
+    //                 arm, lineBreak, DriveController.getInstance().getDriveModeType(),
+    // drive::getPose),
+    //             new AutoFlywheel(flywheel, driveController, drive::getPose),
+    //             new Shoot(magazine).withTimeout(1))));
   }
 
   /**

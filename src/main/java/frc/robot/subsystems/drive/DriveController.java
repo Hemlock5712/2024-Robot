@@ -56,6 +56,26 @@ public class DriveController {
   }
 
   /**
+   * Gets the shooter speed for a given distance.
+   *
+   * @param distance The distance to the target in meters.
+   * @return The shooter speed for the given distance.
+   */
+  public Double getShooterSpeed(double distance) {
+    return shooterSpeedMap.get(distance);
+  }
+
+  /**
+   * Gets the shooter angle for a given distance.
+   *
+   * @param distance The distance to the target in inches.
+   * @return The shooter angle for the given distance.
+   */
+  public Double getShooterAngle(double distance) {
+    return shooterAngleMap.get(Units.inchesToMeters(distance));
+  }
+
+  /**
    * Checks if the heading is being controlled.
    *
    * @return True if the heading is being controlled, false otherwise.

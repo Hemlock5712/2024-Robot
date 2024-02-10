@@ -4,16 +4,26 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.DriveController;
+import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.magazine.Magazine;
+import java.util.function.Supplier;
 
-public class Shoot extends Command {
-
+public class SmartShoot extends Command {
+  Supplier<Pose2d> pose;
+  Arm arm;
+  Flywheel flywheel;
   Magazine magazine;
 
   /** Creates a new Shoot. */
-  public Shoot(Magazine magazine) {
+  public SmartShoot(Arm arm, Flywheel flywheel, Magazine magazine, Supplier<Pose2d> pose) {
+    this.arm = arm;
+    this.flywheel = flywheel;
     this.magazine = magazine;
+    this.pose = pose;
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,7 +35,17 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    magazine.forward();
+    if (DriveController.getInstance().isHeadingControlled()
+        && arm.isArmWristInTargetPose()
+        && Math.abs(
+                pose.get()
+                    .getRotation()
+                    .minus(DriveController.getInstance().getTargetAimingParameters().robotAngle())
+                    .getRadians())
+            < 0.1
+        && flywheel.atTargetSpeed()) {
+      magazine.forward();
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.util.FieldConstants;
@@ -45,9 +46,9 @@ public class SmartArm extends Command {
             FieldConstants.Speaker.centerSpeakerOpening3d.getZ() - Units.inchesToMeters(24);
         double angle = Math.atan2(heightDifference, distance);
 
-        double additionalAngle = ArmConstants.linearInterpolationTable.getOutput(distance);
+        double additionalAngle = DriveController.getInstance().getShooterAngle(distance);
 
-        arm.setArmTarget(ArmConstants.podium.getArmRadians());
+        arm.setArmTarget(ArmConstants.shoot.getArmRadians());
         arm.setWristTarget(-angle - additionalAngle);
       }
     } else {

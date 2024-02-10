@@ -16,12 +16,13 @@ package frc.robot.commands;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,18 +48,20 @@ public class DriveCommands {
    */
   public static final Command joystickDrive(
       Drive drive,
-      DriveController driveController,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
 
     @SuppressWarnings({"resource"})
-    PIDController aimController =
-        new PIDController(
+    ProfiledPIDController aimController =
+        new ProfiledPIDController(
             headingControllerConstants.Kp(),
             0,
             headingControllerConstants.Kd(),
+            new TrapezoidProfile.Constraints(
+                drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration()),
             Constants.loopPeriodMs);
+    aimController.reset(drive.getRotation().getRadians());
     aimController.enableContinuousInput(-Math.PI, Math.PI);
 
     return Commands.run(
@@ -75,7 +78,7 @@ public class DriveCommands {
           linearMagnitude = linearMagnitude * linearMagnitude;
           omega = Math.copySign(omega * omega, omega);
 
-          if (driveController.isHeadingControlled()) {
+          if (DriveController.getInstance().isHeadingControlled()) {
             linearMagnitude = Math.min(linearMagnitude, 0.75);
           }
 
@@ -96,8 +99,9 @@ public class DriveCommands {
           double robotRelativeXVel = linearVelocity.getX() * drivetrainConfig.maxLinearVelocity();
           double robotRelativeYVel = linearVelocity.getY() * drivetrainConfig.maxLinearVelocity();
 
-          if (driveController.isHeadingControlled()
-              && driveController.getDriveModeType().get() == DriveModeType.SPEAKER) {
+          // Speaker Mode
+          if (DriveController.getInstance().isHeadingControlled()
+              && DriveController.getInstance().getDriveModeType().get() == DriveModeType.SPEAKER) {
             measuredGyroAngle = drive.getPose().getRotation();
             Translation2d deadbandFieldRelativeVelocity =
                 (drive.getFieldRelativeVelocity().getNorm() < autoAimFieldVelocityDeadband.get())
@@ -109,15 +113,17 @@ public class DriveCommands {
                 DriveController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
             feedForwardRadialVelocity = calculatedAim.radialVelocity();
-          } else if (driveController.isHeadingControlled()
-              && driveController.getDriveModeType().get() == DriveModeType.AMP) {
+          }
+          // Amp Mode
+          else if (DriveController.getInstance().isHeadingControlled()
+              && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
             targetGyroAngle = Optional.of(Rotation2d.fromDegrees(90));
           }
           ChassisSpeeds chassisSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   robotRelativeXVel,
                   robotRelativeYVel,
-                  driveController.isHeadingControlled() && targetGyroAngle.isPresent()
+                  DriveController.getInstance().isHeadingControlled() && targetGyroAngle.isPresent()
                       ? feedForwardRadialVelocity
                           + aimController.calculate(
                               measuredGyroAngle.getRadians(), targetGyroAngle.get().getRadians())

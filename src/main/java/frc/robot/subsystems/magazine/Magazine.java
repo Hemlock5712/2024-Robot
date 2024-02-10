@@ -47,7 +47,7 @@ public class Magazine extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Magazine/VelocitRotPerSec")
-  public double VelocitRadsPerSec() {
+  public double velocitRadsPerSec() {
     // Convert Radians per second to Meters per second
     return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
   }

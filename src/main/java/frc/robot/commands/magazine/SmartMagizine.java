@@ -12,7 +12,7 @@ public class SmartMagizine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
 
-  /** Creates a new RunMagazine. */
+  /** Creates a new SmartMagazine. */
   public SmartMagizine(Magazine magazine, LineBreak lineBreak) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.magazine = magazine;
