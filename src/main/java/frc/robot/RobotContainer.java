@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.commands.arm.SmartArm;
-import frc.robot.commands.flywheel.AutoFlywheel;
+import frc.robot.commands.flywheel.SmartFlywheel;
 import frc.robot.commands.intake.SmartIntake;
 import frc.robot.commands.magazine.SmartMagizine;
 import frc.robot.subsystems.arm.Arm;
@@ -170,10 +170,10 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
     NamedCommands.registerCommand(
-        "AutoFlywheel", new AutoFlywheel(flywheel, lineBreak, drive::getPose));
+        "AutoFlywheel", new SmartFlywheel(flywheel, lineBreak, drive::getPose));
     NamedCommands.registerCommand(
         "Shoot",
-        new SmartShoot(arm, flywheel, magazine, drive::getPose)
+        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
             .alongWith(new ShotVisualizer(drive, arm, flywheel))
             .withTimeout(0.5));
 
@@ -242,7 +242,7 @@ public class RobotContainer {
     arm.setDefaultCommand(
         new SmartArm(
             arm, lineBreak, DriveController.getInstance().getDriveModeType(), drive::getPose));
-    flywheel.setDefaultCommand(Commands.run(() -> flywheel.setSpeedRPM(1000), flywheel));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak, drive::getPose));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
     magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
@@ -268,7 +268,7 @@ public class RobotContainer {
                 () -> intake.setDriverRequestIntakeUp()));
     controller
         .x()
-        .whileTrue(Commands.run(() -> new SmartShoot(arm, flywheel, magazine, drive::getPose)));
+        .whileTrue(Commands.run(() -> new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)));
 
     // controller
     // .x()

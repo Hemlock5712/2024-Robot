@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 import java.util.function.Supplier;
 
@@ -17,13 +18,15 @@ public class SmartShoot extends Command {
   Arm arm;
   Flywheel flywheel;
   Magazine magazine;
+  LineBreak lineBreak;
 
   /** Creates a new Shoot. */
-  public SmartShoot(Arm arm, Flywheel flywheel, Magazine magazine, Supplier<Pose2d> pose) {
+  public SmartShoot(Arm arm, Flywheel flywheel, Magazine magazine, LineBreak lineBreak, Supplier<Pose2d> pose) {
     this.arm = arm;
     this.flywheel = flywheel;
     this.magazine = magazine;
     this.pose = pose;
+    this.lineBreak = lineBreak;
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -55,6 +58,6 @@ public class SmartShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !lineBreak.hasGamePiece();
   }
 }

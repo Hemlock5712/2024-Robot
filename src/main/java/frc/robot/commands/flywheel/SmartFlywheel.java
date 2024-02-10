@@ -14,7 +14,7 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import java.util.function.Supplier;
 
-public class AutoFlywheel extends Command {
+public class SmartFlywheel extends Command {
   Flywheel flywheel;
   LineBreak lineBreak;
   Supplier<Pose2d> pose;
@@ -22,7 +22,7 @@ public class AutoFlywheel extends Command {
   Pose2d target = FieldConstants.Speaker.centerSpeakerOpening;
 
   /** Creates a new AutoFlywheel. */
-  public AutoFlywheel(Flywheel flywheel, LineBreak lineBreak, Supplier<Pose2d> pose) {
+  public SmartFlywheel(Flywheel flywheel, LineBreak lineBreak, Supplier<Pose2d> pose) {
     this.flywheel = flywheel;
     this.lineBreak = lineBreak;
     this.pose = pose;
@@ -56,6 +56,6 @@ public class AutoFlywheel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return flywheel.atTargetSpeed();
+    return false;
   }
 }
