@@ -167,8 +167,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
-    NamedCommands.registerCommand(
-        "AutoFlywheel", new SmartFlywheel(flywheel, drive::getPose));
+    NamedCommands.registerCommand("AutoFlywheel", new SmartFlywheel(flywheel, drive::getPose));
     NamedCommands.registerCommand(
         "Shoot",
         new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)

@@ -41,7 +41,8 @@ public class SmartFlywheel extends Command {
     } else if (DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
       flywheel.setSpeedRPM(3000);
     } else {
-      flywheel.setSpeedRPM(DriveController.getInstance().getTargetAimingParameters().shooterSpeed());
+      flywheel.setSpeedRPM(
+          DriveController.getInstance().getTargetAimingParameters().shooterSpeed());
     }
   }
 

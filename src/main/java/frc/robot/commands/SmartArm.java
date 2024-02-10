@@ -5,13 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.drive.DriveController.DriveModeType;
 import frc.robot.subsystems.lineBreak.LineBreak;
-import frc.robot.util.FieldConstants;
 import java.util.function.Supplier;
 
 public class SmartArm extends Command {
@@ -39,7 +37,8 @@ public class SmartArm extends Command {
         arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       } else {
         arm.setArmTarget(ArmConstants.shoot.getArmRadians());
-        arm.setWristTarget(DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+        arm.setWristTarget(
+            DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
       }
     } else {
       arm.setArmTarget(ArmConstants.intake.getArmRadians());
