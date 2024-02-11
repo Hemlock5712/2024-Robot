@@ -33,7 +33,7 @@ public class PathFinderAndFollow extends Command {
 
   @Override
   public void execute() {
-    DriveModeType currentDriveMode = DriveController.getInstance().getDriveModeType().get();
+    DriveModeType currentDriveMode = DriveController.getInstance().getDriveModeType();
     if (driveMode != currentDriveMode) {
       scoreCommand.cancel();
       runNewAutonPath();
@@ -53,7 +53,7 @@ public class PathFinderAndFollow extends Command {
 
   /** Runs a new autonomous path based on the current drive mode. */
   public void runNewAutonPath() {
-    driveMode = DriveController.getInstance().getDriveModeType().get();
+    driveMode = DriveController.getInstance().getDriveModeType();
     String pathName =
         driveMode == DriveModeType.SPEAKER ? "Speaker Placement Path" : "Amp Placement Path";
     PathPlannerPath ampPath = PathPlannerPath.fromPathFile(pathName);

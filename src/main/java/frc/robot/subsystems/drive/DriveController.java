@@ -8,7 +8,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.commands.ArmConstants;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
-import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -53,6 +52,7 @@ public class DriveController {
     if (instance == null) {
       instance = new DriveController();
     }
+    Logger.recordOutput("DriveController/smartControl", instance.smartControl);
     return instance;
   }
 
@@ -90,8 +90,8 @@ public class DriveController {
    *
    * @return The supplier that provides the current drive mode.
    */
-  public Supplier<DriveModeType> getDriveModeType() {
-    return () -> this.driveModeType;
+  public DriveModeType getDriveModeType() {
+    return this.driveModeType;
   }
 
   /**
@@ -105,7 +105,7 @@ public class DriveController {
 
   /** Toggles the drive mode between AMP and SPEAKER. */
   public void toggleDriveMode() {
-    if (getDriveModeType().get() == DriveModeType.AMP) {
+    if (this.driveModeType == DriveModeType.AMP) {
       setDriveMode(DriveController.DriveModeType.SPEAKER);
     } else {
       setDriveMode(DriveController.DriveModeType.AMP);

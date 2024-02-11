@@ -65,6 +65,9 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
+        // NetworkTableInstance.getDefault().addLogger(0, 100, event ->
+        // DataLogManager.log(event.logMessage.filename + ":" + event.logMessage.line + ":" +
+        // event.logMessage.message));
         break;
 
       case SIM:

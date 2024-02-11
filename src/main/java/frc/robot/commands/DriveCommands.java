@@ -101,7 +101,7 @@ public class DriveCommands {
 
           // Speaker Mode
           if (DriveController.getInstance().isSmartControlEnabled()
-              && DriveController.getInstance().getDriveModeType().get() == DriveModeType.SPEAKER) {
+              && DriveController.getInstance().getDriveModeType() == DriveModeType.SPEAKER) {
             measuredGyroAngle = drive.getPose().getRotation();
             Translation2d deadbandFieldRelativeVelocity =
                 (drive.getFieldRelativeVelocity().getNorm() < autoAimFieldVelocityDeadband.get())
@@ -116,7 +116,7 @@ public class DriveCommands {
           }
           // Amp Mode
           else if (DriveController.getInstance().isSmartControlEnabled()
-              && DriveController.getInstance().getDriveModeType().get() == DriveModeType.AMP) {
+              && DriveController.getInstance().getDriveModeType() == DriveModeType.AMP) {
             DriveController.getInstance().calculateAmp();
             AimingParameters calculatedAim =
                 DriveController.getInstance().getTargetAimingParameters();
