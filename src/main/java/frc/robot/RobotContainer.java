@@ -33,12 +33,12 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveController;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.drive.SmartController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
@@ -95,14 +95,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[1]),
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
+
         flywheel = new Flywheel(new FlywheelIO() {});
-        // drive = new Drive(
-        // new GyroIOPigeon2(true),
-        // new ModuleIOTalonFX(0),
-        // new ModuleIOTalonFX(1),
-        // new ModuleIOTalonFX(2),
-        // new ModuleIOTalonFX(3));
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
         arm = new Arm(new ArmIO() {});
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
@@ -151,13 +145,6 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIO() {});
         break;
     }
-
-    // Set up named commands for PathPlanner
-    // NamedCommands.registerCommand(
-    // "Run Flywheel",
-    // Commands.startEnd(
-    // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
-    // flywheel).withTimeout(5.0));
 
     NoteVisualizer.setRobotPoseSupplier(
         () ->
@@ -210,7 +197,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
-    DriveController.getInstance().disableSmartControl();
+    SmartController.getInstance().disableSmartControl();
     configureButtonBindings();
   }
 
@@ -236,13 +223,13 @@ public class RobotContainer {
 
     controller
         .leftBumper()
-        .whileTrue(Commands.runOnce(() -> DriveController.getInstance().toggleDriveMode()));
+        .whileTrue(Commands.runOnce(() -> SmartController.getInstance().toggleDriveMode()));
     controller
         .rightBumper()
         .whileTrue(
             Commands.startEnd(
-                () -> DriveController.getInstance().enableSmartControl(),
-                () -> DriveController.getInstance().disableSmartControl()));
+                () -> SmartController.getInstance().enableSmartControl(),
+                () -> SmartController.getInstance().disableSmartControl()));
 
     controller.a().whileTrue(new PathFinderAndFollow());
 
@@ -252,23 +239,8 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> intake.setDriverRequestIntakeDown(),
                 () -> intake.setDriverRequestIntakeUp()));
-    controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
 
-    // controller
-    // .x()
-    // .whileTrue(
-    //     Commands.sequence(
-    //         Commands.parallel(
-    //             new SmartArm(
-    //                 arm, lineBreak, DriveController.getInstance().getDriveModeType(),
-    // drive::getPose),
-    //             new AutoFlywheel(flywheel, driveController, drive::getPose)),
-    //         Commands.parallel(
-    //             new SmartArm(
-    //                 arm, lineBreak, DriveController.getInstance().getDriveModeType(),
-    // drive::getPose),
-    //             new AutoFlywheel(flywheel, driveController, drive::getPose),
-    //             new Shoot(magazine).withTimeout(1))));
+    controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
   }
 
   /**

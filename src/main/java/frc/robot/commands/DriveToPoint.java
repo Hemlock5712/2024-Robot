@@ -9,9 +9,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.drive.DriveController.DriveModeType;
+import frc.robot.subsystems.drive.SmartController;
+import frc.robot.subsystems.drive.SmartController.DriveModeType;
 import frc.robot.util.AllianceFlipUtil;
-import java.util.function.Supplier;
 
 public class DriveToPoint extends Command {
   // THIS IS JUST A DOCUMENT FOR TESTING pathfindToPose. I RECOMMEND YOU USE pathfindThenFollowPath
@@ -20,14 +20,12 @@ public class DriveToPoint extends Command {
   private Command pathRun;
   private DriveModeType driveMode;
   private final Pose2d targetPose;
-  private final Supplier<DriveModeType> driveModeSupplier;
 
   /** Creates a new ShootPoint. */
-  public DriveToPoint(Pose2d targetPose, Supplier<DriveModeType> driveModeSupplier) {
+  public DriveToPoint(Pose2d targetPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     // For shooting you would also want to pass in your shooter subsystem
     this.targetPose = targetPose;
-    this.driveModeSupplier = driveModeSupplier;
   }
 
   // Called when the command is initially scheduled.
@@ -39,7 +37,7 @@ public class DriveToPoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    DriveModeType currentDriveMode = driveModeSupplier.get();
+    DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
     if (driveMode != currentDriveMode) {
       scoreCommand.cancel();
       runNewAutonPath();

@@ -10,8 +10,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.drive.DriveController;
-import frc.robot.subsystems.drive.DriveController.DriveModeType;
+import frc.robot.subsystems.drive.SmartController;
+import frc.robot.subsystems.drive.SmartController.DriveModeType;
 
 /** A command that runs pathfindThenFollowPath based on the current drive mode. */
 public class PathFinderAndFollow extends Command {
@@ -33,7 +33,7 @@ public class PathFinderAndFollow extends Command {
 
   @Override
   public void execute() {
-    DriveModeType currentDriveMode = DriveController.getInstance().getDriveModeType();
+    DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
     if (driveMode != currentDriveMode) {
       scoreCommand.cancel();
       runNewAutonPath();
@@ -53,7 +53,7 @@ public class PathFinderAndFollow extends Command {
 
   /** Runs a new autonomous path based on the current drive mode. */
   public void runNewAutonPath() {
-    driveMode = DriveController.getInstance().getDriveModeType();
+    driveMode = SmartController.getInstance().getDriveModeType();
     String pathName =
         driveMode == DriveModeType.SPEAKER ? "Speaker Placement Path" : "Amp Placement Path";
     PathPlannerPath ampPath = PathPlannerPath.fromPathFile(pathName);

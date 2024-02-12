@@ -14,18 +14,23 @@ import org.littletonrobotics.junction.Logger;
  * The DriveController class represents a controller for the robot's drive system. It provides
  * methods to control the heading and drive mode of the robot.
  */
-public class DriveController {
-  private static DriveController instance;
+public class SmartController {
+  private static SmartController instance;
 
   private DriveModeType driveModeType = DriveModeType.SPEAKER;
-  private AimingParameters targetAimingParameters;
+  private AimingParameters targetAimingParameters =
+      new AimingParameters(
+          Rotation2d.fromDegrees(90),
+          0.0,
+          1000,
+          Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist()));
   private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
-  private DriveController() {
+  private SmartController() {
     shooterSpeedMap.put(Units.inchesToMeters(60), 10.0);
     shooterSpeedMap.put(Units.inchesToMeters(80), 17.0);
     shooterSpeedMap.put(Units.inchesToMeters(100), 9.0);
@@ -48,9 +53,9 @@ public class DriveController {
     flightTimeMap.put(Units.inchesToMeters(150), 0.8);
   }
 
-  public static DriveController getInstance() {
+  public static SmartController getInstance() {
     if (instance == null) {
-      instance = new DriveController();
+      instance = new SmartController();
     }
     Logger.recordOutput("DriveController/smartControl", instance.smartControl);
     return instance;
@@ -106,9 +111,9 @@ public class DriveController {
   /** Toggles the drive mode between AMP and SPEAKER. */
   public void toggleDriveMode() {
     if (this.driveModeType == DriveModeType.AMP) {
-      setDriveMode(DriveController.DriveModeType.SPEAKER);
+      setDriveMode(SmartController.DriveModeType.SPEAKER);
     } else {
-      setDriveMode(DriveController.DriveModeType.AMP);
+      setDriveMode(SmartController.DriveModeType.AMP);
     }
   }
 
@@ -126,34 +131,36 @@ public class DriveController {
       Translation2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
-    Translation2d effectiveAimingPose = new Translation2d();
-    double effectiveDistanceToSpeaker = 0.01;
     double distanceToSpeaker = fieldRelativePose.getDistance(speakerPose);
     double shotTime = flightTimeMap.get(distanceToSpeaker);
-    for (int i = 0; i < 5; i++) {
-      effectiveAimingPose = fieldRelativePose.plus(fieldRelativeVelocity.times(distanceToSpeaker));
-      effectiveDistanceToSpeaker = effectiveAimingPose.getDistance(speakerPose);
-      double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
-      double flightDif = Math.abs(shotTime - newShotTime);
-      if (flightDif < 0.01) {
-        break;
-      } else {
-        shotTime = newShotTime;
-      }
+    Translation2d movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
+    Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose);
+    double newDistanceToSpeaker = toTestGoal.getNorm();
+    double newShotTime = flightTimeMap.get(newDistanceToSpeaker);
+    for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
+      shotTime = newShotTime;
+      distanceToSpeaker = fieldRelativePose.getDistance(speakerPose);
+      shotTime = flightTimeMap.get(distanceToSpeaker);
+      movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
+      toTestGoal = movingGoalLocation.minus(fieldRelativePose);
+      newDistanceToSpeaker = toTestGoal.getNorm();
+      newShotTime = flightTimeMap.get(newDistanceToSpeaker);
     }
-    Rotation2d setpointAngle = speakerPose.minus(effectiveAimingPose).getAngle();
-    double tangentialVelocity = -fieldRelativeVelocity.rotateBy(setpointAngle.unaryMinus()).getY();
-    double radialVelocity = tangentialVelocity / effectiveDistanceToSpeaker;
-    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", effectiveDistanceToSpeaker);
+    Rotation2d setpointAngle = movingGoalLocation.minus(fieldRelativePose).getAngle();
+    // double tangentialVelocity =
+    // -fieldRelativeVelocity.rotateBy(setpointAngle.unaryMinus()).getY();
+    // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
+    double radialVelocity = 0.0;
+    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", newDistanceToSpeaker);
     Logger.recordOutput(
-        "ShotCalculator/effectiveAimingPose", new Pose2d(effectiveAimingPose, new Rotation2d()));
+        "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, new Rotation2d()));
     Logger.recordOutput("ShotCalculator/robotAngle", setpointAngle);
     setTargetAimingParameters(
         new AimingParameters(
             setpointAngle,
             radialVelocity,
-            shooterSpeedMap.get(effectiveDistanceToSpeaker),
-            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker))));
+            shooterSpeedMap.get(newDistanceToSpeaker),
+            new Rotation2d(shooterAngleMap.get(newDistanceToSpeaker))));
   }
 
   public void calculateAmp() {

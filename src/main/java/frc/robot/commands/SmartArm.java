@@ -7,8 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.DriveController;
-import frc.robot.subsystems.drive.DriveController.DriveModeType;
+import frc.robot.subsystems.drive.SmartController;
+import frc.robot.subsystems.drive.SmartController.DriveModeType;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import java.util.function.Supplier;
 
@@ -29,12 +29,13 @@ public class SmartArm extends Command {
   @Override
   public void execute() {
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
-      if (DriveController.getInstance().getDriveModeType() == DriveModeType.SPEAKER) {
+      if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+          && SmartController.getInstance().isSmartControlEnabled()) {
         arm.setArmTarget(ArmConstants.shoot.getArmRadians());
         arm.setWristTarget(
-            DriveController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-      } else if (DriveController.getInstance().isSmartControlEnabled()
-          && DriveController.getInstance().getDriveModeType() == DriveModeType.AMP) {
+            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      } else if (SmartController.getInstance().isSmartControlEnabled()
+          && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
         arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
         arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
       }

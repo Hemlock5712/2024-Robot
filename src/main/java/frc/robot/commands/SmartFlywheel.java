@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.DriveController;
+import frc.robot.subsystems.drive.SmartController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import java.util.function.Supplier;
 
@@ -29,11 +29,12 @@ public class SmartFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!DriveController.getInstance().isSmartControlEnabled()) {
-      flywheel.setSpeedRPM(0);
-    } else {
+    if (SmartController.getInstance().isSmartControlEnabled()) {
       flywheel.setSpeedRPM(
-          DriveController.getInstance().getTargetAimingParameters().shooterSpeed());
+          SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
+
+    } else {
+      flywheel.setSpeedRPM(0);
     }
   }
 
