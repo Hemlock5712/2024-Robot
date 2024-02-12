@@ -103,10 +103,10 @@ public class RobotContainer {
         lineBreak = new LineBreak(new LineBreakIO() {});
         aprilTagVision =
             new AprilTagVision(
+                new AprilTagVisionIOLimelight("limelight-fl"),
                 new AprilTagVisionIOLimelight("limelight-fr"),
-                new AprilTagVisionIOLimelight("limelight-br"),
                 new AprilTagVisionIOLimelight("limelight-bl"),
-                new AprilTagVisionIOLimelight("limelight-fl"));
+                new AprilTagVisionIOLimelight("limelight-br"));
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
