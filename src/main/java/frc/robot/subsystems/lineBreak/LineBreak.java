@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.lineBreak;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.lineBreak.LineBreakIO.LineBreakIOInputs;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -11,16 +12,26 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class LineBreak extends SubsystemBase {
   private final LineBreakIO lineBreakIO;
   private final LineBreakIOInputs inputs = new LineBreakIOInputs();
+  private double lastGamePieceSeenTime;
 
   /** Creates a new LineBreak. */
   public LineBreak(LineBreakIO lineBreakIO) {
     this.lineBreakIO = lineBreakIO;
+    lastGamePieceSeenTime = Timer.getFPGATimestamp();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     lineBreakIO.updateInputs(inputs);
+    if (hasGamePiece()) {
+      lastGamePieceSeenTime = Timer.getFPGATimestamp();
+    }
+  }
+
+  @AutoLogOutput(key = "/LineBreak/timeSinceLastGamePiece")
+  public double timeSinceLastGamePiece() {
+    return Timer.getFPGATimestamp() - lastGamePieceSeenTime;
   }
 
   @AutoLogOutput(key = "/LineBreak/hasGamePiece")
