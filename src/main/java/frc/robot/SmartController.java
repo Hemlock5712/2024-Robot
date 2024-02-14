@@ -148,16 +148,16 @@ public class SmartController {
     double angleDifference = setpointAngle.minus(fieldRelativePose.getRotation()).getRadians();
 
     // Assuming a constant linear velocity (you can adjust this)
-    double assumedLinearVelocity = fieldRelativeVelocity.getNorm();
+    // double assumedLinearVelocity = fieldRelativeVelocity.getNorm();
 
     // Calculate tangential velocity using linear velocity and angle difference
 
-    double tangentialVelocity = assumedLinearVelocity * Math.sin(angleDifference);
+    // double tangentialVelocity = assumedLinearVelocity * Math.sin(angleDifference);
 
     // Now, calculate angular velocity using tangential velocity and newDistanceToSpeaker
 
-    double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
-    // double radialVelocity = 0.0;
+    // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
+    double radialVelocity = 0.0;
     Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", newDistanceToSpeaker);
     Logger.recordOutput(
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
