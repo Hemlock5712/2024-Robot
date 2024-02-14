@@ -38,7 +38,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.drive.SmartController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
@@ -156,8 +155,7 @@ public class RobotContainer {
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
     NamedCommands.registerCommand(
-        "Intake", Commands.run(() -> intake.setDriverRequestIntakeDown()));
-    NamedCommands.registerCommand("AutoFlywheel", new SmartFlywheel(flywheel, drive::getPose));
+        "Shoot", new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(

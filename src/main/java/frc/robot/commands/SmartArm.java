@@ -6,9 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SmartController;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.SmartController;
-import frc.robot.subsystems.drive.SmartController.DriveModeType;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import java.util.function.Supplier;
 

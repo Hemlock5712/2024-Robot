@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,8 +11,8 @@ import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * The DriveController class represents a controller for the robot's drive system. It provides
- * methods to control the heading and drive mode of the robot.
+ * The SmartController class represents a controller for the robot's system. It provides methods to
+ * control the robot.
  */
 public class SmartController {
   private static SmartController instance;
@@ -57,7 +57,7 @@ public class SmartController {
     if (instance == null) {
       instance = new SmartController();
     }
-    Logger.recordOutput("DriveController/smartControl", instance.smartControl);
+    Logger.recordOutput("SmartController/smartControl", instance.smartControl);
     return instance;
   }
 
@@ -127,34 +127,42 @@ public class SmartController {
     this.smartControl = false;
   }
 
-  public void calculateSpeaker(
-      Translation2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
+  public void calculateSpeaker(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
-    double distanceToSpeaker = fieldRelativePose.getDistance(speakerPose);
+    double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
     double shotTime = flightTimeMap.get(distanceToSpeaker);
     Translation2d movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
-    Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose);
+    Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
     double newDistanceToSpeaker = toTestGoal.getNorm();
     double newShotTime = flightTimeMap.get(newDistanceToSpeaker);
     for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
       shotTime = newShotTime;
-      distanceToSpeaker = fieldRelativePose.getDistance(speakerPose);
-      shotTime = flightTimeMap.get(distanceToSpeaker);
       movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
-      toTestGoal = movingGoalLocation.minus(fieldRelativePose);
+      toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
       newDistanceToSpeaker = toTestGoal.getNorm();
       newShotTime = flightTimeMap.get(newDistanceToSpeaker);
     }
-    Rotation2d setpointAngle = movingGoalLocation.minus(fieldRelativePose).getAngle();
-    // double tangentialVelocity =
-    // -fieldRelativeVelocity.rotateBy(setpointAngle.unaryMinus()).getY();
-    // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
-    double radialVelocity = 0.0;
+    Rotation2d setpointAngle =
+        movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
+    double angleDifference = setpointAngle.minus(fieldRelativePose.getRotation()).getRadians();
+
+    // Assuming a constant linear velocity (you can adjust this)
+    double assumedLinearVelocity = fieldRelativeVelocity.getNorm();
+
+    // Calculate tangential velocity using linear velocity and angle difference
+
+    double tangentialVelocity = assumedLinearVelocity * Math.sin(angleDifference);
+
+    // Now, calculate angular velocity using tangential velocity and newDistanceToSpeaker
+
+    double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
+    // double radialVelocity = 0.0;
     Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", newDistanceToSpeaker);
     Logger.recordOutput(
-        "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, new Rotation2d()));
-    Logger.recordOutput("ShotCalculator/robotAngle", setpointAngle);
+        "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
+    Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
+    Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
     setTargetAimingParameters(
         new AimingParameters(
             setpointAngle,

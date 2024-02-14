@@ -28,10 +28,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
+import frc.robot.SmartController;
+import frc.robot.SmartController.AimingParameters;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.SmartController;
-import frc.robot.subsystems.drive.SmartController.AimingParameters;
-import frc.robot.subsystems.drive.SmartController.DriveModeType;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -108,7 +108,7 @@ public class DriveCommands {
                     ? new Translation2d(0, 0)
                     : drive.getFieldRelativeVelocity();
             SmartController.getInstance()
-                .calculateSpeaker(drive.getPose().getTranslation(), deadbandFieldRelativeVelocity);
+                .calculateSpeaker(drive.getPose(), deadbandFieldRelativeVelocity);
             AimingParameters calculatedAim =
                 SmartController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
