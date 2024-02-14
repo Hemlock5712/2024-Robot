@@ -125,8 +125,8 @@ public final class DriveConstants {
 
   public static HeadingControllerConstants headingControllerConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new HeadingControllerConstants(3.0, 0.0);
-        case SIMBOT -> new HeadingControllerConstants(3.0, 0.0);
+        case COMPBOT -> new HeadingControllerConstants(6.0, 0.0);
+        case SIMBOT -> new HeadingControllerConstants(7, 0.0);
       };
 
   public static final PIDConstants PPtranslationConstants =
@@ -176,6 +176,7 @@ public final class DriveConstants {
   private enum Mk4iReductions {
     L2((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),
     L3((50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0)),
+    L4((50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0)),
     TURN((150.0 / 7.0));
 
     final double reduction;

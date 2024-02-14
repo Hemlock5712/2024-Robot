@@ -63,7 +63,7 @@ public class ArmVisualizer {
   Translation2d armRoot = new Translation2d(-0.31, 0.64);
 
   private Pose3d getArmPose(double armAngle) {
-    return new Pose3d(armRoot.getX(), 0, armRoot.getY(), new Rotation3d(0, armAngle, 0));
+    return new Pose3d(armRoot.getX(), 0, armRoot.getY(), new Rotation3d(0, -armAngle, 0));
   }
 
   /*

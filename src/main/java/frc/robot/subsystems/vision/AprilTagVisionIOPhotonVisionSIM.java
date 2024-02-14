@@ -118,8 +118,8 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
       }
       averageTagDistance /= tagIDs.length;
       poseEstimates.add(new PoseEstimate(poseEstimation, timestamp, averageTagDistance, tagIDs));
-      inputs.poseEstimates = poseEstimates;
     }
+    inputs.poseEstimates = poseEstimates;
   }
 
   /** Updates the PhotonPoseEstimator and returns the estimated global pose. */

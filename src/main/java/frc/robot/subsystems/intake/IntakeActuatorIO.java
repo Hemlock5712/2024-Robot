@@ -17,7 +17,9 @@ public interface IntakeActuatorIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeActuatorIOInputs inputs) {}
 
-  public default void intakeUp() {}
+  // public default void intakeUp() {}
 
-  public default void intakeDown() {}
+  // public default void intakeDown() {}
+
+  public default void setIntakeAngle(double angleRad) {}
 }

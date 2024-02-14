@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -36,6 +37,8 @@ public class ArmIOSim implements ArmIO {
     armEncoder = new CANcoder(52);
     wristEncoder = new CANcoder(53);
 
+    armMotorSim.Orientation = ChassisReference.CounterClockwise_Positive;
+
     CANcoderConfiguration armEncoderConfig = new CANcoderConfiguration();
     armEncoderConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -54,9 +57,9 @@ public class ArmIOSim implements ArmIO {
 
     var slot0Configs = armConfig.Slot0;
     slot0Configs.kP = 6;
-    slot0Configs.kI = 0;
+    slot0Configs.kI = 0.2;
     slot0Configs.kD = 1;
-    slot0Configs.kS = 0.25;
+    slot0Configs.kS = 0.4;
     slot0Configs.kV = 0.01;
     slot0Configs.kA = 0.001;
     slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
@@ -128,15 +131,16 @@ public class ArmIOSim implements ArmIO {
     wristEncoder.getSimState().setRawPosition(wristSim.getAngleRads() / (Math.PI * 2));
     wristEncoder.getSimState().setVelocity(wristSim.getVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.armAbsolutePositionRad = armEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.armRelativePositionRad = armEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.armVelocityRadPerSec = armEncoder.getVelocity().getValue();
+    inputs.armAbsolutePositionRad = armEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.armRelativePositionRad = armEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.armVelocityRadPerSec = armEncoder.getVelocity().refresh().getValue();
     inputs.armCurrentAmps = new double[] {armMotorSim.getSupplyCurrent()};
     inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().getValue()};
     inputs.wristAbsolutePositionRad =
-        inputs.armRelativePositionRad + wristEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.wristRelativePositionRad = wristEncoder.getPosition().getValue() * Math.PI * 2;
-    inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().getValue() * Math.PI * 2;
+        (wristEncoder.getPosition().refresh().getValue() * Math.PI * 2)
+            - inputs.armRelativePositionRad;
+    inputs.wristRelativePositionRad = wristEncoder.getPosition().refresh().getValue() * Math.PI * 2;
+    inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().refresh().getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristMotorSim.getSupplyCurrent()};
     inputs.wristTempCelcius = new double[] {wristMotor.getDeviceTemp().getValue()};
   }
@@ -144,7 +148,7 @@ public class ArmIOSim implements ArmIO {
   public void setArmTarget(double target) {
     var control = new PositionVoltage(0);
     armMotor.setControl(
-        control.withPosition(-Units.radiansToRotations(target)).withSlot(0).withEnableFOC(true));
+        control.withPosition(Units.radiansToRotations(target)).withSlot(0).withEnableFOC(true));
   }
 
   public void setWristTarget(double target) {

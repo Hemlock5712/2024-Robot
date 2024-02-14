@@ -4,18 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.magazine.Magazine;
 
-public class ArmToAmpPositionFront extends Command {
+public class SmartMagizine extends Command {
+  Magazine magazine;
+  LineBreak lineBreak;
 
-  Arm arm;
-
-  /** Creates a new ArmToAmpPosition. */
-  public ArmToAmpPositionFront(Arm arm) {
-    this.arm = arm;
-    addRequirements(arm);
+  /** Creates a new SmartMagazine. */
+  public SmartMagizine(Magazine magazine, LineBreak lineBreak) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.magazine = magazine;
+    this.lineBreak = lineBreak;
+    addRequirements(magazine);
   }
 
   // Called when the command is initially scheduled.
@@ -25,8 +27,15 @@ public class ArmToAmpPositionFront extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setArmTarget(Units.degreesToRadians(50));
-    arm.setWristTarget(Units.degreesToRadians(35));
+    if (lineBreak.hasGamePiece() && !(lineBreak.isShooterLong() || lineBreak.isShooterLoaded())) {
+      magazine.forward();
+    } else {
+      if (lineBreak.isShooterLong()) {
+        magazine.backward();
+      } else {
+        magazine.stop();
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.

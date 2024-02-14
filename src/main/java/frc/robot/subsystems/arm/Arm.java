@@ -1,8 +1,11 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ArmConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -25,15 +28,15 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = wristTarget - inputs.armAbsolutePositionRad;
+    double realWristTarget = getRelativeWristTarget();
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", -armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
     io.setArmTarget(armTarget);
     io.setWristTarget(realWristTarget);
     // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(-armTarget, -realWristTarget);
+    visualizerSetpoint.update(armTarget, realWristTarget);
   }
 
   public void setArmTarget(double target) {
@@ -54,5 +57,24 @@ public class Arm extends SubsystemBase {
 
   public double getArmAngle() {
     return inputs.armRelativePositionRad;
+  }
+
+  public double getRelativeWristTarget() {
+    return wristTarget + inputs.armAbsolutePositionRad;
+  }
+
+  @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
+  public boolean isArmWristInIntakePosition() {
+    return (Math.abs(ArmConstants.intake.getArmRadians() - getArmAngle())
+            < (Units.degreesToRadians(1)))
+        && (Math.abs(ArmConstants.intake.getWristRadians() - getWristAngleAbsolute())
+            < (Units.degreesToRadians(1)));
+  }
+
+  @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
+  public boolean isArmWristInTargetPose() {
+    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(1)))
+        && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
+            < (Units.degreesToRadians(1)));
   }
 }
