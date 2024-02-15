@@ -14,13 +14,11 @@ import java.util.function.Supplier;
 
 public class SmartArm extends Command {
   Arm arm;
-  Supplier<Pose2d> pose;
   LineBreak lineBreak;
 
   /** Creates a new moveArm. */
-  public SmartArm(Arm arm, LineBreak lineBreak, Supplier<Pose2d> pose) {
+  public SmartArm(Arm arm, LineBreak lineBreak) {
     this.arm = arm;
-    this.pose = pose;
     this.lineBreak = lineBreak;
     addRequirements(arm);
   }

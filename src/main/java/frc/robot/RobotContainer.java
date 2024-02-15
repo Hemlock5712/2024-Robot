@@ -213,8 +213,8 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    arm.setDefaultCommand(new SmartArm(arm, lineBreak, drive::getPose));
-    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, drive::getPose));
+    arm.setDefaultCommand(new SmartArm(arm, lineBreak));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
     magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
