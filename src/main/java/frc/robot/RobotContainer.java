@@ -89,7 +89,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(true),
+                new GyroIOPigeon2(),
                 new ModuleIOTalonFX(moduleConfigs[0]),
                 new ModuleIOTalonFX(moduleConfigs[1]),
                 new ModuleIOTalonFX(moduleConfigs[2]),
@@ -235,8 +235,8 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.startEnd(
-                () -> intake.setDriverRequestIntakeDown(),
-                () -> intake.setDriverRequestIntakeUp()));
+                () -> intake.enableIntakeRequest(),
+                () -> intake.disableIntakeRequest()));
 
     controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
   }

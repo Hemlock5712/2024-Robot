@@ -27,17 +27,17 @@ public class SmartArm extends Command {
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
           && SmartController.getInstance().isSmartControlEnabled()) {
-        arm.setArmTarget(ArmConstants.shoot.getArmRadians());
+        arm.setArmTarget(ArmConstants.shoot.arm().toRadians());
         arm.setWristTarget(
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
       } else if (SmartController.getInstance().isSmartControlEnabled()
           && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-        arm.setArmTarget(ArmConstants.frontAmp.getArmRadians());
-        arm.setWristTarget(ArmConstants.frontAmp.getWristRadians());
+        arm.setArmTarget(ArmConstants.frontAmp.arm().toRadians());
+        arm.setWristTarget(ArmConstants.frontAmp.wrist().toRadians());
       }
     } else {
-      arm.setArmTarget(ArmConstants.intake.getArmRadians());
-      arm.setWristTarget(ArmConstants.intake.getArmRadians());
+      arm.setArmTarget(ArmConstants.intake.arm().toRadians());
+      arm.setWristTarget(ArmConstants.intake.wrist().toRadians());
     }
   }
 

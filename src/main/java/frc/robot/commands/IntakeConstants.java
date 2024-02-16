@@ -5,13 +5,9 @@ import edu.wpi.first.math.util.Units;
 public class IntakeConstants {
   public static final double intakeSpeed = 1000;
 
-  public static final IntakePositions floorPosition = new IntakePositions(200);
-  public static final IntakePositions bumperPosition = new IntakePositions(190);
-  public static final IntakePositions upPosition = new IntakePositions(90);
+  public static final IntakePositions floorPosition = new IntakePositions(Rotation2d.fromDegrees(200));
+  public static final IntakePositions bumperPosition = new IntakePositions(Rotation2d.fromDegrees(190));
+  public static final IntakePositions upPosition = new IntakePositions(Rotation2d.fromDegrees(90));
 
-  public record IntakePositions(double degrees) {
-    public double toRadians() {
-      return Units.degreesToRadians(degrees);
-    }
-  }
+  public record IntakePositions(Rotation2d angle) {}
 }

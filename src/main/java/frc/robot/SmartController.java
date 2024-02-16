@@ -23,7 +23,7 @@ public class SmartController {
           Rotation2d.fromDegrees(90),
           0.0,
           1000,
-          Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist()));
+          ArmConstants.frontAmp.wrist());
   private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
@@ -177,7 +177,7 @@ public class SmartController {
             Rotation2d.fromDegrees(90),
             0.0,
             1000,
-            Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist())));
+            ArmConstants.frontAmp.wrist()));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
