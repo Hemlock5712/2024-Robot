@@ -73,7 +73,11 @@ public class AprilTagVision extends SubsystemBase {
   @Override
   public void periodic() {
     for (int i = 0; i < io.length; i++) {
+      long startUpdateTime = Logger.getRealTimestamp();
       io[i].updateInputs(inputs[i]);
+      Logger.recordOutput(
+          VISION_PATH + Integer.toString(i) + "/updateInputs",
+          Logger.getRealTimestamp() - startUpdateTime);
       Logger.processInputs(VISION_PATH + Integer.toString(i), inputs[i]);
     }
     List<TimestampedVisionUpdate> visionUpdates = processPoseEstimates();
@@ -88,6 +92,7 @@ public class AprilTagVision extends SubsystemBase {
   private List<TimestampedVisionUpdate> processPoseEstimates() {
     List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
     for (int instanceIndex = 0; instanceIndex < io.length; instanceIndex++) {
+      long startInstanceTime = Logger.getRealTimestamp();
       for (PoseEstimate poseEstimates : inputs[instanceIndex].poseEstimates) {
         if (shouldSkipPoseEstimate(poseEstimates)) {
           continue;
@@ -102,6 +107,9 @@ public class AprilTagVision extends SubsystemBase {
                 timestamp, robotPose.toPose2d(), VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
         logData(instanceIndex, timestamp, robotPose, tagPoses);
       }
+      Logger.recordOutput(
+          VISION_PATH + Integer.toString(instanceIndex) + "/processPoseEstimates",
+          Logger.getRealTimestamp() - startInstanceTime);
     }
     return visionUpdates;
   }
