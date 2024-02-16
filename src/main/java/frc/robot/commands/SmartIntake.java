@@ -36,8 +36,7 @@ public class SmartIntake extends Command {
     if (intake.getIntakeRequest() && !lineBreak.hasGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
       intake.setSpeed(IntakeConstants.intakeSpeed);
-    } else if (lineBreak.hasGamePiece()
-        && lineBreak.inLowerIntake()) {
+    } else if (lineBreak.hasGamePiece() && lineBreak.inLowerIntake()) {
       intake.disableIntakeRequest();
       intake.setIntakeMode(IntakePositions.BUMPER);
       intake.setSpeed(IntakeConstants.intakeSpeed);

@@ -40,13 +40,13 @@ public class Intake extends SubsystemBase {
     wheelsIO.runRPM(getTargetSpeed());
     switch (intakePositions) {
       case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().getRadians());
         break;
       case FLOOR:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
         break;
       case UP:
-        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
         break;
     }
 

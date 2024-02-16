@@ -65,9 +65,9 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
   public boolean isArmWristInIntakePosition() {
-    return (Math.abs(ArmConstants.intake.arm().toRadians() - getArmAngle())
+    return (Math.abs(ArmConstants.intake.arm().getRadians() - getArmAngle())
             < (Units.degreesToRadians(1)))
-        && (Math.abs(ArmConstants.intake.wrist().toRadians() - getWristAngleAbsolute())
+        && (Math.abs(ArmConstants.intake.wrist().getRadians() - getWristAngleAbsolute())
             < (Units.degreesToRadians(1)));
   }
 

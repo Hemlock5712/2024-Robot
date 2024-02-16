@@ -235,8 +235,7 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.startEnd(
-                () -> intake.enableIntakeRequest(),
-                () -> intake.disableIntakeRequest()));
+                () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
 
     controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
   }
