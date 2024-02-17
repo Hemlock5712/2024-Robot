@@ -25,8 +25,6 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
   TalonFXSimState intakeMotorSim;
   CANcoder intakeEncoder;
 
-  private boolean isDown = false;
-
   public IntakeActuatorSim() {
     intakeMotor = new TalonFX(60);
     intakeEncoder = new CANcoder(61);
@@ -43,13 +41,15 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
 
     var intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    intakeConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     var slot0Configs = intakeConfig.Slot0;
-    slot0Configs.kP = -12;
+    slot0Configs.kP = -9;
     slot0Configs.kI = 0;
-    slot0Configs.kD = 5;
+    slot0Configs.kD = 1;
     slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
+
+    intakeConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     intakeConfig.Feedback.FeedbackRemoteSensorID = intakeEncoder.getDeviceID();
     intakeConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
@@ -64,9 +64,9 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
             50,
             SingleJointedArmSim.estimateMOI(Units.inchesToMeters(10), Units.lbsToKilograms(8)),
             Units.inchesToMeters(10),
-            Units.degreesToRadians(90),
-            Units.degreesToRadians(225),
-            true,
+            Units.degreesToRadians(-180),
+            Units.degreesToRadians(180),
+            false,
             Units.degreesToRadians(90));
   }
 
@@ -76,17 +76,15 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
     intakeEncoder.getSimState().setRawPosition(intakeSim.getAngleRads() / (Math.PI * 2));
     intakeEncoder.getSimState().setVelocity(intakeSim.getVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue() - .25);
-    inputs.isDown = this.isDown;
-    inputs.targetAngle =
-        Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue() - .25);
+    inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue());
+    inputs.targetAngle = Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue());
   }
 
   public void setIntakeAngle(double angleRad) {
     var control = new PositionVoltage(0);
     intakeMotor.setControl(
         control
-            .withPosition(Units.radiansToRotations(angleRad) + 0.25)
+            .withPosition(Units.radiansToRotations(-angleRad + (Math.PI / 2)))
             .withFeedForward(0)
             .withEnableFOC(true));
   }
