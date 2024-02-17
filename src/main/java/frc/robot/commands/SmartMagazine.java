@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 
-public class SmartMagizine extends Command {
+public class SmartMagazine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
 
   /** Creates a new SmartMagazine. */
-  public SmartMagizine(Magazine magazine, LineBreak lineBreak) {
+  public SmartMagazine(Magazine magazine, LineBreak lineBreak) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.magazine = magazine;
     this.lineBreak = lineBreak;

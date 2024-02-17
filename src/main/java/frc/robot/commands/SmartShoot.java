@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.SmartController;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.Flywheel;
@@ -43,14 +44,18 @@ public class SmartShoot extends Command {
   public void execute() {
     if (SmartController.getInstance().isSmartControlEnabled()
         && arm.isArmWristInTargetPose()
-        && Math.abs(
-                pose.get()
-                    .getRotation()
-                    .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
-                    .getRadians())
-            < 0.1
+        // && Math.abs(
+        //         pose.get()
+        //             .getRotation()
+        //
+        // .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
+        //             .getRadians())
+        //     < 0.1
         && flywheel.atTargetSpeed()) {
       magazine.forward();
+      if (Constants.getMode() == Constants.Mode.SIM) {
+        lineBreak.shootGamePiece();
+      }
     }
   }
 

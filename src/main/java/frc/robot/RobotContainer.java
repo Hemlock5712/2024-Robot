@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.commands.SmartArm;
 import frc.robot.commands.SmartFlywheel;
+import frc.robot.commands.sim.SimulateGamePiecePickup;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -157,6 +158,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot", new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+    NamedCommands.registerCommand(
+        "SIMGamePiecePickup", new SimulateGamePiecePickup(lineBreak, arm));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
@@ -218,7 +221,7 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
-    magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
+    magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
 
     controller
         .leftBumper()

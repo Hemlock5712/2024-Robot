@@ -18,12 +18,12 @@ public final class DriveConstants {
         default ->
             new DrivetrainConfig(
                 Units.inchesToMeters(2.0),
-                Units.inchesToMeters(26.0),
-                Units.inchesToMeters(26.0),
+                Units.inchesToMeters(22.75),
+                Units.inchesToMeters(22.75),
                 Units.feetToMeters(12.16),
                 Units.feetToMeters(21.32),
-                7.93,
-                29.89);
+                11.277,
+                33.436);
       };
   public static final double wheelRadius = Units.inchesToMeters(2.0);
   public static final Translation2d[] moduleTranslations =
