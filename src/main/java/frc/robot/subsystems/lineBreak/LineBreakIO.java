@@ -30,5 +30,9 @@ public interface LineBreakIO {
     }
   }
 
+  public default void bumpGamePiece() {}
+
+  public default void shootGamePiece() {}
+
   default void updateInputs(LineBreakIOInputs inputs) {}
 }

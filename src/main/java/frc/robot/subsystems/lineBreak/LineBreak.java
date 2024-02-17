@@ -63,4 +63,12 @@ public class LineBreak extends SubsystemBase {
   public boolean isShooterLong() {
     return inputs.lineBreakValues.isShooterLong();
   }
+
+  public void bumpGamePiece() {
+    lineBreakIO.bumpGamePiece();
+  }
+
+  public void shootGamePiece() {
+    lineBreakIO.shootGamePiece();
+  }
 }
