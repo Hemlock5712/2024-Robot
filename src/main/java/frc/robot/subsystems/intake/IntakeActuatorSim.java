@@ -43,7 +43,7 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
 
     var intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    intakeConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var slot0Configs = intakeConfig.Slot0;
     slot0Configs.kP = -12;
@@ -60,12 +60,12 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
 
     intakeSim =
         new SingleJointedArmSim(
-            DCMotor.getKrakenX60Foc(1),
+            DCMotor.getNeo550(1),
             50,
-            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(10), Units.lbsToKilograms(5)),
+            SingleJointedArmSim.estimateMOI(Units.inchesToMeters(10), Units.lbsToKilograms(8)),
             Units.inchesToMeters(10),
-            Units.degreesToRadians(-50),
             Units.degreesToRadians(90),
+            Units.degreesToRadians(225),
             true,
             Units.degreesToRadians(90));
   }
@@ -76,24 +76,17 @@ public class IntakeActuatorSim implements IntakeActuatorIO {
     intakeEncoder.getSimState().setRawPosition(intakeSim.getAngleRads() / (Math.PI * 2));
     intakeEncoder.getSimState().setVelocity(intakeSim.getVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue());
+    inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue() - .25);
     inputs.isDown = this.isDown;
-    inputs.targetAngle = Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue());
+    inputs.targetAngle =
+        Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue() - .25);
   }
 
-  public void intakeUp() {
+  public void setIntakeAngle(double angleRad) {
     var control = new PositionVoltage(0);
-    isDown = false;
-    intakeMotor.setControl(
-        control.withPosition(Units.degreesToRotations(0)).withFeedForward(0).withEnableFOC(true));
-  }
-
-  public void intakeDown() {
-    var control = new PositionVoltage(0);
-    isDown = true;
     intakeMotor.setControl(
         control
-            .withPosition(Units.degreesToRotations(-140))
+            .withPosition(Units.radiansToRotations(angleRad) + 0.25)
             .withFeedForward(0)
             .withEnableFOC(true));
   }
