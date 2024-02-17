@@ -32,8 +32,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -75,9 +73,6 @@ public class Drive extends SubsystemBase {
           new Matrix<>(
               VecBuilder.fill(xyStdDevCoefficient, xyStdDevCoefficient, thetaStdDevCoefficient)));
 
-  private SwerveDrivePoseEstimator odometryDrive =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
-
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -92,12 +87,11 @@ public class Drive extends SubsystemBase {
 
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
-    SparkMaxOdometryThread.getInstance().start();
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
         this::getPose,
-        this::setAutoStartPose,
+        this::setPose,
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
@@ -192,7 +186,6 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-      odometryDrive.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(getModuleStates());
       Translation2d rawFieldRelativeVelocity =
           new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
@@ -288,12 +281,6 @@ public class Drive extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Drive")
-  public Pose2d getDrive() {
-    return odometryDrive.getEstimatedPosition();
-  }
-
   /** Returns the current poseEstimator rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
@@ -309,36 +296,19 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Resets the current odometry and poseEstimator pose.
-   *
-   * @param pose The pose to reset to.
-   */
-  public void setAutoStartPose(Pose2d pose) {
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
-    odometryDrive.resetPosition(rawGyroRotation, getModulePositions(), pose);
-  }
-
-  /**
-   * Adds a vision measurement to the pose estimator.
-   *
-   * @param visionPose The pose of the robot as measured by the vision camera.
-   * @param timestamp The timestamp of the vision measurement in seconds.
-   */
-  public void addVisionMeasurement(
-      Pose2d visionPose, double timestamp, Matrix<N3, N1> visionMeasurementStdDevs) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
-  }
-
-  /**
    * Adds vision data to the pose esimation.
    *
    * @param visionData The vision data to add.
    */
   public void addVisionData(List<TimestampedVisionUpdate> visionData) {
     visionData.forEach(
-        visionUpdate ->
-            addVisionMeasurement(
-                visionUpdate.pose(), visionUpdate.timestamp(), visionUpdate.stdDevs()));
+        visionUpdate -> {
+          long startUpdateTime = Logger.getRealTimestamp();
+          poseEstimator.addVisionMeasurement(
+              visionUpdate.pose(), visionUpdate.timestamp(), visionUpdate.stdDevs());
+          Logger.recordOutput(
+              "Odometry/addVisionMeasurement", Logger.getRealTimestamp() - startUpdateTime);
+        });
   }
 
   @AutoLogOutput

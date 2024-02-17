@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
-  private boolean driverRequestIntakeDown = false;
+  private boolean intakeRequest = false;
   private IntakePositions intakePositions = IntakePositions.UP;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
@@ -40,13 +40,13 @@ public class Intake extends SubsystemBase {
     wheelsIO.runRPM(getTargetSpeed());
     switch (intakePositions) {
       case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().getRadians());
         break;
       case FLOOR:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
         break;
       case UP:
-        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.toRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
         break;
     }
 
@@ -74,17 +74,17 @@ public class Intake extends SubsystemBase {
     this.intakePositions = intakePositions;
   }
 
-  public void setDriverRequestIntakeDown() {
-    this.driverRequestIntakeDown = true;
+  public void enableIntakeRequest() {
+    this.intakeRequest = true;
   }
 
-  public void setDriverRequestIntakeUp() {
-    this.driverRequestIntakeDown = false;
+  public void disableIntakeRequest() {
+    this.intakeRequest = false;
   }
 
-  @AutoLogOutput(key = "Intake/DriverRequestIntakeDown")
-  public boolean getDriverRequestIntakeDown() {
-    return driverRequestIntakeDown;
+  @AutoLogOutput(key = "Intake/IntakeRequest")
+  public boolean getIntakeRequest() {
+    return intakeRequest;
   }
 
   @AutoLogOutput(key = "Intake/TargetSpeed")
