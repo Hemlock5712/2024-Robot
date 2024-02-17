@@ -33,12 +33,11 @@ public class SmartIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.getDriverRequestIntakeDown() && !lineBreak.hasGamePiece()) {
+    if (intake.getIntakeRequest() && !lineBreak.hasGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
       intake.setSpeed(IntakeConstants.intakeSpeed);
-    } else if (intake.getDriverRequestIntakeDown()
-        && lineBreak.hasGamePiece()
-        && lineBreak.inLowerIntake()) {
+    } else if (lineBreak.hasGamePiece() && lineBreak.inLowerIntake()) {
+      intake.disableIntakeRequest();
       intake.setIntakeMode(IntakePositions.BUMPER);
       intake.setSpeed(IntakeConstants.intakeSpeed);
     } else {

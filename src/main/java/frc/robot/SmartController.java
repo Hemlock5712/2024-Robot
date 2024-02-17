@@ -19,11 +19,7 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SPEAKER;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(
-          Rotation2d.fromDegrees(90),
-          0.0,
-          1000,
-          Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist()));
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 1000, ArmConstants.frontAmp.wrist());
   private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
@@ -173,11 +169,7 @@ public class SmartController {
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(
-            Rotation2d.fromDegrees(90),
-            0.0,
-            1000,
-            Rotation2d.fromDegrees(ArmConstants.frontAmp.wrist())));
+        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 1000, ArmConstants.frontAmp.wrist()));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
