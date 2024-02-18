@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "named",
+          "data": {
+            "name": "Preload"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SmartControl"
+                }
+              },
               {
                 "type": "sequential",
                 "data": {
@@ -22,13 +34,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Preload"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -40,16 +52,16 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "Shoot"
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SmartControl"
                 }
               }
             ]

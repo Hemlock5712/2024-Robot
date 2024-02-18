@@ -166,7 +166,11 @@ public class RobotContainer {
             new SmartFlywheel(flywheel),
             new SmartArm(arm, lineBreak),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
-    NamedCommands.registerCommand("SmartMagazine", new SmartMagazine(magazine, lineBreak));
+    NamedCommands.registerCommand(
+        "IntakeDown", new InstantCommand(() -> intake.enableIntakeRequest()));
+    NamedCommands.registerCommand(
+        "Preload",
+        new InstantCommand(() -> lineBreak.setGamePiece(false, false, false, false, true, false)));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
