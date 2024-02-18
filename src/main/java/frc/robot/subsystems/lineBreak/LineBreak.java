@@ -71,4 +71,14 @@ public class LineBreak extends SubsystemBase {
   public void shootGamePiece() {
     lineBreakIO.shootGamePiece();
   }
+
+  public void setGamePiece(
+      boolean intake,
+      boolean upperIntake1,
+      boolean upperIntake2,
+      boolean magazine1,
+      boolean magazine2,
+      boolean magazine3) {
+    lineBreakIO.setGamePiece(intake, upperIntake1, upperIntake2, magazine1, magazine2, magazine3);
+  }
 }

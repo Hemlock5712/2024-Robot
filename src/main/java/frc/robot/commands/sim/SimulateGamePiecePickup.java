@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.lineBreak.LineBreak;
 
@@ -18,10 +19,16 @@ public class SimulateGamePiecePickup extends SequentialCommandGroup {
   /** Creates a new SimulateGamePiecePickup. */
   public SimulateGamePiecePickup(LineBreak lineBreak, Arm arm) {
 
-    addCommands(
-        Commands.deadline(
-            Commands.waitUntil(lineBreak::isShooterLoaded),
-            Commands.repeatingSequence(
-                new InstantCommand(lineBreak::bumpGamePiece), new WaitCommand(0.25))));
+    // In sim mode, bump the game piece until it's in the shooter
+    if (Constants.getMode() == Constants.Mode.SIM) {
+      addCommands(
+          Commands.deadline(
+              Commands.waitUntil(lineBreak::isShooterLoaded),
+              Commands.repeatingSequence(
+                  new InstantCommand(lineBreak::bumpGamePiece), new WaitCommand(0.2))));
+    } else {
+      // If not in sim mode, do nothing
+      addCommands();
+    }
   }
 }

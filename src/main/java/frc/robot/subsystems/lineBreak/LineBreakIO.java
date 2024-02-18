@@ -34,5 +34,13 @@ public interface LineBreakIO {
 
   public default void shootGamePiece() {}
 
+  public default void setGamePiece(
+      boolean lowerIntake,
+      boolean upperIntake1,
+      boolean upperIntake2,
+      boolean magazine1,
+      boolean magazine2,
+      boolean magazine3) {}
+
   default void updateInputs(LineBreakIOInputs inputs) {}
 }

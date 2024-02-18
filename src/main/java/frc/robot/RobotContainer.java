@@ -160,6 +160,13 @@ public class RobotContainer {
         "Shoot", new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
     NamedCommands.registerCommand(
         "SIMGamePiecePickup", new SimulateGamePiecePickup(lineBreak, arm));
+    NamedCommands.registerCommand(
+        "SmartControl",
+        Commands.parallel(
+            new SmartFlywheel(flywheel),
+            new SmartArm(arm, lineBreak),
+            new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
+    NamedCommands.registerCommand("SmartMagazine", new SmartMagazine(magazine, lineBreak));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(

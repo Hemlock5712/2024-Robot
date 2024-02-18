@@ -67,6 +67,23 @@ public class LineBreakIOSim implements LineBreakIO {
     magazine3Sensor.setBoolean(false);
   }
 
+  @Override
+  /** Sets the game piece sensors */
+  public void setGamePiece(
+      boolean lowerIntake,
+      boolean upperIntake1,
+      boolean upperIntake2,
+      boolean magazine1,
+      boolean magazine2,
+      boolean magazine3) {
+    lowerIntakeSensor.setBoolean(lowerIntake);
+    upperIntake1Sensor.setBoolean(upperIntake1);
+    upperIntake2Sensor.setBoolean(upperIntake2);
+    magazine1Sensor.setBoolean(magazine1);
+    magazine2Sensor.setBoolean(magazine2);
+    magazine3Sensor.setBoolean(magazine3);
+  }
+
   public void updateInputs(LineBreakIOInputs inputs) {
     inputs.lineBreakValues =
         new LineBreakValues(
