@@ -62,12 +62,6 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "W3-C5"

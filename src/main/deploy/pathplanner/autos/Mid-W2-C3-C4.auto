@@ -78,6 +78,36 @@
                       "data": {
                         "pathName": "C3-SM"
                       }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "SM-C4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C4-SM"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
                     }
                   ]
                 }

@@ -178,7 +178,18 @@ public class RobotContainer {
     // Temporary workaround for the above line to prevent blocking at each pickup.
     NamedCommands.registerCommand(
         "SIMGamePiecePickup",
-        new InstantCommand(() -> lineBreak.setGamePiece(false, false, false, false, true, false)));
+        new ScheduleCommand(
+            Commands.defer(
+                () ->
+                    new InstantCommand(
+                            () -> lineBreak.setGamePiece(false, false, true, false, false, false))
+                        .andThen(Commands.waitSeconds(0.2))
+                        .andThen(
+                            new InstantCommand(
+                                () ->
+                                    lineBreak.setGamePiece(
+                                        false, false, false, false, true, false))),
+                Set.of())));
     NamedCommands.registerCommand(
         "SmartControl",
         Commands.parallel(
@@ -271,9 +282,13 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
 
-    controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose).andThen(
-                new ScheduleCommand(
-                    Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
+    controller
+        .x()
+        .whileTrue(
+            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
+                .andThen(
+                    new ScheduleCommand(
+                        Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));
