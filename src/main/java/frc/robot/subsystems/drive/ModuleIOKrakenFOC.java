@@ -86,12 +86,15 @@ public class ModuleIOKrakenFOC implements ModuleIO {
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     for (int i = 0; i < 4; i++) {
-        boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
-        setDriveBrakeMode(true);
-        error = error && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
-        setTurnBrakeMode(true);
-        error = error && cancoder.getConfigurator().apply(new CANcoderConfiguration(), 0.1) == StatusCode.OK;
-        if (!error) break;
+      boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
+      setDriveBrakeMode(true);
+      error = error && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
+      setTurnBrakeMode(true);
+      error =
+          error
+              && cancoder.getConfigurator().apply(new CANcoderConfiguration(), 0.1)
+                  == StatusCode.OK;
+      if (!error) break;
     }
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
@@ -111,8 +114,7 @@ public class ModuleIOKrakenFOC implements ModuleIO {
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        odometryFrequency, drivePosition, turnPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(odometryFrequency, drivePosition, turnPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         100.0,
         driveVelocity,
@@ -139,33 +141,25 @@ public class ModuleIOKrakenFOC implements ModuleIO {
         turnAppliedVolts,
         turnCurrent);
 
-    inputs.drivePositionRad =
-        Units.rotationsToRadians(drivePosition.getValueAsDouble());
-    inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble());
+    inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());
+    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
     inputs.turnAbsolutePosition =
         Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
             .minus(absoluteEncoderOffset);
-    inputs.turnPosition =
-        Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-    inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble());
+    inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+    inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = new double[] {turnCurrent.getValueAsDouble()};
 
     inputs.odometryTimestamps =
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
-        drivePositionQueue.stream()
-            .mapToDouble(Units::rotationsToRadians)
-            .toArray();
+        drivePositionQueue.stream().mapToDouble(Units::rotationsToRadians).toArray();
     inputs.odometryTurnPositions =
-        turnPositionQueue.stream()
-            .map(Rotation2d::fromRotations)
-            .toArray(Rotation2d[]::new);
+        turnPositionQueue.stream().map(Rotation2d::fromRotations).toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
