@@ -2,12 +2,21 @@ package frc.robot.util.visualizer;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class NoteVisualizer {
   private static FlightTrajectory trajectory;
   private static Supplier<Pose3d> poseSupplier;
+  private static Supplier<Transform3d> flywheelTransformSupplier;
+  private static DoubleSupplier armWristAngleSupplier;
+  private static DoubleSupplier flywheelVelocitySupplier;
 
   public static void shootNote(Pose3d startPosition, double angle, double velocity) {
     trajectory = new FlightTrajectory(startPosition, angle, velocity);
@@ -15,6 +24,18 @@ public class NoteVisualizer {
 
   public static void setRobotPoseSupplier(Supplier<Pose3d> poseSupplier) {
     NoteVisualizer.poseSupplier = poseSupplier;
+  }
+
+  public static void setFlywheelTransformSupplier(Supplier<Transform3d> flywheelTransformSupplier) {
+    NoteVisualizer.flywheelTransformSupplier = flywheelTransformSupplier;
+  }
+
+  public static void setArmWristAngleSupplier(DoubleSupplier armWristAngleSupplier) {
+    NoteVisualizer.armWristAngleSupplier = armWristAngleSupplier;
+  }
+
+  public static void setFlywheelVelocitySupplier(DoubleSupplier flywheelVelocitySupplier) {
+    NoteVisualizer.flywheelVelocitySupplier = flywheelVelocitySupplier;
   }
 
   public static Pose3d updateNotePosition(double dt) {
@@ -47,5 +68,30 @@ public class NoteVisualizer {
 
   public static boolean isTrajectoryActive() {
     return trajectory != null;
+  }
+
+  public static Command shoot() {
+    return new ScheduleCommand(
+        Commands.defer(
+            () -> {
+              Pose3d robotPosition =
+                  poseSupplier.get().transformBy(flywheelTransformSupplier.get());
+
+              NoteVisualizer.shootNote(
+                  robotPosition,
+                  armWristAngleSupplier.getAsDouble(),
+                  flywheelVelocitySupplier.getAsDouble());
+
+              return Commands.run(
+                      () -> {
+                        NoteVisualizer.updateNotePosition(0.02);
+                      })
+                  .until(() -> !NoteVisualizer.isTrajectoryActive())
+                  .finallyDo(
+                      () -> {
+                        drawNote(new Pose3d() {});
+                      });
+            },
+            Set.of()));
   }
 }

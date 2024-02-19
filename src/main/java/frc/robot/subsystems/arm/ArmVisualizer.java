@@ -69,7 +69,7 @@ public class ArmVisualizer {
   /*
    * Get the pose of the wrist at the end of the arm
    */
-  private Pose3d getWristPose(double armAngle, double wristAngle) {
+  public Pose3d getWristPose(double armAngle, double wristAngle) {
     return getArmPose(armAngle)
         .transformBy(new Transform3d(armLength, 0, 0, new Rotation3d(0, wristAngle, 0)));
   }

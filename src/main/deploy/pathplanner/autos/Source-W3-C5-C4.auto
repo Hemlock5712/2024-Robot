@@ -5,7 +5,7 @@
       "x": 0.6673286073844874,
       "y": 4.41249682499365
     },
-    "rotation": 118.28201408510665
+    "rotation": 119.89836189048474
   },
   "command": {
     "type": "sequential",
@@ -70,13 +70,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 - W2"
+                        "pathName": "W3-C5"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C5-SS"
                       }
                     },
                     {
@@ -94,13 +100,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W2 - W1"
+                        "pathName": "SS-C4"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C4-SS"
                       }
                     },
                     {

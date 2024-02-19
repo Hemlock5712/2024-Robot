@@ -57,7 +57,7 @@ public class SmartShoot extends Command {
         //     < 0.1
         && flywheel.atTargetSpeed()) {
       magazine.forward();
-      if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.5)) {
+      if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();
       }
     }

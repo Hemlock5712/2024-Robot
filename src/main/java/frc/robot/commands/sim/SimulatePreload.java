@@ -5,17 +5,24 @@
 package frc.robot.commands.sim;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.lineBreak.LineBreak;
 
 public class SimulatePreload extends Command {
+  LineBreak lineBreak;
+
   /** Creates a new SimulatePreload. */
   public SimulatePreload(LineBreak lineBreak) {
-    lineBreak.setGamePiece(false, false, false, false, true, false);
+    this.lineBreak = lineBreak;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (Constants.getMode() == Constants.Mode.SIM) {
+      lineBreak.setGamePiece(false, false, false, false, true, false);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

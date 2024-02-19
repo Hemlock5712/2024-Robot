@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6673286073844874,
-      "y": 4.41249682499365
+      "x": 0.7233010829658023,
+      "y": 6.716697069757776
     },
-    "rotation": 118.28201408510665
+    "rotation": -121.03221023846726
   },
   "command": {
     "type": "sequential",
@@ -46,7 +46,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Source - W3"
+                        "pathName": "Amp-W1"
                       }
                     },
                     {
@@ -70,13 +70,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 - W2"
+                        "pathName": "W1-C1"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C1-SA"
                       }
                     },
                     {
@@ -94,13 +100,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W2 - W1"
+                        "pathName": "SA-C2"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C2-SA"
                       }
                     },
                     {

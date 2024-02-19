@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -61,6 +63,13 @@ public class Arm extends SubsystemBase {
 
   public double getRelativeWristTarget() {
     return wristTarget + inputs.armAbsolutePositionRad;
+  }
+
+  public Transform3d getFlywheelPosition() {
+    return new Transform3d(
+        new Pose3d() {},
+        visualizerMeasured.getWristPose(
+            inputs.armRelativePositionRad, inputs.wristRelativePositionRad));
   }
 
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")

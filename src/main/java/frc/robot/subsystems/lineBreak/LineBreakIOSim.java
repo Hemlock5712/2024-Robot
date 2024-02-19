@@ -31,7 +31,7 @@ public class LineBreakIOSim implements LineBreakIO {
   }
 
   @Override
-  /** Bumps the game piece to the next sensor */
+  /** Bumps the game piece to the next sensor. */
   public void bumpGamePiece() {
     if (lowerIntakeSensor.getBoolean(false)) {
       lowerIntakeSensor.setBoolean(false);

@@ -7,6 +7,7 @@ package frc.robot.util.visualizer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
@@ -18,11 +19,14 @@ public class ShotVisualizer extends Command {
   Arm arm;
   Flywheel flywheel;
 
+  private double lastTime;
+
   /** Creates a new ShotVisualizer. */
   public ShotVisualizer(Drive drive, Arm arm, Flywheel flywheel) {
     this.drive = drive;
     this.arm = arm;
     this.flywheel = flywheel;
+    this.lastTime = Timer.getFPGATimestamp();
   }
 
   // Called when the command is initially scheduled.
@@ -44,7 +48,8 @@ public class ShotVisualizer extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    NoteVisualizer.updateNotePosition(0.02);
+    double dt = Timer.getFPGATimestamp() - lastTime;
+    NoteVisualizer.updateNotePosition(dt);
   }
 
   // Called once the command ends or is interrupted.
