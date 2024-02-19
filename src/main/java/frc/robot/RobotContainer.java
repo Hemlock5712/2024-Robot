@@ -157,10 +157,6 @@ public class RobotContainer {
                     0),
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
-    NoteVisualizer.setFlywheelTransformSupplier(arm::getFlywheelPosition);
-    NoteVisualizer.setArmWristAngleSupplier(arm::getWristAngleAbsolute);
-    NoteVisualizer.setFlywheelVelocitySupplier(flywheel::getVelocityMetersPerSec);
-
     NamedCommands.registerCommand(
         "Shoot",
         new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
