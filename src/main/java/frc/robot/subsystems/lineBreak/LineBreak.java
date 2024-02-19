@@ -7,6 +7,7 @@ package frc.robot.subsystems.lineBreak;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.lineBreak.LineBreakIO.LineBreakIOInputs;
+import frc.robot.util.visualizer.RobotGamePieceVisualizer;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class LineBreak extends SubsystemBase {
@@ -66,6 +67,7 @@ public class LineBreak extends SubsystemBase {
 
   public void bumpGamePiece() {
     lineBreakIO.bumpGamePiece();
+    RobotGamePieceVisualizer.drawGamePieces();
   }
 
   public void shootGamePiece() {
@@ -80,5 +82,6 @@ public class LineBreak extends SubsystemBase {
       boolean magazine2,
       boolean magazine3) {
     lineBreakIO.setGamePiece(intake, upperIntake1, upperIntake2, magazine1, magazine2, magazine3);
+    RobotGamePieceVisualizer.drawGamePieces();
   }
 }

@@ -67,14 +67,14 @@ public class FlightTrajectory {
         new Transform3d(horizontalDistance, 0, verticalDistance, new Rotation3d());
     Pose3d nextPosition = current.transformBy(positionTransform);
 
-    current = nextPosition;
-    this.horizontalVelocity = horizontalVelocity;
-    this.verticalVelocity = verticalVelocity;
-
     Logger.recordOutput("Visualization/HorizontalVelocity", horizontalVelocity);
     Logger.recordOutput("Visualization/VerticalVelocity", verticalVelocity);
     Logger.recordOutput("Visualization/HorizontalDistance", horizontalDistance);
     Logger.recordOutput("Visualization/VerticalDistance", verticalDistance);
+
+    current = nextPosition;
+    this.horizontalVelocity = horizontalVelocity;
+    this.verticalVelocity = verticalVelocity;
   }
 
   public Pose3d getCurrentPosition() {
