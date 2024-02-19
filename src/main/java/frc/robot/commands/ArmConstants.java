@@ -10,7 +10,7 @@ public final class ArmConstants {
   public static final ArmPositions intake =
       new ArmPositions(Rotation2d.fromDegrees(-25), Rotation2d.fromDegrees(-38));
   public static final ArmPositions shoot =
-      new ArmPositions(Rotation2d.fromDegrees(-80), Rotation2d.fromDegrees(0));
+      new ArmPositions(Rotation2d.fromDegrees(-25), Rotation2d.fromDegrees(-45));
 
   public record ArmPositions(Rotation2d arm, Rotation2d wrist) {}
 }

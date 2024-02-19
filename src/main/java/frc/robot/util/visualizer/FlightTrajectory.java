@@ -9,7 +9,10 @@ public class FlightTrajectory {
 
   Pose3d start;
   double angle;
-  double velocity;
+  // double velocity;
+
+  double horizontalVelocity;
+  double verticalVelocity;
 
   Pose3d current;
 
@@ -25,8 +28,11 @@ public class FlightTrajectory {
   public FlightTrajectory(Pose3d startPosition, double angle, double velocity) {
     this.start = startPosition;
     this.angle = angle;
-    this.velocity = velocity;
+    // this.velocity = velocity;
     this.current = startPosition;
+
+    this.horizontalVelocity = velocity * Math.cos(angle);
+    this.verticalVelocity = velocity * Math.sin(angle);
   }
 
   public void update(double dt) {
@@ -37,13 +43,19 @@ public class FlightTrajectory {
     // This is on a torus shaped object, where the direction of the flight is towards the flat end
     // of the torus
     double dragForce =
-        0.5 * 1.225 * Math.pow(0.1, 2) * Math.PI * Math.pow(0.1, 2) * velocity * velocity;
+        0.5
+            * 1.225
+            * Math.pow(0.1, 2)
+            * Math.PI
+            * Math.pow(0.1, 2)
+            * horizontalVelocity
+            * horizontalVelocity;
 
     // Calculate horizontal velocity
-    double horizontalVelocity = velocity * Math.cos(angle);
+    double horizontalVelocity = this.horizontalVelocity - dragForce * dt;
 
     // Calculate vertical velocity
-    double verticalVelocity = velocity * Math.sin(angle) - gravityForce;
+    double verticalVelocity = this.verticalVelocity - gravityForce * dt;
 
     // Calculate distance traveled horizontally
     double horizontalDistance = horizontalVelocity * dt;
@@ -55,12 +67,14 @@ public class FlightTrajectory {
         new Transform3d(horizontalDistance, 0, verticalDistance, new Rotation3d());
     Pose3d nextPosition = current.transformBy(positionTransform);
 
-    current = nextPosition;
-
     Logger.recordOutput("Visualization/HorizontalVelocity", horizontalVelocity);
     Logger.recordOutput("Visualization/VerticalVelocity", verticalVelocity);
     Logger.recordOutput("Visualization/HorizontalDistance", horizontalDistance);
     Logger.recordOutput("Visualization/VerticalDistance", verticalDistance);
+
+    current = nextPosition;
+    this.horizontalVelocity = horizontalVelocity;
+    this.verticalVelocity = verticalVelocity;
   }
 
   public Pose3d getCurrentPosition() {

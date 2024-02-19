@@ -19,7 +19,7 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SPEAKER;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 1000, ArmConstants.frontAmp.wrist());
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 2500, ArmConstants.shoot.wrist());
   private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
@@ -27,22 +27,22 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
-    shooterSpeedMap.put(Units.inchesToMeters(60), 10.0);
-    shooterSpeedMap.put(Units.inchesToMeters(80), 17.0);
-    shooterSpeedMap.put(Units.inchesToMeters(100), 9.0);
-    shooterSpeedMap.put(Units.inchesToMeters(120), 30.0);
-    shooterSpeedMap.put(Units.inchesToMeters(140), 19.0);
-    shooterSpeedMap.put(Units.inchesToMeters(160), 88.0);
-    shooterSpeedMap.put(Units.inchesToMeters(180), 10.0);
+    shooterSpeedMap.put(Units.inchesToMeters(60), 5000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(80), 6000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(100), 7000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(120), 8000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(140), 9000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(160), 10000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(180), 11000.0);
 
     // Units: radians
-    shooterAngleMap.put(Units.inchesToMeters(60), 1.0);
-    shooterAngleMap.put(Units.inchesToMeters(80), 0.0);
-    shooterAngleMap.put(Units.inchesToMeters(100), 3.5);
-    shooterAngleMap.put(Units.inchesToMeters(120), 3.0);
-    shooterAngleMap.put(Units.inchesToMeters(140), 1.9);
-    shooterAngleMap.put(Units.inchesToMeters(160), 8.0);
-    shooterAngleMap.put(Units.inchesToMeters(180), 11.0);
+    shooterAngleMap.put(Units.inchesToMeters(60), Units.degreesToRadians(-45));
+    shooterAngleMap.put(Units.inchesToMeters(80), Units.degreesToRadians(-38));
+    shooterAngleMap.put(Units.inchesToMeters(100), Units.degreesToRadians(-34));
+    shooterAngleMap.put(Units.inchesToMeters(120), Units.degreesToRadians(-32));
+    shooterAngleMap.put(Units.inchesToMeters(140), Units.degreesToRadians(-30));
+    shooterAngleMap.put(Units.inchesToMeters(160), Units.degreesToRadians(-29));
+    shooterAngleMap.put(Units.inchesToMeters(180), Units.degreesToRadians(-28));
 
     // Units: seconds
     flightTimeMap.put(Units.inchesToMeters(40), 0.5);

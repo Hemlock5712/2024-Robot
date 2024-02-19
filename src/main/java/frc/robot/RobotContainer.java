@@ -19,16 +19,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
-import frc.robot.commands.SmartArm;
-import frc.robot.commands.SmartFlywheel;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -55,8 +58,10 @@ import frc.robot.subsystems.magazine.MagazineIOSIM;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
-import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 import frc.robot.util.visualizer.NoteVisualizer;
+import frc.robot.util.visualizer.RobotGamePieceVisualizer;
+import frc.robot.util.visualizer.ShotVisualizer;
+import java.util.Set;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -117,12 +122,13 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         flywheel = new Flywheel(new FlywheelIOSim());
-        aprilTagVision =
-            new AprilTagVision(
-                new AprilTagVisionIOPhotonVisionSIM(
-                    "photonCamera1",
-                    new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
-                    drive::getPose));
+        // aprilTagVision =
+        //     new AprilTagVision(
+        //         new AprilTagVisionIOPhotonVisionSIM(
+        //             "photonCamera1",
+        //             new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
+        //             drive::getPose));
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         arm = new Arm(new ArmIOSim());
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheesIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
@@ -154,8 +160,79 @@ public class RobotContainer {
                     0),
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
+    RobotGamePieceVisualizer.setRobotPoseSupplier(
+        () ->
+            new Pose3d(
+                new Translation3d(
+                    drive.getPose().getTranslation().getX(),
+                    drive.getPose().getTranslation().getY(),
+                    0),
+                new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
+
+    RobotGamePieceVisualizer.setArmTransformSupplier(() -> arm.getFlywheelPosition());
+    RobotGamePieceVisualizer.setShooterAngleSupplier(() -> arm.getWristAngleAbsolute());
+    RobotGamePieceVisualizer.setIsMagazineLoadedSupplier(() -> lineBreak.hasGamePieceIntake());
+    RobotGamePieceVisualizer.setIsShooterLoadedSupplier(() -> lineBreak.isShooterLoaded());
+
     NamedCommands.registerCommand(
-        "Shoot", new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+        "Shoot",
+        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
+            .andThen(
+                new ScheduleCommand(
+                    Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
+    // NamedCommands.registerCommand(
+    //     "SIMGamePiecePickup", new ScheduleCommand(new SimulateGamePiecePickup(lineBreak, arm)));
+
+    /*
+    Register a command that calls the SimulateGamePiecePickup command without blocking.
+    Currently broken, due to what seems like a race condition.
+     */
+    // NamedCommands.registerCommand(
+    //     "SIMGamePiecePickup",
+    //     new ScheduleCommand(
+    //         Commands.defer(() -> new SimulateGamePiecePickup(lineBreak, arm), Set.of())));
+
+    // Temporary workaround for the above line to prevent blocking at each pickup.
+    NamedCommands.registerCommand(
+        "SIMGamePiecePickup",
+        new ScheduleCommand(
+            Commands.defer(
+                () ->
+                    new InstantCommand(
+                            () -> lineBreak.setGamePiece(false, false, true, false, false, false))
+                        .andThen(Commands.waitSeconds(0.2))
+                        .andThen(
+                            new InstantCommand(
+                                () ->
+                                    lineBreak.setGamePiece(
+                                        false, false, false, false, true, false))),
+                Set.of())));
+
+    NamedCommands.registerCommand(
+        "SmartControl",
+        Commands.parallel(
+            new SmartFlywheel(flywheel),
+            new SmartArm(arm, lineBreak),
+            new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
+
+    NamedCommands.registerCommand(
+        "IntakeDown", new InstantCommand(() -> intake.enableIntakeRequest()));
+
+    NamedCommands.registerCommand(
+        "Preload",
+        new InstantCommand(() -> lineBreak.setGamePiece(false, false, false, false, true, false)));
+
+    // Run SmartController updates in autonomous
+    new Trigger(DriverStation::isAutonomousEnabled)
+        .and(
+            new Trigger(
+                () -> SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER))
+        .whileTrue(
+            new InstantCommand(
+                () -> {
+                  SmartController.getInstance()
+                      .calculateSpeaker(drive.getPose(), new Translation2d(0, 0));
+                }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     // autoChooser.addOption(
@@ -217,7 +294,9 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
-    magazine.setDefaultCommand(new SmartMagizine(magazine, lineBreak));
+    magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
+    lineBreak.setDefaultCommand(
+        new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
 
     controller
         .leftBumper()
@@ -237,7 +316,18 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
 
-    controller.x().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+    controller
+        .x()
+        .whileTrue(
+            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
+                .alongWith(
+                    new ScheduleCommand(
+                        Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
+
+    if (Constants.getMode() == Constants.Mode.SIM) {
+      controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));
+      controller.pov(180).onTrue(new InstantCommand(() -> lineBreak.shootGamePiece()));
+    }
   }
 
   /**

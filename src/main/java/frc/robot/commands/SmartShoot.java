@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.SmartController;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.Flywheel;
@@ -19,6 +21,7 @@ public class SmartShoot extends Command {
   Flywheel flywheel;
   Magazine magazine;
   LineBreak lineBreak;
+  Timer timer;
 
   /** Creates a new Shoot. */
   public SmartShoot(
@@ -28,6 +31,7 @@ public class SmartShoot extends Command {
     this.magazine = magazine;
     this.pose = pose;
     this.lineBreak = lineBreak;
+    timer = new Timer();
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -36,6 +40,7 @@ public class SmartShoot extends Command {
   @Override
   public void initialize() {
     SmartController.getInstance().enableSmartControl();
+    if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,14 +48,18 @@ public class SmartShoot extends Command {
   public void execute() {
     if (SmartController.getInstance().isSmartControlEnabled()
         && arm.isArmWristInTargetPose()
-        && Math.abs(
-                pose.get()
-                    .getRotation()
-                    .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
-                    .getRadians())
-            < 0.1
+        // && Math.abs(
+        //         pose.get()
+        //             .getRotation()
+        //
+        // .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
+        //             .getRadians())
+        //     < 0.1
         && flywheel.atTargetSpeed()) {
       magazine.forward();
+      if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
+        lineBreak.shootGamePiece();
+      }
     }
   }
 
