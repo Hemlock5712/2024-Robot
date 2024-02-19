@@ -1,0 +1,251 @@
+{
+  "hubs": [
+    {
+      "x": 0,
+      "y": 25,
+      "width": 1280,
+      "height": 697,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "/RealOutputs",
+            "/RealOutputs/Odometry",
+            "/RealOutputs/AprilTagVision",
+            "/RealOutputs/AprilTagVision/Inst0",
+            "/RealOutputs/AprilTagVision/Inst2",
+            "/RealOutputs/AprilTagVision/Inst3",
+            "/RealOutputs/Mechanism3d",
+            "/RealOutputs/ShotCalculator"
+          ]
+        },
+        "tabs": {
+          "selected": 2,
+          "tabs": [
+            {
+              "type": 0,
+              "path": "../docs/INDEX.md"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "Line Graph"
+            },
+            {
+              "type": 6,
+              "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p",
+              "fields": [],
+              "listFields": [
+                [
+                  {
+                    "type": "Vision Target",
+                    "key": "/RealOutputs/AprilTagVision/TagPoses",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  },
+                  {
+                    "type": "Component (Robot)",
+                    "key": "/RealOutputs/Mechanism3d/ArmMeasured",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  },
+                  {
+                    "type": "Component (Robot)",
+                    "key": "/RealOutputs/Mechanism3d/IntakeMeasured",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  }
+                ],
+                [
+                  {
+                    "type": "Robot",
+                    "key": "/RealOutputs/Odometry/PoseEstimation",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Trajectory",
+                    "key": "/RealOutputs/Odometry/Trajectory",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose2d[]"
+                  }
+                ]
+              ],
+              "options": {
+                "field": "2024 Field",
+                "alliance": "blue",
+                "robot": "2024 Gray Matter V1.1",
+                "unitDistance": "meters",
+                "unitRotation": "radians"
+              },
+              "configHidden": false,
+              "visualizer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  2.1702885082415397,
+                  8.137851387262351,
+                  10.545286813410495
+                ],
+                "cameraTarget": [
+                  0,
+                  0.5,
+                  0
+                ]
+              },
+              "title": "Vision"
+            },
+            {
+              "type": 3,
+              "field": "/RealOutputs/Console",
+              "title": "Console"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [
+    {
+      "x": 0,
+      "y": 25,
+      "width": 433,
+      "height": 353,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": 0,
+          "orbitFov": 50,
+          "cameraPosition": [
+            6.0845771858889615,
+            0.22000000000000108,
+            2.4674288199690477
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
+    },
+    {
+      "x": 435,
+      "y": 25,
+      "width": 435,
+      "height": 354,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": 1,
+          "orbitFov": 50,
+          "cameraPosition": [
+            5.411468059769888,
+            0.22000000000000117,
+            2.6624260170419074
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
+    },
+    {
+      "x": 0,
+      "y": 366,
+      "width": 436,
+      "height": 355,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": 2,
+          "orbitFov": 50,
+          "cameraPosition": [
+            5.2402232804867745,
+            0.22000000000000092,
+            2.0655998981228545
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
+    },
+    {
+      "x": 437,
+      "y": 366,
+      "width": 432,
+      "height": 352,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": 3,
+          "orbitFov": 50,
+          "cameraPosition": [
+            5.411468059769888,
+            0.22000000000000117,
+            2.6624260170419074
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
+    },
+    {
+      "x": 724,
+      "y": 137,
+      "width": 648,
+      "height": 500,
+      "state": {
+        "type": 6,
+        "visualizer": {
+          "cameraIndex": -2,
+          "orbitFov": 50,
+          "cameraPosition": [
+            2.099867677462201,
+            1.4165922757683151,
+            0.02035527330623822
+          ],
+          "cameraTarget": [
+            0,
+            0.5,
+            0
+          ]
+        }
+      },
+      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
+    }
+  ],
+  "version": "3.1.0"
+}
