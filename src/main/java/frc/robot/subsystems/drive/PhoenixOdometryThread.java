@@ -65,7 +65,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
-    ArrayBlockingQueue<Double> queue = new ArrayBlockingQueue<>(10);
+    ArrayBlockingQueue<Double> queue = new ArrayBlockingQueue<>(20);
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
@@ -83,7 +83,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   public Queue<Double> makeTimestampQueue() {
-    ArrayBlockingQueue<Double> queue = new ArrayBlockingQueue<>(10);
+    ArrayBlockingQueue<Double> queue = new ArrayBlockingQueue<>(20);
     Drive.odometryLock.lock();
     try {
       timestampQueues.add(queue);
