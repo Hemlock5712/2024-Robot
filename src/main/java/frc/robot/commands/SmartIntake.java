@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SmartController;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakePositions;
 import frc.robot.subsystems.lineBreak.LineBreak;
@@ -33,6 +35,10 @@ public class SmartIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+      intake.setSpeed(0);
+      return;
+    }
     if (intake.getIntakeRequest() && !lineBreak.hasGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
       intake.setSpeed(IntakeConstants.intakeSpeed);

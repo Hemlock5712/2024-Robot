@@ -308,7 +308,12 @@ public class RobotContainer {
                 () -> SmartController.getInstance().enableSmartControl(),
                 () -> SmartController.getInstance().disableSmartControl()));
 
-    controller.a().whileTrue(new PathFinderAndFollow());
+    controller
+        .start()
+        .and(controller.back())
+        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+
+    controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
 
     controller
         .b()

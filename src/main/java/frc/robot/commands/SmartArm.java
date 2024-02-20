@@ -24,6 +24,11 @@ public class SmartArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+      arm.setArmTarget(arm.getArmAngle());
+      arm.setWristTarget(arm.getRelativeWristTarget());
+      return;
+    }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
           && SmartController.getInstance().isSmartControlEnabled()) {

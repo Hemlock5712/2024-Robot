@@ -12,32 +12,71 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
+import frc.robot.subsystems.lineBreak.LineBreak;
 
 /** A command that runs pathfindThenFollowPath based on the current drive mode. */
 public class PathFinderAndFollow extends Command {
   private Command scoreCommand;
   private Command pathRun;
   private DriveModeType driveMode;
+  private LineBreak lineBreak;
+  boolean lastLineBreak = false;
+  private DriveModeType lastDriveMode = DriveModeType.AMP;
 
   /**
    * Creates a new PathFinderAndFollow command.
    *
    * @param driveModeSupplier a supplier for the drive mode type
    */
-  public PathFinderAndFollow() {}
+  public PathFinderAndFollow(LineBreak lineBreak) {
+    this.lineBreak = lineBreak;
+  }
 
   @Override
   public void initialize() {
-    runNewAutonPath();
+    DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
+    if (!lineBreak.hasGamePiece()) {
+      scoreCommand = getIntakeAutonPathCommand();
+
+    } else if (DriveModeType.AMP == currentDriveMode) {
+      scoreCommand = getAmpAutonPathCommand();
+    } else if (DriveModeType.SPEAKER == currentDriveMode) {
+      scoreCommand =
+          Commands.startEnd(
+              () -> SmartController.getInstance().enableSmartControl(),
+              () -> SmartController.getInstance().disableSmartControl());
+    }
+    scoreCommand.schedule();
+    lastLineBreak = !lineBreak.hasGamePiece();
+    lastDriveMode = SmartController.getInstance().getDriveModeType();
   }
 
   @Override
   public void execute() {
     DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
-    if (driveMode != currentDriveMode) {
+    boolean hasChangedLineBreak = (!lineBreak.hasGamePiece() != lastLineBreak);
+
+    if (!lineBreak.hasGamePiece() && hasChangedLineBreak) {
       scoreCommand.cancel();
-      runNewAutonPath();
+      scoreCommand = getIntakeAutonPathCommand();
+      scoreCommand.schedule();
+    } else if (DriveModeType.AMP == currentDriveMode
+        && ((lastDriveMode != currentDriveMode) || hasChangedLineBreak)) {
+      scoreCommand.cancel();
+      scoreCommand = getAmpAutonPathCommand();
+      scoreCommand.schedule();
+    } else if (DriveModeType.SPEAKER == currentDriveMode
+        && ((lastDriveMode != currentDriveMode) || hasChangedLineBreak)) {
+      scoreCommand.cancel();
+      scoreCommand =
+          Commands.startEnd(
+              () -> SmartController.getInstance().enableSmartControl(),
+              () -> SmartController.getInstance().disableSmartControl());
+      scoreCommand.schedule();
     }
+
+    lastLineBreak = !lineBreak.hasGamePiece();
+    lastDriveMode = SmartController.getInstance().getDriveModeType();
   }
 
   @Override
@@ -52,15 +91,19 @@ public class PathFinderAndFollow extends Command {
   }
 
   /** Runs a new autonomous path based on the current drive mode. */
-  public void runNewAutonPath() {
-    driveMode = SmartController.getInstance().getDriveModeType();
-    String pathName =
-        driveMode == DriveModeType.SPEAKER ? "Speaker Placement Path" : "Amp Placement Path";
-    PathPlannerPath ampPath = PathPlannerPath.fromPathFile(pathName);
+  public Command getAmpAutonPathCommand() {
+    PathPlannerPath ampPath = PathPlannerPath.fromPathFile("Amp Placement Path");
     PathConstraints constraints =
-        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(4.61, 6.63, Units.degreesToRadians(540), Units.degreesToRadians(720));
     pathRun = AutoBuilder.pathfindThenFollowPath(ampPath, constraints, 0.0);
-    scoreCommand = Commands.sequence(pathRun);
-    scoreCommand.schedule();
+    return Commands.sequence(pathRun);
+  }
+
+  public Command getIntakeAutonPathCommand() {
+    PathPlannerPath intakePath = PathPlannerPath.fromPathFile("Intake Path");
+    PathConstraints constraints =
+        new PathConstraints(4.61, 6.63, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    pathRun = AutoBuilder.pathfindThenFollowPath(intakePath, constraints, 0.0);
+    return Commands.sequence(pathRun);
   }
 }
