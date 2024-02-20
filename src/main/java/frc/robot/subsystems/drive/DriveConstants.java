@@ -109,7 +109,7 @@ public final class DriveConstants {
                 0.0,
                 10.0,
                 0.0,
-                Mk4iReductions.L2.reduction,
+                Mk4iReductions.L4.reduction,
                 Mk4iReductions.TURN.reduction);
         case SIMBOT ->
             new ModuleConstants(
@@ -119,7 +119,7 @@ public final class DriveConstants {
                 0.0,
                 10.0,
                 0.0,
-                Mk4iReductions.L2.reduction,
+                Mk4iReductions.L4.reduction,
                 Mk4iReductions.TURN.reduction);
       };
 
