@@ -73,16 +73,22 @@ public class ModuleIOTalonFX implements ModuleIO {
     var driveConfig = new TalonFXConfiguration();
     driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    driveTalon.getConfigurator().apply(driveConfig);
-    setDriveBrakeMode(true);
 
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    turnTalon.getConfigurator().apply(turnConfig);
-    setTurnBrakeMode(true);
 
-    cancoder.getConfigurator().apply(new CANcoderConfiguration());
+    for (int i = 0; i < 4; i++) {
+      boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
+      setDriveBrakeMode(true);
+      error = error && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
+      setTurnBrakeMode(true);
+      error =
+          error
+              && cancoder.getConfigurator().apply(new CANcoderConfiguration(), 0.1)
+                  == StatusCode.OK;
+      if (!error) break;
+    }
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
 
