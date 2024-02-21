@@ -36,7 +36,7 @@ public class LineBreak extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "/LineBreak/hasNoGamePiece")
-  public double hasNoGamePiece() {
+  public boolean hasNoGamePiece() {
     return timeSinceLastGamePiece() > 0.1;
   }
 
