@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -37,8 +38,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.SmartController;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -129,6 +132,7 @@ public class Drive extends SubsystemBase {
                 },
                 null,
                 this));
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
   }
 
   @Override
@@ -315,4 +319,15 @@ public class Drive extends SubsystemBase {
   public Translation2d getFieldRelativeVelocity() {
     return new Translation2d(velocityX, velocityY);
   }
+
+  public Optional<Rotation2d> getRotationTargetOverride(){
+    // Some condition that should decide if we want to override rotation
+    if(DriverStation.isAutonomous() && SmartController.getInstance().isSmartControlEnabled() && SmartController.getInstance().getDriveModeType() == SmartController.DriveModeType.SPEAKER) {
+        // Return an optional containing the rotation override (this should be a field relative rotation)
+        return Optional.of(SmartController.getInstance().getTargetAimingParameters().robotAngle());
+    } else {
+        // return an empty optional when we don't want to override the path's rotation
+        return Optional.empty();
+    }
+}
 }
