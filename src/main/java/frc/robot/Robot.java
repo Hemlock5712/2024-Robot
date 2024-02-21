@@ -128,7 +128,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
-    SmartController.getInstance().setDriveMode(DriveModeType.Speaker);
+    SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER);
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
