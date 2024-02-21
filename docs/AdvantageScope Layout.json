@@ -2,9 +2,9 @@
   "hubs": [
     {
       "x": 0,
-      "y": 25,
-      "width": 1280,
-      "height": 697,
+      "y": 24,
+      "width": 1282,
+      "height": 702,
       "state": {
         "sidebar": {
           "width": 300,
@@ -28,6 +28,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -94,7 +95,7 @@
               "options": {
                 "field": "2024 Field",
                 "alliance": "blue",
-                "robot": "2024 Gray Matter V1.1",
+                "robot": "",
                 "unitDistance": "meters",
                 "unitRotation": "radians"
               },
@@ -125,127 +126,6 @@
       }
     }
   ],
-  "satellites": [
-    {
-      "x": 0,
-      "y": 25,
-      "width": 433,
-      "height": 353,
-      "state": {
-        "type": 6,
-        "visualizer": {
-          "cameraIndex": 0,
-          "orbitFov": 50,
-          "cameraPosition": [
-            6.0845771858889615,
-            0.22000000000000108,
-            2.4674288199690477
-          ],
-          "cameraTarget": [
-            0,
-            0.5,
-            0
-          ]
-        }
-      },
-      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
-    },
-    {
-      "x": 435,
-      "y": 25,
-      "width": 435,
-      "height": 354,
-      "state": {
-        "type": 6,
-        "visualizer": {
-          "cameraIndex": 1,
-          "orbitFov": 50,
-          "cameraPosition": [
-            5.411468059769888,
-            0.22000000000000117,
-            2.6624260170419074
-          ],
-          "cameraTarget": [
-            0,
-            0.5,
-            0
-          ]
-        }
-      },
-      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
-    },
-    {
-      "x": 0,
-      "y": 366,
-      "width": 436,
-      "height": 355,
-      "state": {
-        "type": 6,
-        "visualizer": {
-          "cameraIndex": 2,
-          "orbitFov": 50,
-          "cameraPosition": [
-            5.2402232804867745,
-            0.22000000000000092,
-            2.0655998981228545
-          ],
-          "cameraTarget": [
-            0,
-            0.5,
-            0
-          ]
-        }
-      },
-      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
-    },
-    {
-      "x": 437,
-      "y": 366,
-      "width": 432,
-      "height": 352,
-      "state": {
-        "type": 6,
-        "visualizer": {
-          "cameraIndex": 3,
-          "orbitFov": 50,
-          "cameraPosition": [
-            5.411468059769888,
-            0.22000000000000117,
-            2.6624260170419074
-          ],
-          "cameraTarget": [
-            0,
-            0.5,
-            0
-          ]
-        }
-      },
-      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
-    },
-    {
-      "x": 724,
-      "y": 137,
-      "width": 648,
-      "height": 500,
-      "state": {
-        "type": 6,
-        "visualizer": {
-          "cameraIndex": -2,
-          "orbitFov": 50,
-          "cameraPosition": [
-            2.099867677462201,
-            1.4165922757683151,
-            0.02035527330623822
-          ],
-          "cameraTarget": [
-            0,
-            0.5,
-            0
-          ]
-        }
-      },
-      "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p"
-    }
-  ],
-  "version": "3.1.0"
+  "satellites": [],
+  "version": "3.2.0"
 }
