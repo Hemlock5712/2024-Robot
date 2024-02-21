@@ -311,7 +311,7 @@ public class RobotContainer {
     controller
         .start()
         .and(controller.back())
-        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.Speaker)));
 
     controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
 

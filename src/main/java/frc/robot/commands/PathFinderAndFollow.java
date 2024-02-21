@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.subsystems.drive.DriveConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -35,7 +37,7 @@ public class PathFinderAndFollow extends Command {
   @Override
   public void initialize() {
     DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
-    if (!lineBreak.hasGamePiece()) {
+    if (lineBreak.hasNoGamePiece()) {
       scoreCommand = getIntakeAutonPathCommand();
 
     } else if (DriveModeType.AMP == currentDriveMode) {
@@ -47,16 +49,16 @@ public class PathFinderAndFollow extends Command {
               () -> SmartController.getInstance().disableSmartControl());
     }
     scoreCommand.schedule();
-    lastLineBreak = !lineBreak.hasGamePiece();
+    lastLineBreak = lineBreak.hasNoGamePiece();
     lastDriveMode = SmartController.getInstance().getDriveModeType();
   }
 
   @Override
   public void execute() {
     DriveModeType currentDriveMode = SmartController.getInstance().getDriveModeType();
-    boolean hasChangedLineBreak = (!lineBreak.hasGamePiece() != lastLineBreak);
+    boolean hasChangedLineBreak = (lineBreak.hasNoGamePiece() != lastLineBreak);
 
-    if (!lineBreak.hasGamePiece() && hasChangedLineBreak) {
+    if (lineBreak.hasNoGamePiece() && hasChangedLineBreak) {
       scoreCommand.cancel();
       scoreCommand = getIntakeAutonPathCommand();
       scoreCommand.schedule();
@@ -75,7 +77,7 @@ public class PathFinderAndFollow extends Command {
       scoreCommand.schedule();
     }
 
-    lastLineBreak = !lineBreak.hasGamePiece();
+    lastLineBreak = lineBreak.hasNoGamePiece();
     lastDriveMode = SmartController.getInstance().getDriveModeType();
   }
 
@@ -94,7 +96,7 @@ public class PathFinderAndFollow extends Command {
   public Command getAmpAutonPathCommand() {
     PathPlannerPath ampPath = PathPlannerPath.fromPathFile("Amp Placement Path");
     PathConstraints constraints =
-        new PathConstraints(4.61, 6.63, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(drivetrainConfig.maxLinearVelocity(), drivetrainConfig.maxLinearAcceleration(), drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration());
     pathRun = AutoBuilder.pathfindThenFollowPath(ampPath, constraints, 0.0);
     return Commands.sequence(pathRun);
   }
@@ -102,7 +104,7 @@ public class PathFinderAndFollow extends Command {
   public Command getIntakeAutonPathCommand() {
     PathPlannerPath intakePath = PathPlannerPath.fromPathFile("Intake Path");
     PathConstraints constraints =
-        new PathConstraints(4.61, 6.63, Units.degreesToRadians(540), Units.degreesToRadians(720));
+        new PathConstraints(drivetrainConfig.maxLinearVelocity(), drivetrainConfig.maxLinearAcceleration(), drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration());
     pathRun = AutoBuilder.pathfindThenFollowPath(intakePath, constraints, 0.0);
     return Commands.sequence(pathRun);
   }

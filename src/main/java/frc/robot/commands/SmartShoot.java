@@ -72,6 +72,6 @@ public class SmartShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !lineBreak.hasGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
+    return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
   }
 }

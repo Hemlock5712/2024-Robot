@@ -35,6 +35,11 @@ public class LineBreak extends SubsystemBase {
     return Timer.getFPGATimestamp() - lastGamePieceSeenTime;
   }
 
+  @AutoLogOutput(key = "/LineBreak/hasNoGamePiece")
+  public double hasNoGamePiece() {
+    return timeSinceLastGamePiece() > 0.1;
+  }
+
   @AutoLogOutput(key = "/LineBreak/hasGamePiece")
   public boolean hasGamePiece() {
     return inputs.lineBreakValues.hasGamePiece();
