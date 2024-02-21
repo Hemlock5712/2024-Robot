@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 public class SmartController {
   private static SmartController instance;
 
-  private DriveModeType driveModeType = DriveModeType.SPEAKER;
+  private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
       new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 2500, ArmConstants.shoot.wrist());
   private boolean smartControl = false;
@@ -187,5 +187,6 @@ public class SmartController {
   public enum DriveModeType {
     AMP,
     SPEAKER,
+    SAFE,
   }
 }
