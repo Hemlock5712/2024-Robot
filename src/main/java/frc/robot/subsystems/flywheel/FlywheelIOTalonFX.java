@@ -10,7 +10,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-/*
+
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -55,7 +55,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   public void updateInputs(FlywheelIOInputs inputs) {
     BaseStatusSignal.refreshAll(
         leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
-    inputs.positionRad = Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / GEAR_RATIO;
     inputs.velocityRadPerSec =
         Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / GEAR_RATIO;
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
@@ -96,4 +95,4 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     leader.getConfigurator().apply(config);
   }
 }
- */
+

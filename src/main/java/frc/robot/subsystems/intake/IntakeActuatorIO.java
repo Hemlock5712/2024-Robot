@@ -12,6 +12,8 @@ public interface IntakeActuatorIO {
     public boolean isDown = false;
     public double angle = 0;
     public double targetAngle = 0;
+    public double[] CurrentAmps = new double[] {};
+    public double[] TempCelcius = new double[] {};
   }
 
   /** Updates the set of loggable inputs. */
