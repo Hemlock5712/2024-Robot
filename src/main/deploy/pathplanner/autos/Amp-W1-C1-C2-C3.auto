@@ -38,12 +38,6 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "Amp-W1"
@@ -59,12 +53,6 @@
                       "type": "named",
                       "data": {
                         "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -92,39 +80,15 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
-                        "pathName": "SA-C2"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C2-SA"
+                        "pathName": "SA-C2-SA"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
                       }
                     },
                     {
