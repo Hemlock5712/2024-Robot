@@ -43,7 +43,7 @@ import java.util.Queue;
  * absolute encoders using AdvantageScope. These values are logged under
  * "/Drive/ModuleX/TurnAbsolutePositionRad"
  */
-public class ModuleIOTalonFX implements ModuleIO {
+public class ModuleIOKrakenFOC implements ModuleIO {
   private final TalonFX driveTalon;
   private final TalonFX turnTalon;
   private final CANcoder cancoder;
@@ -65,7 +65,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
   private final Rotation2d absoluteEncoderOffset;
 
-  public ModuleIOTalonFX(ModuleConfig config) {
+  public ModuleIOKrakenFOC(ModuleConfig config) {
     driveTalon = new TalonFX(config.driveID(), canbus);
     turnTalon = new TalonFX(config.turnID(), canbus);
     cancoder = new CANcoder(config.absoluteEncoderChannel(), canbus);
@@ -78,6 +78,12 @@ public class ModuleIOTalonFX implements ModuleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnConfig.Voltage.PeakForwardVoltage = 12.0;
+    turnConfig.Voltage.PeakReverseVoltage = -12.0;
+
+    driveConfig.Feedback.SensorToMechanismRatio = moduleConstants.driveReduction();
+    turnConfig.Feedback.SensorToMechanismRatio = moduleConstants.turnReduction();
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     for (int i = 0; i < 4; i++) {
       boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
@@ -108,10 +114,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getSupplyCurrent();
 
+    BaseStatusSignal.setUpdateFrequencyForAll(odometryFrequency, drivePosition, turnPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        DriveConstants.odometryFrequency, drivePosition, turnPosition);
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        100.0,
         driveVelocity,
         driveAppliedVolts,
         driveCurrent,
@@ -119,8 +124,8 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnVelocity,
         turnAppliedVolts,
         turnCurrent);
-    driveTalon.optimizeBusUtilization();
-    turnTalon.optimizeBusUtilization();
+    driveTalon.optimizeBusUtilization(1.0);
+    turnTalon.optimizeBusUtilization(1.0);
   }
 
   @Override
@@ -136,38 +141,25 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnAppliedVolts,
         turnCurrent);
 
-    inputs.drivePositionRad =
-        Units.rotationsToRadians(drivePosition.getValueAsDouble())
-            / moduleConstants.driveReduction();
-    inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble())
-            / moduleConstants.driveReduction();
+    inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble());
+    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
     inputs.turnAbsolutePosition =
         Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
             .minus(absoluteEncoderOffset);
-    inputs.turnPosition =
-        Rotation2d.fromRotations(turnPosition.getValueAsDouble() / moduleConstants.turnReduction());
-    inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / moduleConstants.turnReduction();
+    inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+    inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = new double[] {turnCurrent.getValueAsDouble()};
 
     inputs.odometryTimestamps =
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
-        drivePositionQueue.stream()
-            .mapToDouble(
-                (Double value) ->
-                    Units.rotationsToRadians(value) / moduleConstants.driveReduction())
-            .toArray();
+        drivePositionQueue.stream().mapToDouble(Units::rotationsToRadians).toArray();
     inputs.odometryTurnPositions =
-        turnPositionQueue.stream()
-            .map(
-                (Double value) -> Rotation2d.fromRotations(value / moduleConstants.turnReduction()))
-            .toArray(Rotation2d[]::new);
+        turnPositionQueue.stream().map(Rotation2d::fromRotations).toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();

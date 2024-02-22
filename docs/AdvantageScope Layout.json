@@ -1,0 +1,131 @@
+{
+  "hubs": [
+    {
+      "x": 0,
+      "y": 24,
+      "width": 1282,
+      "height": 702,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "/RealOutputs",
+            "/RealOutputs/Odometry",
+            "/RealOutputs/AprilTagVision",
+            "/RealOutputs/AprilTagVision/Inst0",
+            "/RealOutputs/AprilTagVision/Inst2",
+            "/RealOutputs/AprilTagVision/Inst3",
+            "/RealOutputs/Mechanism3d",
+            "/RealOutputs/ShotCalculator"
+          ]
+        },
+        "tabs": {
+          "selected": 2,
+          "tabs": [
+            {
+              "type": 0,
+              "path": "../docs/INDEX.md"
+            },
+            {
+              "type": 1,
+              "legendHeight": null,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "Line Graph"
+            },
+            {
+              "type": 6,
+              "uuid": "0b0zmxqwxh5wue92htknewpty4u3ov6p",
+              "fields": [],
+              "listFields": [
+                [
+                  {
+                    "type": "Vision Target",
+                    "key": "/RealOutputs/AprilTagVision/TagPoses",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  },
+                  {
+                    "type": "Component (Robot)",
+                    "key": "/RealOutputs/Mechanism3d/ArmMeasured",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  },
+                  {
+                    "type": "Component (Robot)",
+                    "key": "/RealOutputs/Mechanism3d/IntakeMeasured",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose3d[]"
+                  }
+                ],
+                [
+                  {
+                    "type": "Robot",
+                    "key": "/RealOutputs/Odometry/PoseEstimation",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Trajectory",
+                    "key": "/RealOutputs/Odometry/Trajectory",
+                    "sourceTypeIndex": 2,
+                    "sourceType": "Pose2d[]"
+                  }
+                ]
+              ],
+              "options": {
+                "field": "2024 Field",
+                "alliance": "blue",
+                "robot": "",
+                "unitDistance": "meters",
+                "unitRotation": "radians"
+              },
+              "configHidden": false,
+              "visualizer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  2.1702885082415397,
+                  8.137851387262351,
+                  10.545286813410495
+                ],
+                "cameraTarget": [
+                  0,
+                  0.5,
+                  0
+                ]
+              },
+              "title": "Vision"
+            },
+            {
+              "type": 3,
+              "field": "/RealOutputs/Console",
+              "title": "Console"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "3.2.0"
+}
