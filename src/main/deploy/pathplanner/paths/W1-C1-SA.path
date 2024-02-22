@@ -16,16 +16,32 @@
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 7.435010506384649
+        "x": 7.744019590603282,
+        "y": 7.238681599870323
       },
       "prevControl": {
-        "x": 4.412185097097466,
-        "y": 7.453667998245088
+        "x": 7.2177826406934855,
+        "y": 7.542729615373762
+      },
+      "nextControl": {
+        "x": 8.021698258370654,
+        "y": 7.078245036271395
+      },
+      "isLocked": false,
+      "linkedName": "C1"
+    },
+    {
+      "anchor": {
+        "x": 3.531874047121017,
+        "y": 7.000326399702681
+      },
+      "prevControl": {
+        "x": 5.748974205356559,
+        "y": 7.761575987469921
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "C1"
+      "linkedName": "SA"
     }
   ],
   "rotationTargets": [
@@ -39,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "sequential",
         "data": {
@@ -48,6 +64,23 @@
               "type": "named",
               "data": {
                 "name": "IntakeDown"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SIMGamePiecePickup"
               }
             }
           ]
@@ -63,7 +96,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.7135234897229,
+    "rotation": -159.1982039149841,
     "rotateFast": false
   },
   "reversed": false,

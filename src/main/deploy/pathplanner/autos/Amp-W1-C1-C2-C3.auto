@@ -58,19 +58,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W1-C1"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C1-SA"
+                        "pathName": "W1-C1-SA"
                       }
                     },
                     {
