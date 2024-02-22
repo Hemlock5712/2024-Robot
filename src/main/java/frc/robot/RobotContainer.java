@@ -199,7 +199,7 @@ public class RobotContainer {
             Commands.defer(
                 () ->
                     new InstantCommand(
-                            () -> lineBreak.setGamePiece(false, false, true, false, false, false))
+                            () -> lineBreak.setGamePiece(false, true, false, false, false, false))
                         .andThen(Commands.waitSeconds(0.2))
                         .andThen(
                             new InstantCommand(
