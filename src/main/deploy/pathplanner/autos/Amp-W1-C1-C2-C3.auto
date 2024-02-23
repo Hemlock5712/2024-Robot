@@ -88,18 +88,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C3-SA"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "Shoot"
                       }
                     }

@@ -16,44 +16,28 @@
     },
     {
       "anchor": {
-        "x": 6.125309732804739,
-        "y": 6.317843324522754
+        "x": 7.708937127275964,
+        "y": 4.268366371490578
       },
       "prevControl": {
-        "x": 5.774318436997919,
-        "y": 6.5128384888598765
+        "x": 7.521830656196927,
+        "y": 6.455173252226847
       },
       "nextControl": {
-        "x": 6.407078922853326,
-        "y": 6.1613048856068735
+        "x": 7.7587934396594065,
+        "y": 3.6856707205090897
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.827292324418378,
-        "y": 5.537862667174266
+        "x": 4.762010207781099,
+        "y": 4.525637769224256
       },
       "prevControl": {
-        "x": 6.642046918298114,
-        "y": 5.849854930113661
-      },
-      "nextControl": {
-        "x": 7.020048219040962,
-        "y": 5.213221160441489
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.46,
-        "y": 4.08
-      },
-      "prevControl": {
-        "x": 7.362502417831439,
-        "y": 4.1969970986022735
+        "x": 5.7443191809460545,
+        "y": 3.9643183559871398
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,21 +46,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 143.6731740478798,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 2,
-      "rotationDegrees": 123.69006752597971,
-      "rotateFast": false
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": 158.19535536089253,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.55,
       "command": {
         "type": "sequential",
         "data": {
@@ -85,6 +64,23 @@
               "type": "named",
               "data": {
                 "name": "IntakeDown"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SIMGamePiecePickup"
               }
             }
           ]
@@ -100,7 +96,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.74939813973472,
+    "rotation": 156.44773632710536,
     "rotateFast": false
   },
   "reversed": false,
