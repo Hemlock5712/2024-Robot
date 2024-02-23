@@ -54,7 +54,7 @@ import frc.robot.subsystems.intake.IntakeWheelIOTalonFX;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
-import frc.robot.subsystems.lineBreak.LineBreakIO;
+import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
@@ -109,7 +109,7 @@ public class RobotContainer {
         arm = new Arm(new ArmIOTalonFX());
         intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
-        lineBreak = new LineBreak(new LineBreakIO() {});
+        lineBreak = new LineBreak(new LineBreakIODigitalInput());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
