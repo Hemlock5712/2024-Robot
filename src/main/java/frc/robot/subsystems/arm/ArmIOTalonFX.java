@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -156,7 +157,10 @@ public class ArmIOTalonFX implements ArmIO {
     armConfig.Slot0.kD = kD;
     armConfig.Slot0.kG = kFF;
     armConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-    armMotor.getConfigurator().apply(armConfig);
+    for (int i = 0; i < 4; i++) {
+      boolean error = armMotor.getConfigurator().apply(armConfig, 0.1) == StatusCode.OK;
+      if (!error) break;
+    }
   }
 
   @Override
@@ -167,5 +171,9 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.kG = kFF;
     wristConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
     wristMotor.getConfigurator().apply(wristConfig);
+    for (int i = 0; i < 4; i++) {
+      boolean error = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
+      if (!error) break;
+    }
   }
 }
