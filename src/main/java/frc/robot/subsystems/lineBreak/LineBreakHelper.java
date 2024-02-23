@@ -30,7 +30,8 @@ public class LineBreakHelper {
     }
 
     public boolean isShooterLoaded() {
-      return !(lowerIntake || upperIntake1 || upperIntake2) && (magazine1 && magazine2 && magazine3);
+      return !(lowerIntake || upperIntake1 || upperIntake2)
+          && (magazine1 && magazine2 && magazine3);
     }
 
     public boolean isShooterLong() {

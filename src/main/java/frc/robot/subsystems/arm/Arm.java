@@ -23,8 +23,8 @@ public class Arm extends SubsystemBase {
       new LoggedTunableNumber("Arm/kI", ArmConstants.armControlConstants.kI());
   private static final LoggedTunableNumber armkD =
       new LoggedTunableNumber("Arm/kD", ArmConstants.armControlConstants.kD());
-  private static final LoggedTunableNumber armkFF =
-      new LoggedTunableNumber("Arm/kS", ArmConstants.armControlConstants.kFF());
+  private static final LoggedTunableNumber armkG =
+      new LoggedTunableNumber("Arm/kG", ArmConstants.armControlConstants.kG());
 
   private static final LoggedTunableNumber wristkP =
       new LoggedTunableNumber("Wrist/kP", ArmConstants.wristControlConstants.kP());
@@ -32,16 +32,16 @@ public class Arm extends SubsystemBase {
       new LoggedTunableNumber("Wrist/kI", ArmConstants.wristControlConstants.kI());
   private static final LoggedTunableNumber wristkD =
       new LoggedTunableNumber("Wrist/kD", ArmConstants.wristControlConstants.kD());
-  private static final LoggedTunableNumber wristkFF =
-      new LoggedTunableNumber("Wrist/kS", ArmConstants.wristControlConstants.kFF());
+  private static final LoggedTunableNumber wristkG =
+      new LoggedTunableNumber("Wrist/kG", ArmConstants.wristControlConstants.kG());
 
   private double armTarget = 0;
   private double wristTarget = 0;
 
   public Arm(ArmIO io) {
     this.io = io;
-    io.setPIDArm(armkP.get(), armkI.get(), armkD.get(), armkFF.get());
-    io.setPIDWrist(wristkP.get(), wristkI.get(), wristkD.get(), wristkFF.get());
+    io.setPIDArm(armkP.get(), armkI.get(), armkD.get(), armkG.get());
+    io.setPIDWrist(wristkP.get(), wristkI.get(), wristkD.get(), wristkG.get());
 
     visualizerMeasured = new ArmVisualizer("ArmMeasured", null);
     visualizerSetpoint = new ArmVisualizer("ArmSetpoint", new Color8Bit(Color.kOrange));
@@ -62,18 +62,18 @@ public class Arm extends SubsystemBase {
 
     LoggedTunableNumber.ifChanged(
         hashCode(),
-        () -> io.setPIDArm(armkP.get(), armkI.get(), armkD.get(), armkFF.get()),
+        () -> io.setPIDArm(armkP.get(), armkI.get(), armkD.get(), armkG.get()),
         armkP,
         armkI,
         armkD,
-        armkFF);
+        armkG);
     LoggedTunableNumber.ifChanged(
         hashCode(),
-        () -> io.setPIDWrist(wristkP.get(), wristkI.get(), wristkD.get(), wristkFF.get()),
+        () -> io.setPIDWrist(wristkP.get(), wristkI.get(), wristkD.get(), wristkG.get()),
         wristkP,
         wristkI,
         wristkD,
-        wristkFF);
+        wristkG);
   }
 
   public void setArmTarget(double target) {
@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getRelativeWristTarget() {
-    return wristTarget + inputs.armAbsolutePositionRad;
+    return wristTarget;
   }
 
   public Transform3d getFlywheelPosition() {

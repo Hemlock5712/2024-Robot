@@ -3,7 +3,7 @@ package frc.robot.subsystems.magazine;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 public class MagazineIOSpark implements MagazineIO {
   CANSparkMax leader = new CANSparkMax(18, MotorType.kBrushless);
@@ -29,6 +29,7 @@ public class MagazineIOSpark implements MagazineIO {
         .setReference(speedRPM, ControlType.kVelocity, 0, 0.0, ArbFFUnits.kVoltage);
   }
 
+  @Override
   public void runVoltage(double voltage) {
     leader.setVoltage(voltage);
   }

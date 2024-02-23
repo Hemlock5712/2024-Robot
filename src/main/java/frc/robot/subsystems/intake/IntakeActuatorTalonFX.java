@@ -11,13 +11,16 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class IntakeActuatorTalonFX implements IntakeActuatorIO {
 
   TalonFX intakeMotor;
   CANcoder intakeEncoder;
-  private double kFF;
+  double kG = 0.0;
+
+  TalonFXConfiguration intakeConfig;
 
   public IntakeActuatorTalonFX() {
     intakeMotor = new TalonFX(60);
@@ -30,7 +33,7 @@ public class IntakeActuatorTalonFX implements IntakeActuatorIO {
         SensorDirectionValue.CounterClockwise_Positive;
     intakeEncoder.getConfigurator().apply(intakeEncoderConfig);
 
-    var intakeConfig = new TalonFXConfiguration();
+    intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
@@ -46,23 +49,34 @@ public class IntakeActuatorTalonFX implements IntakeActuatorIO {
     intakeConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     intakeConfig.Feedback.SensorToMechanismRatio = 1;
     intakeConfig.Feedback.RotorToSensorRatio = 50;
-
     intakeMotor.getConfigurator().apply(intakeConfig);
   }
 
+  @Override
   public void updateInputs(IntakeActuatorIOInputs inputs) {
-    inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue());
-    inputs.targetAngle = Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue());
+    inputs.angle = Rotation2d.fromRotations(intakeEncoder.getPosition().getValue()).getRadians();
+    inputs.targetAngle =
+        Rotation2d.fromRotations(intakeMotor.getClosedLoopReference().getValue()).getRadians();
     inputs.currentAmps = new double[] {intakeMotor.getSupplyCurrent().getValue()};
     inputs.tempCelcius = new double[] {intakeMotor.getDeviceTemp().getValue()};
   }
 
+  @Override
   public void setIntakeAngle(double angleRad) {
     var control = new PositionVoltage(0);
     intakeMotor.setControl(
         control
             .withPosition(Units.radiansToRotations(-angleRad + (Math.PI / 2)))
-            .withFeedForward(0)
             .withEnableFOC(true));
+  }
+
+  @Override
+  public void configurePID(double kP, double kI, double kD, double kFF) {
+    intakeConfig.Slot0.kP = kP;
+    intakeConfig.Slot0.kI = kI;
+    intakeConfig.Slot0.kD = kD;
+    intakeConfig.Slot0.kG = kFF;
+    intakeConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    intakeMotor.getConfigurator().apply(intakeConfig);
   }
 }

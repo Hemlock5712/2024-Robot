@@ -21,8 +21,8 @@ public class Intake extends SubsystemBase {
       new LoggedTunableNumber("Intake/kI", ArmConstants.armControlConstants.kI());
   private static final LoggedTunableNumber kD =
       new LoggedTunableNumber("Intake/kD", ArmConstants.armControlConstants.kD());
-  private static final LoggedTunableNumber kFF =
-      new LoggedTunableNumber("Intake/kS", ArmConstants.armControlConstants.kFF());
+  private static final LoggedTunableNumber kG =
+      new LoggedTunableNumber("Intake/kG", ArmConstants.armControlConstants.kG());
 
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();
@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase {
     this.actuatorIO = actuatorIO;
     this.wheelsIO = wheelsIO;
 
-    actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kFF.get());
+    actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kG.get());
   }
 
   @Override
@@ -68,11 +68,11 @@ public class Intake extends SubsystemBase {
     visualizerSetpoint.update(0);
     LoggedTunableNumber.ifChanged(
         hashCode(),
-        () -> actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kFF.get()),
+        () -> actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kG.get()),
         kP,
         kI,
         kD,
-        kFF);
+        kG);
   }
 
   public void intake() {

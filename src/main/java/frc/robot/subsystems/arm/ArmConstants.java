@@ -9,14 +9,15 @@ public final class ArmConstants {
   public static final ArmPositions frontAmp =
       new ArmPositions(Rotation2d.fromDegrees(50), Rotation2d.fromDegrees(35));
   public static final ArmPositions intake =
-      new ArmPositions(Rotation2d.fromDegrees(-25), Rotation2d.fromDegrees(-38));
+      new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(65));
   public static final ArmPositions shoot =
-      new ArmPositions(Rotation2d.fromDegrees(-25), Rotation2d.fromDegrees(-45));
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
         case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
+          // case COMPBOT -> new MotorFeedbackController(100, 0, 0, 0.3);
       };
 
   public static final MotorFeedbackController wristControlConstants =
@@ -30,5 +31,5 @@ public final class ArmConstants {
 
   public record ArmPositions(Rotation2d arm, Rotation2d wrist) {}
 
-  public record MotorFeedbackController(double kP, double kI, double kD, double kFF) {}
+  public record MotorFeedbackController(double kP, double kI, double kD, double kG) {}
 }

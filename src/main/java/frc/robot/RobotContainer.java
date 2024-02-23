@@ -45,12 +45,9 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
-import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
-import frc.robot.subsystems.intake.IntakeWheelIOTalonFX;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
@@ -59,10 +56,8 @@ import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
-import frc.robot.subsystems.magazine.MagazineIOSpark;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
-import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.util.visualizer.NoteVisualizer;
 import frc.robot.util.visualizer.RobotGamePieceVisualizer;
 import frc.robot.util.visualizer.ShotVisualizer;
@@ -105,17 +100,22 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        flywheel = new Flywheel(new FlywheelIOTalonFX());
+        // flywheel = new Flywheel(new FlywheelIOTalonFX());
         arm = new Arm(new ArmIOTalonFX());
-        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
-        magazine = new Magazine(new MagazineIOSpark());
+        // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
+        // magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        aprilTagVision =
-            new AprilTagVision(
-                new AprilTagVisionIOLimelight("limelight-fl"),
-                new AprilTagVisionIOLimelight("limelight-fr"),
-                new AprilTagVisionIOLimelight("limelight-bl"),
-                new AprilTagVisionIOLimelight("limelight-br"));
+        flywheel = new Flywheel(new FlywheelIO() {});
+        // arm = new Arm(new ArmIO() {});
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
+        magazine = new Magazine(new MagazineIO() {});
+        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+        // aprilTagVision =
+        //     new AprilTagVision(
+        //         new AprilTagVisionIOLimelight("limelight-fl"),
+        //         new AprilTagVisionIOLimelight("limelight-fr"),
+        //         new AprilTagVisionIOLimelight("limelight-bl"),
+        //         new AprilTagVisionIOLimelight("limelight-br"));
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations

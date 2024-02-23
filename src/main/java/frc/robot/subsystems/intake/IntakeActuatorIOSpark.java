@@ -22,6 +22,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     inputs.tempCelcius = new double[] {leader.getMotorTemperature()};
   }
 
+  @Override
   public void configurePID(double kP, double kI, double kD, double kFF) {
     leader.getPIDController().setP(kP);
     leader.getPIDController().setI(kI);
@@ -29,6 +30,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     leader.getPIDController().setFF(kFF);
   }
 
+  @Override
   public void setIntakeAngle(double angleRad) {
     leader.getPIDController().setReference(angleRad, ControlType.kPosition);
   }
