@@ -25,6 +25,9 @@ public final class ArmConstants {
         case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 
+  public static final int ARM_GEAR_RATIO = 20;
+  public static final int WRIST_GEAR_RATIO = 15;
+
   public record ArmPositions(Rotation2d arm, Rotation2d wrist) {}
 
   public record MotorFeedbackController(double kP, double kI, double kD, double kFF) {}

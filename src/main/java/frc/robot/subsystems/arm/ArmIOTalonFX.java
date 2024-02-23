@@ -33,16 +33,15 @@ public class ArmIOTalonFX implements ArmIO {
     CANcoderConfiguration armEncoderConfig = new CANcoderConfiguration();
     armEncoderConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    armEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    armEncoderConfig.MagnetSensor.MagnetOffset = 0;
+    armEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    armEncoderConfig.MagnetSensor.MagnetOffset = -.180908;
     armEncoder.getConfigurator().apply(armEncoderConfig);
 
     CANcoderConfiguration wristEncoderConfig = new CANcoderConfiguration();
     wristEncoderConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    wristEncoderConfig.MagnetSensor.SensorDirection =
-        SensorDirectionValue.CounterClockwise_Positive;
-    wristEncoderConfig.MagnetSensor.MagnetOffset = 0;
+    wristEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    wristEncoderConfig.MagnetSensor.MagnetOffset = 0.224121;
     wristEncoder.getConfigurator().apply(wristEncoderConfig);
 
     var armConfig = new TalonFXConfiguration();
@@ -51,7 +50,7 @@ public class ArmIOTalonFX implements ArmIO {
     armConfig.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
     armConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     armConfig.Feedback.SensorToMechanismRatio = 1;
-    armConfig.Feedback.RotorToSensorRatio = 10;
+    armConfig.Feedback.RotorToSensorRatio = ArmConstants.ARM_GEAR_RATIO;
 
     armMotor.getConfigurator().apply(armConfig);
 
@@ -61,7 +60,7 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Feedback.FeedbackRemoteSensorID = wristEncoder.getDeviceID();
     wristConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     wristConfig.Feedback.SensorToMechanismRatio = 1;
-    wristConfig.Feedback.RotorToSensorRatio = 10;
+    wristConfig.Feedback.RotorToSensorRatio = ArmConstants.WRIST_GEAR_RATIO;
 
     wristMotor.getConfigurator().apply(wristConfig);
   }
@@ -72,15 +71,15 @@ public class ArmIOTalonFX implements ArmIO {
         armEncoder.getPosition().refresh().getValue() * Math.PI * 2; // Units.rotationsToRadians
     inputs.armRelativePositionRad = armEncoder.getPosition().refresh().getValue() * Math.PI * 2;
     inputs.armVelocityRadPerSec = armEncoder.getVelocity().refresh().getValue();
-    inputs.armCurrentAmps = new double[] {armMotor.getSupplyCurrent().getValue()};
-    inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().getValue()};
+    inputs.armCurrentAmps = new double[] {armMotor.getSupplyCurrent().refresh().getValue()};
+    inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().refresh().getValue()};
     inputs.wristAbsolutePositionRad =
         (wristEncoder.getPosition().refresh().getValue() * Math.PI * 2)
             - inputs.armRelativePositionRad;
     inputs.wristRelativePositionRad = wristEncoder.getPosition().refresh().getValue() * Math.PI * 2;
     inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().refresh().getValue() * Math.PI * 2;
-    inputs.wristCurrentAmps = new double[] {wristMotor.getSupplyCurrent().getValue()};
-    inputs.wristTempCelcius = new double[] {wristMotor.getDeviceTemp().getValue()};
+    inputs.wristCurrentAmps = new double[] {wristMotor.getSupplyCurrent().refresh().getValue()};
+    inputs.wristTempCelcius = new double[] {wristMotor.getDeviceTemp().refresh().getValue()};
   }
 
   public void setArmTarget(double target) {
