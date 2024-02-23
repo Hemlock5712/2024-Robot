@@ -58,6 +58,7 @@ import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
+import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
 import frc.robot.util.visualizer.NoteVisualizer;
 import frc.robot.util.visualizer.RobotGamePieceVisualizer;
 import frc.robot.util.visualizer.ShotVisualizer;
@@ -101,19 +102,19 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        arm = new Arm(new ArmIOTalonFX());
+        // arm = new Arm(new ArmIOTalonFX());
         // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
         // magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
         flywheel = new Flywheel(new FlywheelIO() {});
-        // arm = new Arm(new ArmIO() {});
+        arm = new Arm(new ArmIO() {});
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
-        aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
-        // aprilTagVision =
-        //     new AprilTagVision(
-        //         new AprilTagVisionIOLimelight("limelight-fl"),
-        //         new AprilTagVisionIOLimelight("limelight-fr"),
+        // aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+        aprilTagVision =
+            new AprilTagVision(
+                new AprilTagVisionIOLimelight("limelight-fl"),
+                new AprilTagVisionIOLimelight("limelight-fr"));
         //         new AprilTagVisionIOLimelight("limelight-bl"),
         //         new AprilTagVisionIOLimelight("limelight-br"));
         break;

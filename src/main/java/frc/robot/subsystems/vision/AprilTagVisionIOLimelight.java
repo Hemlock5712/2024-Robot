@@ -48,14 +48,11 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
    */
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
-    TimestampedString[] queue =
-        observationSubscriber.readQueue(); // Reads the queue of timestamped strings
     ArrayList<PoseEstimate> poseEstimates =
         new ArrayList<>(); // Creates an empty ArrayList to store pose estimates
 
-    // Iterates over each timestamped string in the queue
-    for (int i = 0; i < Math.min(queue.length, 1); i++) {
-      TimestampedString timestampedString = queue[i];
+    TimestampedString timestampedString = observationSubscriber.getAtomic();
+    if (timestampedString.timestamp != 0) {
       double timestamp = timestampedString.timestamp / 1e6; // Converts the timestamp to seconds
       LimelightHelpers.Results results =
           LimelightHelpers.parseJsonDump(timestampedString.value)
@@ -65,7 +62,8 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
       // Checks if there are no targets or if the alliance information is not present
       if (results.targets_Fiducials.length == 0 || !allianceOptional.isPresent()) {
-        continue; // Skips to the next iteration of the loop
+        inputs.poseEstimates = poseEstimates;
+        return; // Skips to the next iteration of the loop
       }
 
       double latencyMS =
