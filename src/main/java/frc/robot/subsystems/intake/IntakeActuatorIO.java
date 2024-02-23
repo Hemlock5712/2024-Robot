@@ -12,8 +12,9 @@ public interface IntakeActuatorIO {
     public boolean isDown = false;
     public double angle = 0;
     public double targetAngle = 0;
-    public double[] CurrentAmps = new double[] {};
-    public double[] TempCelcius = new double[] {};
+    public double appliedVolts = 0;
+    public double[] currentAmps = new double[] {};
+    public double[] tempCelcius = new double[] {};
   }
 
   /** Updates the set of loggable inputs. */
@@ -24,4 +25,6 @@ public interface IntakeActuatorIO {
   // public default void intakeDown() {}
 
   public default void setIntakeAngle(double angleRad) {}
+
+  public default void configurePID(double kP, double kI, double kD, double kFF) {}
 }

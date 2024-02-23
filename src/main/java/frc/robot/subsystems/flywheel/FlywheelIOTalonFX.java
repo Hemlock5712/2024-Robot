@@ -26,9 +26,10 @@ import edu.wpi.first.math.util.Units;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
   private static final double GEAR_RATIO = 1.5;
+  private double kFF = 0.0;
 
-  private final TalonFX leader = new TalonFX(0);
-  private final TalonFX follower = new TalonFX(1);
+  private final TalonFX leader = new TalonFX(53);
+  private final TalonFX follower = new TalonFX(54);
 
   private final StatusSignal<Double> leaderPosition = leader.getPosition();
   private final StatusSignal<Double> leaderVelocity = leader.getVelocity();
@@ -68,17 +69,15 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setVelocity(double velocityRadPerSec, double ffVolts) {
+  public void setVelocity(double velocityRadPerSec) {
     leader.setControl(
-        new VelocityVoltage(
-            Units.radiansToRotations(velocityRadPerSec),
-            0.0,
-            true,
-            ffVolts,
-            0,
-            false,
-            false,
-            false));
+        new VelocityVoltage(Units.radiansToRotations(velocityRadPerSec))
+            .withFeedForward(kFF)
+            .withEnableFOC(true));
+  }
+
+  public void setSpeedRPM(double speedRPM) {
+    setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
   }
 
   @Override
@@ -87,12 +86,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void configurePID(double kP, double kI, double kD) {
+  public void configurePID(double kP, double kI, double kD, double kFF) {
     var config = new Slot0Configs();
     config.kP = kP;
     config.kI = kI;
     config.kD = kD;
+    this.kFF = kFF;
     leader.getConfigurator().apply(config);
   }
 }
-

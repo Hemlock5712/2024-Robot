@@ -54,7 +54,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         new ArrayList<>(); // Creates an empty ArrayList to store pose estimates
 
     // Iterates over each timestamped string in the queue
-    for (int i = 0; i < Math.min(queue.length, 3); i++) {
+    for (int i = 0; i < Math.min(queue.length, 1); i++) {
       TimestampedString timestampedString = queue[i];
       double timestamp = timestampedString.timestamp / 1e6; // Converts the timestamp to seconds
       LimelightHelpers.Results results =

@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
-import frc.robot.commands.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;

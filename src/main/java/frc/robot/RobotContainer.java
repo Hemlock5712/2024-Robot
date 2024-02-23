@@ -35,6 +35,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -44,17 +45,21 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
+import frc.robot.subsystems.intake.IntakeWheelIOTalonFX;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
-import frc.robot.subsystems.intake.IntakeWheesIOSIM;
+import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIO;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
+import frc.robot.subsystems.magazine.MagazineIOSpark;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
@@ -100,10 +105,10 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        flywheel = new Flywheel(new FlywheelIO() {});
-        arm = new Arm(new ArmIO() {});
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
-        magazine = new Magazine(new MagazineIO() {});
+        flywheel = new Flywheel(new FlywheelIOTalonFX());
+        arm = new Arm(new ArmIOTalonFX());
+        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
+        magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIO() {});
         aprilTagVision =
             new AprilTagVision(
@@ -130,7 +135,7 @@ public class RobotContainer {
         //             drive::getPose));
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         arm = new Arm(new ArmIOSim());
-        intake = new Intake(new IntakeActuatorSim(), new IntakeWheesIOSIM());
+        intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
         break;
@@ -311,7 +316,8 @@ public class RobotContainer {
     controller
         .start()
         .and(controller.back())
-        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+        .onTrue(
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
 

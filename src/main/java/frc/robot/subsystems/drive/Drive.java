@@ -320,14 +320,18 @@ public class Drive extends SubsystemBase {
     return new Translation2d(velocityX, velocityY);
   }
 
-  public Optional<Rotation2d> getRotationTargetOverride(){
+  public Optional<Rotation2d> getRotationTargetOverride() {
     // Some condition that should decide if we want to override rotation
-    if(DriverStation.isAutonomous() && SmartController.getInstance().isSmartControlEnabled() && SmartController.getInstance().getDriveModeType() == SmartController.DriveModeType.SPEAKER) {
-        // Return an optional containing the rotation override (this should be a field relative rotation)
-        return Optional.of(SmartController.getInstance().getTargetAimingParameters().robotAngle());
+    if (DriverStation.isAutonomous()
+        && SmartController.getInstance().isSmartControlEnabled()
+        && SmartController.getInstance().getDriveModeType()
+            == SmartController.DriveModeType.SPEAKER) {
+      // Return an optional containing the rotation override (this should be a field relative
+      // rotation)
+      return Optional.of(SmartController.getInstance().getTargetAimingParameters().robotAngle());
     } else {
-        // return an empty optional when we don't want to override the path's rotation
-        return Optional.empty();
+      // return an empty optional when we don't want to override the path's rotation
+      return Optional.empty();
     }
-}
+  }
 }

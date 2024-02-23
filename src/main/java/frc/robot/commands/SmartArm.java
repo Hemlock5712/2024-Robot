@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.lineBreak.LineBreak;
 
 public class SmartArm extends Command {

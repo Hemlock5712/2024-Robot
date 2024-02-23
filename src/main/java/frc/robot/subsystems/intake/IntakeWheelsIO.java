@@ -18,4 +18,6 @@ public interface IntakeWheelsIO {
   public default void updateInputs(IntakeWheelsIOInputs inputs) {}
 
   public default void runRPM(double speedRPM) {}
+
+  public default void runVoltage(double voltage) {}
 }

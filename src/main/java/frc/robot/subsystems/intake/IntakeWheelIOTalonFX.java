@@ -3,18 +3,11 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.sim.TalonFXSimState;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
-public class IntakeWheesIOSIM implements IntakeWheelsIO {
-  TalonFX leader = new TalonFX(45);
-  TalonFXSimState leaderSim = leader.getSimState();
-  FlywheelSim flywheelSim;
+public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
+  TalonFX leader = new TalonFX(30);
 
-  public IntakeWheesIOSIM() {
-    leaderSim = leader.getSimState();
-    flywheelSim = new FlywheelSim(DCMotor.getNeo550(1), 3.0, 0.01);
+  public IntakeWheelIOTalonFX() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     var slot0Configs = config.Slot0;
     slot0Configs.kP = 9.2;
@@ -26,14 +19,10 @@ public class IntakeWheesIOSIM implements IntakeWheelsIO {
 
   @Override
   public void updateInputs(IntakeWheelsIOInputs inputs) {
-    flywheelSim.setInput(leaderSim.getMotorVoltage());
-    flywheelSim.update(0.02);
-    leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
-    leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
     inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
-    inputs.appliedVolts = leaderSim.getMotorVoltage();
-    inputs.currentAmps = new double[] {leaderSim.getSupplyCurrent()};
+    inputs.appliedVolts = leader.getMotorVoltage().refresh().getValue();
+    inputs.currentAmps = new double[] {leader.getSupplyCurrent().refresh().getValue()};
   }
 
   @Override
@@ -44,5 +33,9 @@ public class IntakeWheesIOSIM implements IntakeWheelsIO {
             .withVelocity(speedRPS)
             .withEnableFOC(true)
             .withFeedForward(speedRPS * 0.0135));
+  }
+
+  public void runVoltage(double voltage) {
+    leader.setVoltage(voltage);
   }
 }

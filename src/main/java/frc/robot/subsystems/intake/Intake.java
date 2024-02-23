@@ -6,16 +6,28 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.IntakeConstants;
+import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeActuatorIO actuatorIO;
   private final IntakeWheelsIO wheelsIO;
+
+  private static final LoggedTunableNumber kP =
+      new LoggedTunableNumber("Intake/kP", ArmConstants.armControlConstants.kP());
+  private static final LoggedTunableNumber kI =
+      new LoggedTunableNumber("Intake/kI", ArmConstants.armControlConstants.kI());
+  private static final LoggedTunableNumber kD =
+      new LoggedTunableNumber("Intake/kD", ArmConstants.armControlConstants.kD());
+  private static final LoggedTunableNumber kFF =
+      new LoggedTunableNumber("Intake/kS", ArmConstants.armControlConstants.kFF());
+
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
-  private double targetSpeed = 0;
+  private double targetVoltage = 0;
   private boolean intakeRequest = false;
   private IntakePositions intakePositions = IntakePositions.UP;
 
@@ -26,6 +38,8 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeActuatorIO actuatorIO, IntakeWheelsIO wheelsIO) {
     this.actuatorIO = actuatorIO;
     this.wheelsIO = wheelsIO;
+
+    actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kFF.get());
   }
 
   @Override
@@ -37,7 +51,7 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
-    wheelsIO.runRPM(getTargetSpeed());
+    wheelsIO.runVoltage(getTargetVoltage());
     switch (intakePositions) {
       case BUMPER:
         actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().getRadians());
@@ -52,22 +66,25 @@ public class Intake extends SubsystemBase {
 
     visualizerMeasured.update(actuatorInputs.angle);
     visualizerSetpoint.update(0);
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () -> actuatorIO.configurePID(kP.get(), kI.get(), kD.get(), kFF.get()),
+        kP,
+        kI,
+        kD,
+        kFF);
   }
 
   public void intake() {
-    targetSpeed = 1000;
+    targetVoltage = 8;
   }
 
   public void outtake() {
-    targetSpeed = -1000;
+    targetVoltage = -8;
   }
 
   public void stopIntake() {
-    targetSpeed = 0;
-  }
-
-  public void setSpeed(double speedRPM) {
-    targetSpeed = speedRPM;
+    targetVoltage = 0;
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
@@ -87,9 +104,9 @@ public class Intake extends SubsystemBase {
     return intakeRequest;
   }
 
-  @AutoLogOutput(key = "Intake/TargetSpeed")
-  public double getTargetSpeed() {
-    return targetSpeed;
+  @AutoLogOutput(key = "Intake/TargetVoltage")
+  public double getTargetVoltage() {
+    return targetVoltage;
   }
 
   public enum IntakePositions {

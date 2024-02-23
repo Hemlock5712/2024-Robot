@@ -36,24 +36,24 @@ public class SmartIntake extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      intake.setSpeed(0);
+      intake.stopIntake();
       return;
     }
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
-      intake.setSpeed(IntakeConstants.intakeSpeed);
+      intake.intake();
     } else if (lineBreak.hasGamePiece() && lineBreak.inLowerIntake()) {
       intake.disableIntakeRequest();
       intake.setIntakeMode(IntakePositions.BUMPER);
-      intake.setSpeed(IntakeConstants.intakeSpeed);
+      intake.intake();
     } else {
       intake.setIntakeMode(IntakePositions.UP);
       if (isArmWristInIntakePosition.getAsBoolean()
           && !(lineBreak.isShooterLoaded() || lineBreak.isShooterLong())
           && lineBreak.hasGamePiece()) {
-        intake.setSpeed(1000);
+        intake.intake();
       } else {
-        intake.setSpeed(0);
+        intake.stopIntake();
       }
     }
   }

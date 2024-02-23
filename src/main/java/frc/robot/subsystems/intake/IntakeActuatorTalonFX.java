@@ -11,14 +11,13 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.util.Units;
 
 public class IntakeActuatorTalonFX implements IntakeActuatorIO {
 
-
   TalonFX intakeMotor;
-    CANcoder intakeEncoder;
+  CANcoder intakeEncoder;
+  private double kFF;
 
   public IntakeActuatorTalonFX() {
     intakeMotor = new TalonFX(60);
@@ -49,14 +48,13 @@ public class IntakeActuatorTalonFX implements IntakeActuatorIO {
     intakeConfig.Feedback.RotorToSensorRatio = 50;
 
     intakeMotor.getConfigurator().apply(intakeConfig);
-
   }
 
   public void updateInputs(IntakeActuatorIOInputs inputs) {
     inputs.angle = Units.rotationsToRadians(intakeEncoder.getPosition().getValue());
     inputs.targetAngle = Units.rotationsToRadians(intakeMotor.getClosedLoopReference().getValue());
-    inputs.CurrentAmps = new double[] {intakeMotor.getSupplyCurrent().getValue()};
-    inputs.TempCelcius = new double[] {intakeMotor.getDeviceTemp().getValue()};
+    inputs.currentAmps = new double[] {intakeMotor.getSupplyCurrent().getValue()};
+    inputs.tempCelcius = new double[] {intakeMotor.getDeviceTemp().getValue()};
   }
 
   public void setIntakeAngle(double angleRad) {
