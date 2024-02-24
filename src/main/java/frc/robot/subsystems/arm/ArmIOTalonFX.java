@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -53,14 +52,19 @@ public class ArmIOTalonFX implements ArmIO {
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     armEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     armEncoderConfig.MagnetSensor.MagnetOffset = -.180908;
-    armEncoder.getConfigurator().apply(armEncoderConfig);
 
     wristEncoderConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     wristEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     wristEncoderConfig.MagnetSensor.MagnetOffset = 0.224121;
 
-    wristEncoder.getConfigurator().apply(wristEncoderConfig);
+    for (int i = 0; i < 4; i++) {
+      boolean statusOK = armEncoder.getConfigurator().apply(armEncoderConfig, 0.1) == StatusCode.OK;
+      statusOK =
+          statusOK
+              && wristEncoder.getConfigurator().apply(wristEncoderConfig, 0.1) == StatusCode.OK;
+      if (statusOK) break;
+    }
 
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -72,8 +76,6 @@ public class ArmIOTalonFX implements ArmIO {
     armConfig.Slot0.kI = ArmConstants.armControlConstants.kI();
     armConfig.Slot0.kD = ArmConstants.armControlConstants.kD();
     armConfig.Slot0.kG = ArmConstants.armControlConstants.kG();
-
-    armMotor.getConfigurator().apply(armConfig);
 
     wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -87,7 +89,11 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
     wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
 
-    wristMotor.getConfigurator().apply(wristConfig);
+    for (int i = 0; i < 4; i++) {
+      boolean statusOK = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
+      statusOK = statusOK && armMotor.getConfigurator().apply(armConfig, 0.1) == StatusCode.OK;
+      if (statusOK) break;
+    }
 
     armAbsolutePosition = armEncoder.getAbsolutePosition();
     armSpeed = armEncoder.getVelocity();
@@ -109,9 +115,6 @@ public class ArmIOTalonFX implements ArmIO {
         wristSpeed,
         wristSupplyCurrent,
         wristTemp);
-
-    // armMotor.optimizeBusUtilization();
-    // wristMotor.optimizeBusUtilization();
   }
 
   @Override
@@ -159,33 +162,6 @@ public class ArmIOTalonFX implements ArmIO {
   public void setBrakeMode(boolean armBrake, boolean wristBrake) {
     armMotor.setNeutralMode(armBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
     wristMotor.setNeutralMode(wristBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-  }
-
-  @Override
-  public void setPIDArm(double kP, double kI, double kD, double kFF) {
-    armConfig.Slot0.kP = kP;
-    armConfig.Slot0.kI = kI;
-    armConfig.Slot0.kD = kD;
-    armConfig.Slot0.kG = kFF;
-    armConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-    for (int i = 0; i < 4; i++) {
-      boolean error = armMotor.getConfigurator().apply(armConfig, 0.1) == StatusCode.OK;
-      if (!error) break;
-    }
-  }
-
-  @Override
-  public void setPIDWrist(double kP, double kI, double kD, double kFF) {
-    wristConfig.Slot0.kP = kP;
-    wristConfig.Slot0.kI = kI;
-    wristConfig.Slot0.kD = kD;
-    wristConfig.Slot0.kG = kFF;
-    wristConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-    wristMotor.getConfigurator().apply(wristConfig);
-    for (int i = 0; i < 4; i++) {
-      boolean error = wristMotor.getConfigurator().apply(wristConfig, 0.1) != StatusCode.OK;
-      if (!error) break;
-    }
   }
 
   @Override

@@ -21,7 +21,6 @@ public class Arm extends SubsystemBase {
 
   public Arm(ArmIO io) {
     this.io = io;
-
     visualizerMeasured = new ArmVisualizer("ArmMeasured", null);
     visualizerSetpoint = new ArmVisualizer("ArmSetpoint", new Color8Bit(Color.kOrange));
   }
@@ -29,15 +28,16 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = getRelativeWristTarget();
+    double realWristTarget = getAbsoluteWristTarget();
+    double realArmTarget = getAbsoluteArmTarget();
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", realArmTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
-    io.setArmTarget(armTarget);
+    io.setArmTarget(realArmTarget);
     io.setWristTarget(realWristTarget);
     // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(armTarget, realWristTarget);
+    visualizerSetpoint.update(realArmTarget, realWristTarget);
   }
 
   public void setArmTarget(double target) {
@@ -60,8 +60,12 @@ public class Arm extends SubsystemBase {
     return inputs.armRelativePositionRad;
   }
 
-  public double getRelativeWristTarget() {
+  public double getAbsoluteWristTarget() {
     return wristTarget;
+  }
+
+  public double getAbsoluteArmTarget() {
+    return armTarget;
   }
 
   public Transform3d getFlywheelPosition() {
@@ -82,7 +86,7 @@ public class Arm extends SubsystemBase {
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
     return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(1)))
-        && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
+        && (Math.abs(getAbsoluteWristTarget() - getWristAngleAbsolute())
             < (Units.degreesToRadians(1)));
   }
 

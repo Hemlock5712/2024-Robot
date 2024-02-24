@@ -26,9 +26,5 @@ public interface ArmIO {
 
   public default void setBrakeMode(boolean armBrake, boolean wristBrake) {}
 
-  public default void setPIDArm(double kP, double kI, double kD, double kFF) {}
-
-  public default void setPIDWrist(double kP, double kI, double kD, double kFF) {}
-
   public default void stop() {}
 }

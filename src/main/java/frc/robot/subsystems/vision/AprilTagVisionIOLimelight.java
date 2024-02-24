@@ -52,7 +52,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
         new ArrayList<>(); // Creates an empty ArrayList to store pose estimates
 
     TimestampedString timestampedString = observationSubscriber.getAtomic();
-    if (timestampedString.timestamp != 0) {
+    if (timestampedString.timestamp < 1) {
       double timestamp = timestampedString.timestamp / 1e6; // Converts the timestamp to seconds
       LimelightHelpers.Results results =
           LimelightHelpers.parseJsonDump(timestampedString.value)

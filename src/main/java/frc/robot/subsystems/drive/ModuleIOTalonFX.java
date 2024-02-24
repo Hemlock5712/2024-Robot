@@ -80,15 +80,15 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     for (int i = 0; i < 4; i++) {
-      boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
+      boolean statusOK = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
       setDriveBrakeMode(true);
-      error = error && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
+      statusOK = statusOK && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
       setTurnBrakeMode(true);
-      error =
-          error
+      statusOK =
+          statusOK
               && cancoder.getConfigurator().apply(new CANcoderConfiguration(), 0.1)
                   == StatusCode.OK;
-      if (!error) break;
+      if (statusOK) break;
     }
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();

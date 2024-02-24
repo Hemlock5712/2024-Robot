@@ -31,8 +31,5 @@ public interface FlywheelIO {
   /** Stop in open loop. */
   public default void stop() {}
 
-  /** Set velocity PID constants. */
-  public default void configurePID(double kP, double kI, double kD) {}
-
   public default void setSpeedRPM(double speedRPM) {}
 }
