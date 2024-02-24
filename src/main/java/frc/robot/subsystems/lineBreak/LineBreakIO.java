@@ -11,7 +11,7 @@ public interface LineBreakIO {
 
     @Override
     public void toLog(LogTable table) {
-table.put("LineBreaker/lowerIntake", lineBreakValues.lowerIntake());
+      table.put("LineBreaker/lowerIntake", lineBreakValues.lowerIntake());
       table.put("LineBreaker/upperIntake1", lineBreakValues.upperIntake1());
       table.put("LineBreaker/upperIntake2", lineBreakValues.upperIntake2());
       table.put("LineBreaker/magazine1", lineBreakValues.magazine1());
@@ -21,7 +21,7 @@ table.put("LineBreaker/lowerIntake", lineBreakValues.lowerIntake());
 
     @Override
     public void fromLog(LogTable table) {
-table.get("LineBreaker/lowerIntake", lineBreakValues.lowerIntake());
+      table.get("LineBreaker/lowerIntake", lineBreakValues.lowerIntake());
       table.get("LineBreaker/upperIntake1", lineBreakValues.upperIntake1());
       table.get("LineBreaker/upperIntake2", lineBreakValues.upperIntake2());
       table.get("LineBreaker/magazine1", lineBreakValues.magazine1());
