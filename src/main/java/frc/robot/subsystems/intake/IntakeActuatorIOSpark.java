@@ -5,9 +5,11 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeActuatorIOSpark implements IntakeActuatorIO {
   CANSparkMax motor;
@@ -16,14 +18,17 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
 
   public IntakeActuatorIOSpark() {
     motor = new CANSparkMax(19, MotorType.kBrushless);
+    motor.setInverted(true);
+    motor.setIdleMode(IdleMode.kCoast);
+    motor.setSmartCurrentLimit(30);
     intakeEncoder = new CANcoder(0);
-    pidController = new PIDController(0, 0, 0);
-    pidController.enableContinuousInput(-Math.PI, Math.PI);
+    pidController = new PIDController(1, 0, 0);
+    pidController.enableContinuousInput(0, 2 * Math.PI);
 
     CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
     intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     intakeEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.3288 + 0.25;
+    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.663 + 0.25;
     for (int i = 0; i < 4; i++) {
       boolean statusOK =
           intakeEncoder.getConfigurator().apply(intakeEncoderConfig) == StatusCode.OK;
@@ -41,7 +46,11 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
 
   @Override
   public void setIntakeAngle(double angleRad) {
-    double pidSpeed = pidController.calculate(intakeEncoder.getPosition().getValue(), angleRad);
+    double pidSpeed =
+        pidController.calculate(
+            Rotation2d.fromRotations(intakeEncoder.getAbsolutePosition().refresh().getValue())
+                .getRadians(),
+            angleRad);
     motor.set(pidSpeed);
   }
 }

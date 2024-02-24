@@ -16,8 +16,8 @@ public class Arm extends SubsystemBase {
   ArmVisualizer visualizerMeasured;
   ArmVisualizer visualizerSetpoint;
 
-  private double armTarget = 0;
-  private double wristTarget = 0;
+  private double armTarget = getArmAngleRelative();
+  private double wristTarget = getWristAngleRelative();
 
   public Arm(ArmIO io) {
     this.io = io;
@@ -28,8 +28,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = getAbsoluteWristTarget();
-    double realArmTarget = getAbsoluteArmTarget();
+    double realWristTarget = getRelativeWristTarget();
+    double realArmTarget = getRelativeArmTarget();
     Logger.processInputs("Arm", inputs);
     Logger.recordOutput("Arm/ArmTargetPositionRad", realArmTarget);
     Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
@@ -56,15 +56,19 @@ public class Arm extends SubsystemBase {
     return inputs.wristAbsolutePositionRad;
   }
 
-  public double getArmAngle() {
+  public double getArmAngleAbsolute() {
+    return inputs.armAbsolutePositionRad;
+  }
+
+  public double getArmAngleRelative() {
     return inputs.armRelativePositionRad;
   }
 
-  public double getAbsoluteWristTarget() {
+  public double getRelativeWristTarget() {
     return wristTarget;
   }
 
-  public double getAbsoluteArmTarget() {
+  public double getRelativeArmTarget() {
     return armTarget;
   }
 
@@ -77,16 +81,16 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
   public boolean isArmWristInIntakePosition() {
-    return (Math.abs(ArmConstants.intake.arm().getRadians() - getArmAngle())
+    return (Math.abs(ArmConstants.intake.arm().getRadians() - getArmAngleRelative())
             < (Units.degreesToRadians(1)))
-        && (Math.abs(ArmConstants.intake.wrist().getRadians() - getWristAngleAbsolute())
+        && (Math.abs(ArmConstants.intake.wrist().getRadians() - getWristAngleRelative())
             < (Units.degreesToRadians(1)));
   }
 
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
-    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(1)))
-        && (Math.abs(getAbsoluteWristTarget() - getWristAngleAbsolute())
+    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(1)))
+        && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
             < (Units.degreesToRadians(1)));
   }
 

@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase {
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetVoltage = 0;
   private boolean intakeRequest = false;
-  private IntakePositions intakePositions = IntakePositions.UP;
+  private IntakePositions intakePositions = IntakePositions.BUMPER;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
   IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");

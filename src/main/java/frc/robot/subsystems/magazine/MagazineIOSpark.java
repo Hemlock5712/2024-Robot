@@ -8,6 +8,7 @@ public class MagazineIOSpark implements MagazineIO {
 
   public MagazineIOSpark() {
     leader = new CANSparkMax(18, MotorType.kBrushless);
+    leader.setSmartCurrentLimit(30);
   }
 
   @Override
