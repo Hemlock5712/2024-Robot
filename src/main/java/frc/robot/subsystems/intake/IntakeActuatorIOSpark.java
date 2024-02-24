@@ -18,6 +18,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     motor = new CANSparkMax(19, MotorType.kBrushless);
     intakeEncoder = new CANcoder(0);
     pidController = new PIDController(0, 0, 0);
+    pidController.enableContinuousInput(-Math.PI, Math.PI);
 
     CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
     intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange =
