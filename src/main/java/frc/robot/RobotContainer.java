@@ -44,10 +44,11 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
+import frc.robot.subsystems.intake.IntakeWheelIOTalonFX;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.lineBreak.LineBreak;
@@ -102,13 +103,14 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        flywheel = new Flywheel(new FlywheelIOTalonFX());
+        flywheel = new Flywheel(new FlywheelIO() {});
+        // flywheel = new Flywheel(new FlywheelIOTalonFX());
         arm = new Arm(new ArmIO() {});
         // arm = new Arm(new ArmIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
-        // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
+        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),

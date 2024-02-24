@@ -31,7 +31,7 @@ public class SmartFlywheel extends Command {
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
       // 40.5 SHOOT SPEEED
-      flywheel.setSpeedRotPerSec(40.5);
+      flywheel.setSpeedRotPerSec(0);
       return;
     }
     if (SmartController.getInstance().isSmartControlEnabled()) {

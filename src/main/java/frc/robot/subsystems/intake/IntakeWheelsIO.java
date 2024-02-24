@@ -17,7 +17,5 @@ public interface IntakeWheelsIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeWheelsIOInputs inputs) {}
 
-  public default void runRPM(double speedRPM) {}
-
   public default void runVoltage(double voltage) {}
 }

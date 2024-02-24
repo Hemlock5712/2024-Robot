@@ -21,10 +21,9 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     pidController.enableContinuousInput(-Math.PI, Math.PI);
 
     CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
-    intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange =
-        AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    intakeEncoderConfig.MagnetSensor.SensorDirection =
-        SensorDirectionValue.CounterClockwise_Positive;
+    intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    intakeEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.3288 + 0.25;
     for (int i = 0; i < 4; i++) {
       boolean statusOK =
           intakeEncoder.getConfigurator().apply(intakeEncoderConfig) == StatusCode.OK;
@@ -34,7 +33,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
 
   @Override
   public void updateInputs(IntakeActuatorIOInputs inputs) {
-    inputs.angle = motor.getEncoder().getPosition();
+    inputs.angle = intakeEncoder.getAbsolutePosition().refresh().getValue() * (Math.PI * 2.0);
     inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
     inputs.currentAmps = new double[] {motor.getOutputCurrent()};
     inputs.tempCelcius = new double[] {motor.getMotorTemperature()};
