@@ -27,22 +27,12 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
-    shooterSpeedMap.put(Units.inchesToMeters(60), 5000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(80), 6000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(100), 7000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(120), 8000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(140), 9000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(160), 10000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(180), 11000.0);
+    shooterSpeedMap.put(Units.inchesToMeters(10), 40.5);
+    shooterSpeedMap.put(Units.inchesToMeters(20), 40.5);
 
     // Units: radians
-    shooterAngleMap.put(Units.inchesToMeters(60), Units.degreesToRadians(-45));
-    shooterAngleMap.put(Units.inchesToMeters(80), Units.degreesToRadians(-38));
-    shooterAngleMap.put(Units.inchesToMeters(100), Units.degreesToRadians(-34));
-    shooterAngleMap.put(Units.inchesToMeters(120), Units.degreesToRadians(-32));
-    shooterAngleMap.put(Units.inchesToMeters(140), Units.degreesToRadians(-30));
-    shooterAngleMap.put(Units.inchesToMeters(160), Units.degreesToRadians(-29));
-    shooterAngleMap.put(Units.inchesToMeters(180), Units.degreesToRadians(-28));
+    shooterAngleMap.put(Units.inchesToMeters(10), Units.degreesToRadians(-45));
+    shooterAngleMap.put(Units.inchesToMeters(20), Units.degreesToRadians(-38));
 
     // Units: seconds
     flightTimeMap.put(Units.inchesToMeters(40), 0.5);

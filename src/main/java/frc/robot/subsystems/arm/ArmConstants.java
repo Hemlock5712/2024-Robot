@@ -9,21 +9,20 @@ public final class ArmConstants {
   public static final ArmPositions frontAmp =
       new ArmPositions(Rotation2d.fromDegrees(50), Rotation2d.fromDegrees(35));
   public static final ArmPositions intake =
-      new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(65));
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(63));
   public static final ArmPositions shoot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(5, 0, 0, 0);
-          // case COMPBOT -> new MotorFeedbackController(100, 0, 0, 0.3);
+        case COMPBOT -> new MotorFeedbackController(160, 0, 0, 0.3);
       };
 
   public static final MotorFeedbackController wristControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
+        case COMPBOT -> new MotorFeedbackController(20, 0, 0, 0);
       };
 
   public static final int ARM_GEAR_RATIO = 20;

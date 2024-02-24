@@ -14,11 +14,13 @@ public class LineBreakIODigitalInput implements LineBreakIO {
   public void updateInputs(LineBreakIOInputs inputs) {
     inputs.lineBreakValues =
         new LineBreakValues(
-            lowerIntakeSensor.get(),
-            upperIntake1Sensor.get(),
-            upperIntake2Sensor.get(),
-            magazine1Sensor.get(),
-            magazine2Sensor.get(),
-            magazine3Sensor.get());
+            // lowerIntakeSensor.get(),
+            // upperIntake1Sensor.get(),
+            // upperIntake2Sensor.get(),
+
+            // magazine1Sensor.get(),
+            // magazine2Sensor.get(),
+            // magazine3Sensor.get());
+            false, false, false, false, false, false);
   }
 }

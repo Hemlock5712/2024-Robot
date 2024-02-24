@@ -45,19 +45,18 @@ public class FlywheelIOSim implements FlywheelIO {
     leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
     leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
+    inputs.velocityRotPerSec = leader.getVelocity().refresh().getValue();
     inputs.appliedVolts = leaderSim.getMotorVoltage();
     inputs.currentAmps =
         new double[] {leaderSim.getSupplyCurrent(), followerSim.getSupplyCurrent()};
   }
 
   @Override
-  public void setSpeedRPM(double speedRPM) {
-    double speedRPS = speedRPM / 60.0;
+  public void setSpeedRPM(double speedRotPerSec) {
     leader.setControl(
         new VelocityVoltage(0)
-            .withVelocity(speedRPS)
+            .withVelocity(speedRotPerSec)
             .withEnableFOC(true)
-            .withFeedForward(speedRPS * 0.0135));
+            .withFeedForward(speedRotPerSec * 0.0135));
   }
 }

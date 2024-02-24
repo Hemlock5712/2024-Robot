@@ -44,6 +44,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
@@ -55,6 +56,7 @@ import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
+import frc.robot.subsystems.magazine.MagazineIOSpark;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
@@ -100,16 +102,13 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        // arm = new Arm(new ArmIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
-        // magazine = new Magazine(new MagazineIOSpark());
-        lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        flywheel = new Flywheel(new FlywheelIO() {});
+        flywheel = new Flywheel(new FlywheelIOTalonFX());
         arm = new Arm(new ArmIO() {});
+        // arm = new Arm(new ArmIOTalonFX());
+        magazine = new Magazine(new MagazineIOSpark());
+        lineBreak = new LineBreak(new LineBreakIODigitalInput());
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
-        magazine = new Magazine(new MagazineIO() {});
-        // aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
+        // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
@@ -127,12 +126,6 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         flywheel = new Flywheel(new FlywheelIOSim());
-        // aprilTagVision =
-        //     new AprilTagVision(
-        //         new AprilTagVisionIOPhotonVisionSIM(
-        //             "photonCamera1",
-        //             new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
-        //             drive::getPose));
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         arm = new Arm(new ArmIOSim());
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
@@ -185,17 +178,6 @@ public class RobotContainer {
             .andThen(
                 new ScheduleCommand(
                     Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
-    // NamedCommands.registerCommand(
-    //     "SIMGamePiecePickup", new ScheduleCommand(new SimulateGamePiecePickup(lineBreak, arm)));
-
-    /*
-    Register a command that calls the SimulateGamePiecePickup command without blocking.
-    Currently broken, due to what seems like a race condition.
-     */
-    // NamedCommands.registerCommand(
-    //     "SIMGamePiecePickup",
-    //     new ScheduleCommand(
-    //         Commands.defer(() -> new SimulateGamePiecePickup(lineBreak, arm), Set.of())));
 
     // Temporary workaround for the above line to prevent blocking at each pickup.
     NamedCommands.registerCommand(
@@ -240,40 +222,6 @@ public class RobotContainer {
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // autoChooser.addOption(
-    // "Flywheel FF Characterization",
-    // new FeedForwardCharacterization(
-    // flywheel, flywheel::runCharacterizationVolts,
-    // flywheel::getCharacterizationVelocity));
-    // NamedCommands.registerCommand(
-    //     "Run Flywheel",
-    //     Commands.startEnd(
-    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel)
-    //         .withTimeout(5.0));
-
-    // Set up SysId routines
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Forward)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Reverse)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Forward)",
-    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Reverse)",
-    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
@@ -306,6 +254,7 @@ public class RobotContainer {
     controller
         .leftBumper()
         .whileTrue(Commands.runOnce(() -> SmartController.getInstance().toggleDriveMode()));
+
     controller
         .rightBumper()
         .whileTrue(
@@ -319,7 +268,11 @@ public class RobotContainer {
         .onTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
-    controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
+    // controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
+
+    controller
+        .a()
+        .whileTrue(Commands.startEnd(() -> magazine.forward(), () -> magazine.stop(), magazine));
 
     controller
         .b()

@@ -13,7 +13,6 @@
 
 package frc.robot.subsystems.flywheel;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -31,16 +30,13 @@ public class Flywheel extends SubsystemBase {
       new LoggedTunableNumber("Flywheel/kI", FlywheelConstants.FeedbackController.kI());
   private static final LoggedTunableNumber kD =
       new LoggedTunableNumber("Flywheel/kD", FlywheelConstants.FeedbackController.kD());
-  private static final LoggedTunableNumber kFF =
-      new LoggedTunableNumber("Flywheel/kFF", FlywheelConstants.FeedbackController.kFF());
 
   private double targetSpeed = 0.0;
-  private boolean voltageMode = false;
 
   /** Creates a new Flywheel. */
   public Flywheel(FlywheelIO io) {
     this.io = io;
-    io.configurePID(kP.get(), kI.get(), kD.get(), kFF.get());
+    io.configurePID(kP.get(), kI.get(), kD.get());
   }
 
   // Configure SysId
@@ -54,31 +50,21 @@ public class Flywheel extends SubsystemBase {
   //         new SysIdRoutine.Mechanism(voltage -> runVolts(voltage.in(Volts)), null, this));
 
   @Override
+  // 12V is 100RPS
+  // 3V/50RPS .12 = kV = output V/targetinput RPS
+
+  // kv = .17 this was found by supplying motor 3V and converting rad/s to rot/s and doing
+  // 3V/(rot/s)
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    if (!voltageMode) {
-      io.setSpeedRPM(targetSpeed);
-    } else {
-      io.setVoltage(targetSpeed);
-    }
+    io.setSpeedRotPerSec(targetSpeed);
     LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> io.configurePID(kP.get(), kI.get(), kD.get(), kFF.get()),
-        kP,
-        kI,
-        kD,
-        kFF);
+        hashCode(), () -> io.configurePID(kP.get(), kI.get(), kD.get()), kP, kI, kD);
   }
 
-  public void setSpeedRPM(double speedRPM) {
-    voltageMode = false;
-    targetSpeed = speedRPM;
-  }
-
-  public void runVolts(double volts) {
-    voltageMode = true;
-    targetSpeed = volts;
+  public void setSpeedRotPerSec(double speedRotPerSec) {
+    targetSpeed = speedRotPerSec;
   }
 
   /** Stops the flywheel. */
@@ -96,10 +82,10 @@ public class Flywheel extends SubsystemBase {
   //   return sysId.dynamic(direction);
   // }
 
-  /** Returns the current velocity in RPM. */
+  /** Returns the current velocity in Rot Per Sec. */
   @AutoLogOutput
-  public double getVelocityRPM() {
-    return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
+  public double getVelocityRotPerSec() {
+    return inputs.velocityRotPerSec;
   }
 
   @AutoLogOutput(key = "Flywheel/TargetSpeed")
@@ -107,19 +93,7 @@ public class Flywheel extends SubsystemBase {
     return targetSpeed;
   }
 
-  @AutoLogOutput(key = "Flywheel/TargetSpeedRadPerSec")
-  public double getTargetSpeedRadPerSec() {
-    // Convert RPM to RadPerSec
-    return targetSpeed / 60.0 * 2.0 * Math.PI;
-  }
-
   public boolean atTargetSpeed() {
-    return Math.abs(inputs.velocityRadPerSec - getTargetSpeedRadPerSec()) < 100;
-  }
-
-  @AutoLogOutput(key = "Flywheel/VelocityMetersPerSec")
-  public double getVelocityMetersPerSec() {
-    // Convert Radians per second to Meters per second
-    return inputs.velocityRadPerSec * .0254;
+    return Math.abs(inputs.velocityRotPerSec - getTargetSpeed()) < 100;
   }
 }

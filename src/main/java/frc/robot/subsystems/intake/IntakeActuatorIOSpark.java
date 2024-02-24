@@ -12,7 +12,11 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     leader.getPIDController().setI(0);
     leader.getPIDController().setD(0);
     leader.getPIDController().setFF(0);
+
+    resetAngleToUp();
   }
+
+  public void resetAngleToUp() {}
 
   @Override
   public void updateInputs(IntakeActuatorIOInputs inputs) {

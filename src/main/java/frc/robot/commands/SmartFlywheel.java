@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.util.LoggedTunableNumber;
 
 public class SmartFlywheel extends Command {
   Flywheel flywheel;
+  private static final LoggedTunableNumber targetSpeed =
+      new LoggedTunableNumber("Flywheel/targetSpeed", 1000);
 
   /** Creates a new SmartFlywheel. */
   public SmartFlywheel(Flywheel flywheel) {
@@ -27,15 +30,16 @@ public class SmartFlywheel extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      flywheel.setSpeedRPM(0);
+      // 40.5 SHOOT SPEEED
+      flywheel.setSpeedRotPerSec(40.5);
       return;
     }
     if (SmartController.getInstance().isSmartControlEnabled()) {
-      flywheel.setSpeedRPM(
+      flywheel.setSpeedRotPerSec(
           SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
 
     } else {
-      flywheel.setSpeedRPM(0);
+      flywheel.setSpeedRotPerSec(0);
     }
   }
 

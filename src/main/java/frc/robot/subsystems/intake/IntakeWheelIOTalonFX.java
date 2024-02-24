@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
   TalonFX leader = new TalonFX(30);
@@ -14,6 +15,7 @@ public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
     config.Feedback.SensorToMechanismRatio = 3.0;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leader.getConfigurator().apply(config);
   }
 
@@ -35,6 +37,7 @@ public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
             .withFeedForward(speedRPS * 0.0135));
   }
 
+  @Override
   public void runVoltage(double voltage) {
     leader.setVoltage(voltage);
   }

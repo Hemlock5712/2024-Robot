@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.util.Units;
@@ -58,23 +59,33 @@ public class ArmIOTalonFX implements ArmIO {
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     wristEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     wristEncoderConfig.MagnetSensor.MagnetOffset = 0.224121;
+
     wristEncoder.getConfigurator().apply(wristEncoderConfig);
 
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     armConfig.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-    armConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    armConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     armConfig.Feedback.SensorToMechanismRatio = 1;
-    armConfig.Feedback.RotorToSensorRatio = ArmConstants.ARM_GEAR_RATIO;
+
+    armConfig.Slot0.kP = ArmConstants.armControlConstants.kP();
+    armConfig.Slot0.kI = ArmConstants.armControlConstants.kI();
+    armConfig.Slot0.kD = ArmConstants.armControlConstants.kD();
+    armConfig.Slot0.kG = ArmConstants.armControlConstants.kG();
 
     armMotor.getConfigurator().apply(armConfig);
 
     wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wristConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     wristConfig.Feedback.FeedbackRemoteSensorID = wristEncoder.getDeviceID();
-    wristConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    wristConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     wristConfig.Feedback.SensorToMechanismRatio = 1;
-    wristConfig.Feedback.RotorToSensorRatio = ArmConstants.WRIST_GEAR_RATIO;
+
+    wristConfig.Slot0.kP = ArmConstants.wristControlConstants.kP();
+    wristConfig.Slot0.kI = ArmConstants.wristControlConstants.kI();
+    wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
+    wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
 
     wristMotor.getConfigurator().apply(wristConfig);
 
@@ -99,8 +110,8 @@ public class ArmIOTalonFX implements ArmIO {
         wristSupplyCurrent,
         wristTemp);
 
-    armMotor.optimizeBusUtilization();
-    wristMotor.optimizeBusUtilization();
+    // armMotor.optimizeBusUtilization();
+    // wristMotor.optimizeBusUtilization();
   }
 
   @Override
@@ -115,16 +126,16 @@ public class ArmIOTalonFX implements ArmIO {
         wristSupplyCurrent,
         wristTemp);
 
+    inputs.armRelativePositionRad = armAbsolutePosition.getValue() * Math.PI * 2;
     inputs.armAbsolutePositionRad =
         armAbsolutePosition.getValue() * Math.PI * 2; // Units.rotationsToRadians
-    inputs.armRelativePositionRad = armAbsolutePosition.getValue() * Math.PI * 2;
     inputs.armVelocityRadPerSec = armSpeed.getValue() * Math.PI * 2;
     inputs.armCurrentAmps = new double[] {armSupplyCurrent.getValue()};
     inputs.armTempCelcius = new double[] {armTemp.getValue()};
 
-    inputs.wristAbsolutePositionRad = wristAbsolutePosition.getValue() * Math.PI * 2;
-    inputs.wristRelativePositionRad =
-        inputs.wristAbsolutePositionRad - inputs.armRelativePositionRad;
+    inputs.wristRelativePositionRad = wristAbsolutePosition.getValue() * Math.PI * 2;
+    inputs.wristAbsolutePositionRad =
+        inputs.wristRelativePositionRad - inputs.armRelativePositionRad;
     inputs.wristVelocityRadPerSec = wristSpeed.getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristSupplyCurrent.getValue()};
     inputs.wristTempCelcius = new double[] {wristTemp.refresh().getValue()};
@@ -172,8 +183,14 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
     wristMotor.getConfigurator().apply(wristConfig);
     for (int i = 0; i < 4; i++) {
-      boolean error = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
+      boolean error = wristMotor.getConfigurator().apply(wristConfig, 0.1) != StatusCode.OK;
       if (!error) break;
     }
+  }
+
+  @Override
+  public void stop() {
+    wristMotor.stopMotor();
+    armMotor.stopMotor();
   }
 }

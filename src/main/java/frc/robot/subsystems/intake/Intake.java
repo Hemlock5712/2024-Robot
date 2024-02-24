@@ -5,8 +5,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.IntakeConstants;
-import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -16,13 +14,13 @@ public class Intake extends SubsystemBase {
   private final IntakeWheelsIO wheelsIO;
 
   private static final LoggedTunableNumber kP =
-      new LoggedTunableNumber("Intake/kP", ArmConstants.armControlConstants.kP());
+      new LoggedTunableNumber("Intake/kP", IntakeConstants.FeedbackController.kP());
   private static final LoggedTunableNumber kI =
-      new LoggedTunableNumber("Intake/kI", ArmConstants.armControlConstants.kI());
+      new LoggedTunableNumber("Intake/kI", IntakeConstants.FeedbackController.kI());
   private static final LoggedTunableNumber kD =
-      new LoggedTunableNumber("Intake/kD", ArmConstants.armControlConstants.kD());
+      new LoggedTunableNumber("Intake/kD", IntakeConstants.FeedbackController.kD());
   private static final LoggedTunableNumber kG =
-      new LoggedTunableNumber("Intake/kG", ArmConstants.armControlConstants.kG());
+      new LoggedTunableNumber("Intake/kFF", IntakeConstants.FeedbackController.kFF());
 
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();

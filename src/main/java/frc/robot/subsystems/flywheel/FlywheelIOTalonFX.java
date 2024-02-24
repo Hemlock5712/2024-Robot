@@ -14,19 +14,15 @@
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
-  private static final double GEAR_RATIO = 1.5;
-  private double kFF = 0.0;
 
   private final TalonFX leader = new TalonFX(53);
   private final TalonFX follower = new TalonFX(54);
@@ -36,15 +32,18 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Double> leaderAppliedVolts = leader.getMotorVoltage();
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
   private final StatusSignal<Double> followerCurrent = follower.getSupplyCurrent();
+  TalonFXConfiguration config = new TalonFXConfiguration();
 
   public FlywheelIOTalonFX() {
-    var config = new TalonFXConfiguration();
+
     config.CurrentLimits.SupplyCurrentLimit = 30.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    // config.Slot0.kV = 0.0;
+    config.Slot0.kV = 0.148;
     leader.getConfigurator().apply(config);
     follower.getConfigurator().apply(config);
-    follower.setControl(new Follower(leader.getDeviceID(), false));
+    follower.setControl(new Follower(leader.getDeviceID(), true));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
@@ -56,28 +55,15 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   public void updateInputs(FlywheelIOInputs inputs) {
     BaseStatusSignal.refreshAll(
         leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
-    inputs.velocityRadPerSec =
-        Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / GEAR_RATIO;
+    inputs.velocityRotPerSec = leaderVelocity.getValueAsDouble();
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
     inputs.currentAmps =
         new double[] {leaderCurrent.getValueAsDouble(), followerCurrent.getValueAsDouble()};
   }
 
   @Override
-  public void setVoltage(double volts) {
-    leader.setControl(new VoltageOut(volts));
-  }
-
-  @Override
-  public void setVelocity(double velocityRadPerSec) {
-    leader.setControl(
-        new VelocityVoltage(Units.radiansToRotations(velocityRadPerSec))
-            .withFeedForward(kFF)
-            .withEnableFOC(true));
-  }
-
-  public void setSpeedRPM(double speedRPM) {
-    setVelocity(Units.rotationsPerMinuteToRadiansPerSecond(speedRPM));
+  public void setSpeedRotPerSec(double velocityRotPerSec) {
+    leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
   }
 
   @Override
@@ -86,12 +72,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void configurePID(double kP, double kI, double kD, double kFF) {
-    var config = new Slot0Configs();
-    config.kP = kP;
-    config.kI = kI;
-    config.kD = kD;
-    this.kFF = kFF;
-    leader.getConfigurator().apply(config);
+  public void configurePID(double kP, double kI, double kD) {
+    config.Slot0.kP = kP;
+    config.Slot0.kI = kI;
+    config.Slot0.kD = kD;
+    for (int i = 0; i < 4; i++) {
+      boolean error = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      if (!error) break;
+    }
   }
 }

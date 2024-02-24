@@ -26,8 +26,7 @@ public class SmartArm extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      arm.setArmTarget(arm.getArmAngle());
-      arm.setWristTarget(arm.getWristAngleRelative());
+      arm.stop();
       return;
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
