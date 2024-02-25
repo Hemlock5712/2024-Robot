@@ -17,7 +17,9 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -45,8 +47,10 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelIOTalonFX;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
@@ -103,22 +107,22 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        flywheel = new Flywheel(new FlywheelIO() {});
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        // flywheel = new Flywheel(new FlywheelIO() {});
+        flywheel = new Flywheel(new FlywheelIOTalonFX());
         // arm = new Arm(new ArmIO() {});
         arm = new Arm(new ArmIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
         // magazine = new Magazine(new MagazineIO() {});
 
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelIOTalonFX());
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelIOTalonFX() {});
+        // intake = new Intake(new IntakeActuatorIOSpark() {}, new IntakeWheelIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
-                new AprilTagVisionIOLimelight("limelight-fr"));
-        //         new AprilTagVisionIOLimelight("limelight-bl"),
-        //         new AprilTagVisionIOLimelight("limelight-br"));
+                new AprilTagVisionIOLimelight("limelight-fr"),
+                new AprilTagVisionIOLimelight("limelight-bl"),
+                new AprilTagVisionIOLimelight("limelight-br"));
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -274,23 +278,22 @@ public class RobotContainer {
 
     // controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
 
-    // controller
-    //     .a()
-    //     .whileTrue(Commands.startEnd(() -> magazine.forward(), () -> magazine.stop(), magazine));
+    controller.a().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+
+    controller
+        .x()
+        .whileTrue(
+            Commands.run(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(new Translation2d(2.90, 5.42), Rotation2d.fromDegrees(180))))
+                .ignoringDisable(true));
 
     controller
         .b()
         .whileTrue(
             Commands.startEnd(
                 () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
-
-    controller
-        .x()
-        .whileTrue(
-            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
-                .alongWith(
-                    new ScheduleCommand(
-                        Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));

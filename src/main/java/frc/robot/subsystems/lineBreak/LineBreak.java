@@ -85,6 +85,16 @@ public class LineBreak extends SubsystemBase {
     return inputs.lineBreakValues.magazine1();
   }
 
+  @AutoLogOutput(key = "/LineBreak/upperIntake1Sensor")
+  public boolean isupperIntake1Sensor() {
+    return inputs.lineBreakValues.upperIntake1();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/upperInt2Sensor")
+  public boolean isupperIntake2Sensor() {
+    return inputs.lineBreakValues.upperIntake2();
+  }
+
   public void bumpGamePiece() {
     lineBreakIO.bumpGamePiece();
     RobotGamePieceVisualizer.drawGamePieces();

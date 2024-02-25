@@ -8,6 +8,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -39,7 +40,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
     observationSubscriber =
         limelightTable
-            .getDoubleArrayTopic("botpose")
+            .getDoubleArrayTopic("botpose_wpiblue")
             .subscribe(
                 new double[] {}, PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
   }
@@ -54,7 +55,9 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     ArrayList<PoseEstimate> poseEstimates =
         new ArrayList<>(); // Creates an empty ArrayList to store pose estimates
 
-    TimestampedDoubleArray[] queue = observationSubscriber.readQueue();
+    TimestampedDoubleArray[] queue =
+        new TimestampedDoubleArray[] {observationSubscriber.getAtomic()};
+
     for (int i = 0; i < queue.length; i++) {
       TimestampedDoubleArray timestampedDouble = queue[i];
       double timestamp = timestampedDouble.timestamp / 1e6; // Converts the timestamp to seconds
@@ -74,9 +77,10 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
           new Pose3d(
               new Translation3d(poseReading[0], poseReading[1], poseReading[2]),
               new Rotation3d(
-                  poseReading[3],
-                  poseReading[4],
-                  poseReading[5])); // Retrieves the pose estimation for the robot
+                  Rotation2d.fromDegrees(poseReading[3]).getRadians(),
+                  Rotation2d.fromDegrees(poseReading[4]).getRadians(),
+                  Rotation2d.fromDegrees(poseReading[5])
+                      .getRadians())); // Retrieves the pose estimation for the robot
       double averageTagDistance = poseReading[9]; // Initializes the average tag distance to 0.0
       double tagCount = poseReading[7];
       timestamp -= (latencyMS / 1e3); // Adjusts the timestamp by subtracting the latency in seconds

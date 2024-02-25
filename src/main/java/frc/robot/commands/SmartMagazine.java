@@ -13,6 +13,8 @@ import frc.robot.subsystems.magazine.Magazine;
 public class SmartMagazine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
+  boolean upperInt2Sensor = false;
+  double multiplier = 1.0;
 
   /** Creates a new SmartMagazine. */
   public SmartMagazine(Magazine magazine, LineBreak lineBreak) {
@@ -33,11 +35,32 @@ public class SmartMagazine extends Command {
       magazine.stop();
       return;
     }
+
+    if (lineBreak.hasNoGamePiece()) {
+      multiplier = 1.0;
+      upperInt2Sensor = false;
+    }
+
+    if (lineBreak.isupperIntake2Sensor()) {
+      upperInt2Sensor = true;
+    }
+
+    if (upperInt2Sensor && !lineBreak.isupperIntake2Sensor()) {
+      if (lineBreak.isShooterLong()) {
+        magazine.slowBackward(multiplier);
+        multiplier *= 1.001;
+      } else {
+        magazine.stop();
+      }
+      return;
+    }
+
     if (lineBreak.hasGamePiece() && !(lineBreak.isShooterLong() || lineBreak.isShooterLoaded())) {
       magazine.forward();
     } else {
       if (lineBreak.isShooterLong()) {
-        magazine.backward();
+        magazine.slowBackward(multiplier);
+        multiplier *= 1.001;
       } else {
         magazine.stop();
       }

@@ -9,7 +9,7 @@ public final class ArmConstants {
   public static final ArmPositions frontAmp =
       new ArmPositions(Rotation2d.fromDegrees(50), Rotation2d.fromDegrees(35));
   public static final ArmPositions intake =
-      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(63));
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
 

@@ -48,9 +48,7 @@ public class SmartIntake extends Command {
       intake.intake();
     } else {
       intake.setIntakeMode(IntakePositions.UP);
-      if (isArmWristInIntakePosition.getAsBoolean()
-          && !(lineBreak.isShooterLoaded() || lineBreak.isShooterLong())
-          && lineBreak.hasGamePiece()) {
+      if (!(lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && lineBreak.hasGamePiece()) {
         intake.intake();
       } else {
         intake.stopIntake();

@@ -31,8 +31,8 @@ public class SmartController {
     shooterSpeedMap.put(Units.inchesToMeters(20), 40.5);
 
     // Units: radians
-    shooterAngleMap.put(Units.inchesToMeters(10), Units.degreesToRadians(-45));
-    shooterAngleMap.put(Units.inchesToMeters(20), Units.degreesToRadians(-38));
+    shooterAngleMap.put(Units.inchesToMeters(10), Units.degreesToRadians(65));
+    shooterAngleMap.put(Units.inchesToMeters(20), Units.degreesToRadians(65));
 
     // Units: seconds
     flightTimeMap.put(Units.inchesToMeters(40), 0.5);
