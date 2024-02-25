@@ -37,6 +37,10 @@ public class Magazine extends SubsystemBase {
     targetVoltage = -2 * multiplier;
   }
 
+  public void backward() {
+    targetVoltage = -8;
+  }
+
   public void stop() {
     targetVoltage = 0;
   }

@@ -115,8 +115,8 @@ public class RobotContainer {
         // magazine = new Magazine(new MagazineIO() {});
 
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelIOTalonFX() {});
-        // intake = new Intake(new IntakeActuatorIOSpark() {}, new IntakeWheelIOTalonFX());
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelIOTalonFX() {});
+        intake = new Intake(new IntakeActuatorIOSpark() {}, new IntakeWheelIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
@@ -294,6 +294,13 @@ public class RobotContainer {
         .whileTrue(
             Commands.startEnd(
                 () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
+
+    controller
+        .y()
+        .whileTrue(
+            Commands.parallel(
+                Commands.run(() -> intake.outtake(), intake),
+                Commands.run(() -> magazine.backward(), magazine)));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));
