@@ -40,11 +40,6 @@ public class Flywheel extends SubsystemBase {
     targetSpeed = speedRotPerSec;
   }
 
-  /** Stops the flywheel. */
-  public void stop() {
-    io.stop();
-  }
-
   /** Returns the current velocity in Rot Per Sec. */
   @AutoLogOutput
   public double getVelocityRotPerSec() {
@@ -52,11 +47,11 @@ public class Flywheel extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Flywheel/TargetSpeed")
-  public double getTargetSpeed() {
+  public double getTargetRot() {
     return targetSpeed;
   }
 
   public boolean atTargetSpeed() {
-    return Math.abs(inputs.velocityRotPerSec - getTargetSpeed()) < 0.5;
+    return Math.abs(inputs.velocityRotPerSec - getTargetRot()) < 0.5;
   }
 }

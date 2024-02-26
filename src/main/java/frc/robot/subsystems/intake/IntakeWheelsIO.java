@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeWheelsIO {
   @AutoLog
   public static class IntakeWheelsIOInputs {
-    public double velocityRadPerSec = 0.0;
+    public double velocityRotPerSec = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
   }
@@ -17,5 +17,5 @@ public interface IntakeWheelsIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeWheelsIOInputs inputs) {}
 
-  public default void runVoltage(double voltage) {}
+  public default void setSpeedRotPerSec(double velocityRotPerSec) {}
 }

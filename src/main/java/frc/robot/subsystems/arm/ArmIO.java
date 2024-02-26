@@ -25,6 +25,4 @@ public interface ArmIO {
   public default void updateInputs(ArmIOInputs inputs) {}
 
   public default void setBrakeMode(boolean armBrake, boolean wristBrake) {}
-
-  public default void stop() {}
 }

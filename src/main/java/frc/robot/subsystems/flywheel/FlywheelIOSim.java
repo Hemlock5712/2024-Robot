@@ -31,6 +31,7 @@ public class FlywheelIOSim implements FlywheelIO {
     slot0Configs.kP = 2.2;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
+    config.Slot0.kV = 0.148;
 
     config.Feedback.SensorToMechanismRatio = 1.0 / 3.0;
 
@@ -52,11 +53,7 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   @Override
-  public void setSpeedRPM(double speedRotPerSec) {
-    leader.setControl(
-        new VelocityVoltage(0)
-            .withVelocity(speedRotPerSec)
-            .withEnableFOC(true)
-            .withFeedForward(speedRotPerSec * 0.0135));
+  public void setSpeedRotPerSec(double velocityRotPerSec) {
+    leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
   }
 }

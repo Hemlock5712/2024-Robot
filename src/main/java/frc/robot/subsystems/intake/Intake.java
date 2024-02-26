@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
-    wheelsIO.runVoltage(getTargetVoltage());
+    wheelsIO.setSpeedRotPerSec(getTargetRot());
     switch (intakePositions) {
       case BUMPER:
         actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
@@ -55,15 +55,16 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    targetVoltage = 8;
+    setSpeedRotPerSec(15);
   }
 
   public void outtake() {
-    targetVoltage = -8;
+    setSpeedRotPerSec(-15);
   }
 
-  public void stopIntake() {
-    targetVoltage = 0;
+  /** Stops the intake. */
+  public void stop() {
+    setSpeedRotPerSec(0);
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
@@ -83,9 +84,23 @@ public class Intake extends SubsystemBase {
     return intakeRequest;
   }
 
-  @AutoLogOutput(key = "Intake/TargetVoltage")
-  public double getTargetVoltage() {
-    return targetVoltage;
+  public void setSpeedRotPerSec(double speedRotPerSec) {
+    targetSpeed = speedRotPerSec;
+  }
+
+  /** Returns the current velocity in Rot Per Sec. */
+  @AutoLogOutput
+  public double getVelocityRotPerSec() {
+    return wheelsIO.velocityRotPerSec;
+  }
+
+  @AutoLogOutput(key = "Intake/TargetSpeed")
+  public double getTargetRot() {
+    return targetSpeed;
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(wheelsIO.velocityRotPerSec - getTargetSpeed()) < 0.5;
   }
 
   public enum IntakePositions {

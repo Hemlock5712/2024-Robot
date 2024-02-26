@@ -27,9 +27,4 @@ public interface FlywheelIO {
 
   /** Run closed loop at the specified velocity. */
   public default void setSpeedRotPerSec(double velocityRotPerSec) {}
-
-  /** Stop in open loop. */
-  public default void stop() {}
-
-  public default void setSpeedRPM(double speedRPM) {}
 }

@@ -34,7 +34,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   TalonFXConfiguration config = new TalonFXConfiguration();
 
   public FlywheelIOTalonFX() {
-
     config.CurrentLimits.SupplyCurrentLimit = 30.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -44,8 +43,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.Slot0.kD = 0.0;
     config.Slot0.kV = 0.148;
 
-    leader.getConfigurator().apply(config);
-    follower.getConfigurator().apply(config);
+    for (int i = 0; i < 4; i++) {
+      boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      statusOK =
+          statusOK
+              && follower.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      if (statusOK) break;
+    }
     follower.setControl(new Follower(leader.getDeviceID(), true));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -67,10 +71,5 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   @Override
   public void setSpeedRotPerSec(double velocityRotPerSec) {
     leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
-  }
-
-  @Override
-  public void stop() {
-    leader.stopMotor();
   }
 }

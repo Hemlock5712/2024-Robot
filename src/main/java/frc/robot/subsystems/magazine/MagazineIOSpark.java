@@ -5,10 +5,16 @@ import com.revrobotics.CANSparkMax;
 
 public class MagazineIOSpark implements MagazineIO {
   CANSparkMax leader;
+  PIDController pidController;
+  SimpleMotorFeedforward feedForward;
 
   public MagazineIOSpark() {
     leader = new CANSparkMax(18, MotorType.kBrushless);
     leader.setSmartCurrentLimit(30);
+
+    pidController = new PIDController(1.0, 0, 0);
+
+    feedForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
   }
 
   @Override
@@ -19,7 +25,14 @@ public class MagazineIOSpark implements MagazineIO {
   }
 
   @Override
-  public void runVoltage(double voltage) {
-    leader.setVoltage(voltage);
+  public void setSpeedRadPerSec(double velocityRadPerSec) {
+    double pidSpeed =
+        pidController.calculate(
+                leader.getEncoder().getVelocity(),
+                velocityRadPerSec)
+            + feedForward.calculate(
+                leader.getEncoder().getVelocity(),
+                velocityRadPerSec);
+    motor.set(pidSpeed);
   }
 }

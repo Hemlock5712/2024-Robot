@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public class Magazine extends SubsystemBase {
   private final MagazineIO magazineIO;
   private final MagazineIOInputsAutoLogged inputs = new MagazineIOInputsAutoLogged();
-  private double targetVoltage = 0;
+  private double targetSpeed = 0;
 
   /** Creates a new Magazine. */
   public Magazine(MagazineIO magazineIO) {
@@ -22,37 +22,36 @@ public class Magazine extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     magazineIO.updateInputs(inputs);
-    magazineIO.runVoltage(getTargetVoltage());
+    magazineIO.setSpeedRadPerSec(getTargetRad());
   }
 
   public void forward() {
-    targetVoltage = 8;
+    targetSpeed = 6.283;
   }
 
   public void slowForward(double multiplier) {
-    targetVoltage = 2 * multiplier;
+    targetSpeed = 2 * multiplier;
   }
 
   public void slowBackward(double multiplier) {
-    targetVoltage = -2 * multiplier;
+    targetSpeed = -2 * multiplier;
   }
 
   public void backward() {
-    targetVoltage = -8;
+    targetSpeed = -6.283;
   }
 
   public void stop() {
-    targetVoltage = 0;
+    targetSpeed = 0;
   }
 
-  @AutoLogOutput(key = "Magazine/TargetVoltage")
-  public double getTargetVoltage() {
-    return targetVoltage;
+  @AutoLogOutput(key = "Magazine/TargetSpeed")
+  public double getTargetRad() {
+    return targetSpeed;
   }
 
-  @AutoLogOutput(key = "Magazine/VelocitRotPerSec")
+  @AutoLogOutput(key = "Magazine/VelocitRadPerSec")
   public double velocitRadsPerSec() {
-    // Convert Radians per second to Meters per second
-    return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
+    return inputs.velocityRadPerSec;
   }
 }

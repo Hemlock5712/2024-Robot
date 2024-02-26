@@ -32,7 +32,7 @@ public class IntakeWheelsIOSIM implements IntakeWheelsIO {
   }
 
   @Override
-  public void runVoltage(double voltage) {
-    leader.setVoltage(voltage);
+  public void setSpeedRotPerSec(double velocityRotPerSec) {
+    leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
   }
 }

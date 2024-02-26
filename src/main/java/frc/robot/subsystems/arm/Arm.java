@@ -93,8 +93,4 @@ public class Arm extends SubsystemBase {
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
             < (Units.degreesToRadians(5)));
   }
-
-  public void stop() {
-    io.stop();
-  }
 }

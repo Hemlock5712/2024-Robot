@@ -35,14 +35,4 @@ public class MagazineIOSIM implements MagazineIO {
     inputs.appliedVolts = leaderSim.getMotorVoltage();
     inputs.currentAmps = new double[] {leaderSim.getSupplyCurrent()};
   }
-
-  @Override
-  public void runRPM(double speedRPM) {
-    double speedRPS = speedRPM / 60.0;
-    leader.setControl(
-        new VelocityVoltage(0)
-            .withVelocity(speedRPS)
-            .withEnableFOC(true)
-            .withFeedForward(speedRPS * 0.0135));
-  }
 }
