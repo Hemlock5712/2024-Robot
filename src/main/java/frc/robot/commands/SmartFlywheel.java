@@ -8,12 +8,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.util.LoggedTunableNumber;
 
 public class SmartFlywheel extends Command {
   Flywheel flywheel;
-  private static final LoggedTunableNumber targetSpeed =
-      new LoggedTunableNumber("Flywheel/targetSpeed", 1000);
 
   /** Creates a new SmartFlywheel. */
   public SmartFlywheel(Flywheel flywheel) {

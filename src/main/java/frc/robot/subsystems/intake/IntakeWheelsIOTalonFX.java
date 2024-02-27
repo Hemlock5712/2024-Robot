@@ -22,7 +22,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
+public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
 
   private final TalonFX leader = new TalonFX(30);
 
@@ -32,7 +32,7 @@ public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
   TalonFXConfiguration config = new TalonFXConfiguration();
 
-  public IntakeWheelIOTalonFX() {
+  public IntakeWheelsIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = 80.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;

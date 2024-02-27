@@ -13,5 +13,7 @@ public interface MagazineIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(MagazineIOInputs inputs) {}
 
-  public default void setSpeedRadPerSec(double velocityRadPerSec) {}
+  public default void runRPM(double speedRPM) {}
+
+  public default void runVoltage(double voltage) {}
 }

@@ -41,14 +41,10 @@ public class SmartMagazine extends Command {
       upperInt2Sensor = false;
     }
 
-    if (lineBreak.isupperIntake2Sensor()) {
-      upperInt2Sensor = true;
-    }
-
     if (upperInt2Sensor && !lineBreak.isupperIntake2Sensor()) {
       if (lineBreak.isShooterLong()) {
         magazine.slowBackward(multiplier);
-        multiplier *= 1.001;
+        multiplier *= 0.998;
       } else {
         magazine.stop();
       }
@@ -60,7 +56,7 @@ public class SmartMagazine extends Command {
     } else {
       if (lineBreak.isShooterLong()) {
         magazine.slowBackward(multiplier);
-        multiplier *= 1.001;
+        multiplier *= 0.998;
       } else {
         magazine.stop();
       }
