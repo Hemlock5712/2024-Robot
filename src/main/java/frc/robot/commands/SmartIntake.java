@@ -36,7 +36,7 @@ public class SmartIntake extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      intake.stopIntake();
+      intake.stop();
       return;
     }
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {
@@ -51,7 +51,7 @@ public class SmartIntake extends Command {
       if (!(lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && lineBreak.hasGamePiece()) {
         intake.intake();
       } else {
-        intake.stopIntake();
+        intake.stop();
       }
     }
   }

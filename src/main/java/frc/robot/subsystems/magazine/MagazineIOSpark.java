@@ -1,6 +1,10 @@
 package frc.robot.subsystems.magazine;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
 import com.revrobotics.CANSparkMax;
 
 public class MagazineIOSpark implements MagazineIO {
@@ -33,6 +37,6 @@ public class MagazineIOSpark implements MagazineIO {
             + feedForward.calculate(
                 leader.getEncoder().getVelocity(),
                 velocityRadPerSec);
-    motor.set(pidSpeed);
+    leader.set(pidSpeed);
   }
 }

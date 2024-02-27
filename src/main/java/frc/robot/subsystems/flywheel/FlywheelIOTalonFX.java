@@ -14,6 +14,7 @@
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -34,20 +35,18 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   TalonFXConfiguration config = new TalonFXConfiguration();
 
   public FlywheelIOTalonFX() {
-    config.CurrentLimits.SupplyCurrentLimit = 30.0;
+    config.CurrentLimits.SupplyCurrentLimit = 80.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    config.Slot0.kP = 0.0;
+    config.Slot0.kP = 0.3;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
     config.Slot0.kV = 0.148;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;
-      statusOK =
-          statusOK
-              && follower.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      statusOK = statusOK && follower.getConfigurator().apply(config, 0.1) == StatusCode.OK;
       if (statusOK) break;
     }
     follower.setControl(new Follower(leader.getDeviceID(), true));

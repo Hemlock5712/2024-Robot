@@ -14,11 +14,12 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
@@ -31,16 +32,20 @@ public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
   TalonFXConfiguration config = new TalonFXConfiguration();
 
-  public FlywheelIOTalonFX() {
-    config.CurrentLimits.SupplyCurrentLimit = 30.0;
+  public IntakeWheelIOTalonFX() {
+    config.CurrentLimits.SupplyCurrentLimit = 80.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kP = 0.0;
+    config.Slot0.kP = 0.1;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
-    config.Slot0.kV = 0.0;
+    config.Slot0.kV = 0.1719;
+    // config.Slot0.kP = 0.1;
+    // config.Slot0.kI = 0.0;
+    // config.Slot0.kD = 0.0;
+    // config.Slot0.kV = 0.1674;
 
     leader.getConfigurator().apply(config);
     for (int i = 0; i < 4; i++) {
@@ -54,17 +59,20 @@ public class IntakeWheelIOTalonFX implements IntakeWheelsIO {
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent);
+  public void updateInputs(IntakeWheelsIOInputs inputs) {
+    BaseStatusSignal.refreshAll(leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent);
     inputs.velocityRotPerSec = leaderVelocity.getValueAsDouble();
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
-    inputs.currentAmps =
-        new double[] {leaderCurrent.getValueAsDouble()};
+    inputs.currentAmps = new double[] {leaderCurrent.getValueAsDouble()};
   }
 
   @Override
   public void setSpeedRotPerSec(double velocityRotPerSec) {
     leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
+  }
+
+  @Override
+  public void setVotSpeed(double appliedVolts) {
+    leader.setVoltage(appliedVolts);
   }
 }

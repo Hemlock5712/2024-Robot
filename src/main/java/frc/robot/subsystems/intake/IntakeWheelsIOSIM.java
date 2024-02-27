@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -26,7 +27,7 @@ public class IntakeWheelsIOSIM implements IntakeWheelsIO {
     leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
     leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
+    inputs.velocityRotPerSec = leader.getVelocity().refresh().getValue();
     inputs.appliedVolts = leaderSim.getMotorVoltage();
     inputs.currentAmps = new double[] {leaderSim.getSupplyCurrent()};
   }

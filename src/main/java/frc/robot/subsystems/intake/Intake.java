@@ -15,7 +15,7 @@ public class Intake extends SubsystemBase {
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
-  private double targetVoltage = 0;
+  private double targetSpeed = 0;
   private boolean intakeRequest = false;
   private IntakePositions intakePositions = IntakePositions.BUMPER;
 
@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase {
   /** Returns the current velocity in Rot Per Sec. */
   @AutoLogOutput
   public double getVelocityRotPerSec() {
-    return wheelsIO.velocityRotPerSec;
+    return wheelsInputs.velocityRotPerSec;
   }
 
   @AutoLogOutput(key = "Intake/TargetSpeed")
@@ -100,7 +100,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    return Math.abs(wheelsIO.velocityRotPerSec - getTargetSpeed()) < 0.5;
+    return Math.abs(wheelsInputs.velocityRotPerSec - getTargetRot()) < 0.5;
   }
 
   public enum IntakePositions {
