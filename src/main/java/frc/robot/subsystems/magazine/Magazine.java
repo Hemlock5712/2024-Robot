@@ -29,6 +29,10 @@ public class Magazine extends SubsystemBase {
     targetVoltage = 6;
   }
 
+  public void backward() {
+    targetVoltage = -6;
+  }
+
   public void slowForward(double multiplier) {
     targetVoltage = 1.5 * multiplier;
   }
