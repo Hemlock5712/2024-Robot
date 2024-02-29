@@ -13,8 +13,6 @@ import frc.robot.subsystems.magazine.Magazine;
 public class SmartMagazine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
-  boolean upperInt2Sensor = false;
-  double multiplier = 1.0;
 
   /** Creates a new SmartMagazine. */
   public SmartMagazine(Magazine magazine, LineBreak lineBreak) {
@@ -31,34 +29,20 @@ public class SmartMagazine extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE
+        || lineBreak.isShooterLoaded()
+        || lineBreak.hasNoGamePiece()) {
       magazine.stop();
       return;
     }
 
-    if (lineBreak.hasNoGamePiece()) {
-      multiplier = 1.0;
-      upperInt2Sensor = false;
-    }
-
-    if (upperInt2Sensor && !lineBreak.isupperIntake2Sensor()) {
-      if (lineBreak.isShooterLong()) {
-        magazine.slowBackward(multiplier);
-        multiplier *= 0.998;
-      } else {
-        magazine.stop();
-      }
-      return;
-    }
-
-    if (lineBreak.hasGamePiece() && !(lineBreak.isShooterLong() || lineBreak.isShooterLoaded())) {
-      magazine.forward();
+    if (lineBreak.isShooterLong()) {
+      magazine.slowBackward();
     } else {
-      if (lineBreak.isShooterLong()) {
-        magazine.slowBackward(multiplier);
-        multiplier *= 0.998;
+      if (lineBreak.isMagazine1Sensor() || lineBreak.isMagazine2Sensor()) {
+        magazine.slowForward();
       } else {
-        magazine.stop();
+        magazine.forward();
       }
     }
   }

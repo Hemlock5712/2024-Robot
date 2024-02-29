@@ -39,10 +39,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    config.Slot0.kP = 0.3;
+    config.Slot0.kP = 0.2;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
-    config.Slot0.kV = 0.148;
+    config.Slot0.kV = 10.0 / 67.5;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;

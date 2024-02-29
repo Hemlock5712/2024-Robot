@@ -70,8 +70,8 @@ public final class DriveConstants {
               new ModuleConfig(1, 2, 9, Rotation2d.fromRotations(0.451172), true),
               // -0.306641
               new ModuleConfig(3, 4, 10, Rotation2d.fromRotations(0.193359), true),
-              // 0.015869
-              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(0.515869), true),
+              // 0.515869
+              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(0.987061), true),
               // -0.054199
               new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(0.445801), true)
             };

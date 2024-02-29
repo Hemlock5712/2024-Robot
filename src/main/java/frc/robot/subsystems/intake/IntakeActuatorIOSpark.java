@@ -24,15 +24,15 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     motor.setIdleMode(IdleMode.kCoast);
     motor.setSmartCurrentLimit(30);
     intakeEncoder = new CANcoder(0);
-    pidController = new PIDController(1.0, 0, 0);
+    pidController = new PIDController(0.3, 0, 0);
     pidController.enableContinuousInput(0, 2 * Math.PI);
     // Create a new ArmFeedforward with gains kS, kG, kV, and kA
-    feedForward = new ArmFeedforward(0, 0.12, 0, 0);
+    feedForward = new ArmFeedforward(0, 0.06, 0, 0);
 
     CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
     intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     intakeEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.699 + 0.25;
+    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.900 + 0.25;
     for (int i = 0; i < 4; i++) {
       boolean statusOK =
           intakeEncoder.getConfigurator().apply(intakeEncoderConfig) == StatusCode.OK;

@@ -17,9 +17,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -50,11 +48,13 @@ import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
 import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.lineBreak.LineBreakIO;
 import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
@@ -81,11 +81,11 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Flywheel flywheel;
-  private AprilTagVision aprilTagVision;
-  private Arm arm;
-  private Intake intake;
-  private LineBreak lineBreak;
-  private Magazine magazine;
+  private final AprilTagVision aprilTagVision;
+  private final Arm arm;
+  private final Intake intake;
+  private final LineBreak lineBreak;
+  private final Magazine magazine;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -106,16 +106,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        // flywheel = new Flywheel(new FlywheelIO() {});
         flywheel = new Flywheel(new FlywheelIOTalonFX());
-        // arm = new Arm(new ArmIO() {});
         arm = new Arm(new ArmIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
-        // magazine = new Magazine(new MagazineIO() {});
-
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelIOTalonFX());
+        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
@@ -153,6 +148,7 @@ public class RobotContainer {
         arm = new Arm(new ArmIO() {});
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
+        lineBreak = new LineBreak(new LineBreakIO() {});
         break;
     }
 
@@ -252,22 +248,10 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
-    intake.setDefaultCommand(
-        new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
+    intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
-
-    controller
-        .leftBumper()
-        .whileTrue(Commands.runOnce(() -> SmartController.getInstance().toggleDriveMode()));
-
-    controller
-        .rightBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> SmartController.getInstance().enableSmartControl(),
-                () -> SmartController.getInstance().disableSmartControl()));
 
     controller
         .start()
@@ -275,35 +259,23 @@ public class RobotContainer {
         .onTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
-    // controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
-
-    controller.a().whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+    controller
+        .leftBumper()
+        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
 
     controller
-        .x()
-        .whileTrue(
-            Commands.run(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(new Translation2d(2.90, 5.42), Rotation2d.fromDegrees(180))))
-                .ignoringDisable(true));
+        .rightBumper()
+        .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest));
 
     controller
         .b()
         .whileTrue(
-            Commands.startEnd(
-                () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
-
-    controller
-        .y()
-        .whileTrue(
             Commands.parallel(
-                Commands.run(() -> intake.outtake(), intake),
-                Commands.run(() -> magazine.backward(), magazine)));
+                Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
-      controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));
-      controller.pov(180).onTrue(new InstantCommand(() -> lineBreak.shootGamePiece()));
+      controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));
+      controller.pov(180).onTrue(new InstantCommand(lineBreak::shootGamePiece));
     }
   }
 

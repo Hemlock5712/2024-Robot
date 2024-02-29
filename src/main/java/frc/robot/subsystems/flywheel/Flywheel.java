@@ -52,6 +52,6 @@ public class Flywheel extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    return Math.abs(inputs.velocityRotPerSec - getTargetRot()) < 0.5;
+    return Math.abs(inputs.velocityRotPerSec - getTargetRot()) < 0.3;
   }
 }
