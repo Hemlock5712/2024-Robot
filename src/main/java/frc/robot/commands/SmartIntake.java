@@ -9,6 +9,8 @@ import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakePositions;
+import frc.robot.subsystems.led.Leds;
+import frc.robot.subsystems.led.LedsConstants;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import java.util.function.BooleanSupplier;
 
@@ -18,13 +20,15 @@ public class SmartIntake extends Command {
   Boolean runArmDown;
   BooleanSupplier isArmWristInIntakePosition;
   LineBreak lineBreak;
+  Leds ledController;
 
   /** Creates a new IntakeDown. */
   public SmartIntake(
-      Intake intake, LineBreak lineBreak, BooleanSupplier isArmWristInIntakePosition) {
+      Intake intake, LineBreak lineBreak, BooleanSupplier isArmWristInIntakePosition, Leds ledController) {
     this.intake = intake;
     this.isArmWristInIntakePosition = isArmWristInIntakePosition;
     this.lineBreak = lineBreak;
+    this.ledController = ledController;
     addRequirements(intake);
   }
 
@@ -39,6 +43,13 @@ public class SmartIntake extends Command {
       intake.stop();
       return;
     }
+    // Set LEDs
+    if(lineBreak.hasGamePiece()) {
+      ledController.setAnimation(LedsConstants.HAS_GAME_PIECE_ANIMATION);
+    } else {
+      ledController.setAnimation(LedsConstants.EMPTY_ANIMATION);
+    }
+
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
       intake.intake();

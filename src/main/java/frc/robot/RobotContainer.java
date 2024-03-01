@@ -54,6 +54,10 @@ import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
+import frc.robot.subsystems.led.Leds;
+import frc.robot.subsystems.led.LedsConstants;
+import frc.robot.subsystems.led.LedsIO;
+import frc.robot.subsystems.led.LedsIOCANdle;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIO;
 import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
@@ -82,11 +86,12 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Flywheel flywheel;
-  private final AprilTagVision aprilTagVision;
-  private final Arm arm;
-  private final Intake intake;
-  private final LineBreak lineBreak;
-  private final Magazine magazine;
+  private AprilTagVision aprilTagVision;
+  private Arm arm;
+  private Intake intake;
+  private LineBreak lineBreak;
+  private Magazine magazine;
+  private Leds leds;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -109,10 +114,10 @@ public class RobotContainer {
 
         flywheel = new Flywheel(new FlywheelIOTalonFX());
         arm = new Arm(new ArmIOTalonFX());
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
+        leds = new Leds(new LedsIOCANdle());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
@@ -135,6 +140,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
+        leds = new Leds(new LedsIO() {});
         break;
       default:
         // Replayed robot, disable IO implementations
@@ -151,6 +157,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
         lineBreak = new LineBreak(new LineBreakIO() {});
+        leds = new Leds(new LedsIO() {});
         break;
     }
 
@@ -205,7 +212,7 @@ public class RobotContainer {
         Commands.parallel(
             new SmartFlywheel(flywheel),
             new SmartArm(arm, lineBreak),
-            new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
+            new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition, leds)));
 
     NamedCommands.registerCommand(
         "IntakeDown", new InstantCommand(() -> intake.enableIntakeRequest()));
@@ -260,11 +267,13 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
-    intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
+    intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition, leds));
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
 
+    new Trigger(DriverStation::isDisabled).onTrue(Commands.run(() -> leds.setAnimation(LedsConstants.DISABLED_ANIMATION)));
+    
     controller
         .start()
         .and(controller.back())
