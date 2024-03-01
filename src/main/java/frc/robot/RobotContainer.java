@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
 import frc.robot.subsystems.arm.Arm;
@@ -111,6 +112,7 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
         intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
@@ -170,10 +172,10 @@ public class RobotContainer {
                     0),
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
-    RobotGamePieceVisualizer.setArmTransformSupplier(() -> arm.getFlywheelPosition());
-    RobotGamePieceVisualizer.setShooterAngleSupplier(() -> arm.getWristAngleAbsolute());
-    RobotGamePieceVisualizer.setIsMagazineLoadedSupplier(() -> lineBreak.hasGamePieceIntake());
-    RobotGamePieceVisualizer.setIsShooterLoadedSupplier(() -> lineBreak.isShooterLoaded());
+    RobotGamePieceVisualizer.setArmTransformSupplier(arm::getFlywheelPosition);
+    RobotGamePieceVisualizer.setShooterAngleSupplier(arm::getWristAngleAbsolute);
+    RobotGamePieceVisualizer.setIsMagazineLoadedSupplier(lineBreak::hasGamePieceIntake);
+    RobotGamePieceVisualizer.setIsShooterLoadedSupplier(lineBreak::isShooterLoaded);
 
     NamedCommands.registerCommand(
         "Shoot",
@@ -225,6 +227,16 @@ public class RobotContainer {
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.addOption(
+        "Flywheel SysId (Quasistatic Forward)",
+        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Flywheel SysId (Quasistatic Reverse)",
+        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Flywheel SysId (Dynamic Forward)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Flywheel SysId (Dynamic Reverse)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);

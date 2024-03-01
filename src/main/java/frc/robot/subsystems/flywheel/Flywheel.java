@@ -13,7 +13,14 @@
 
 package frc.robot.subsystems.flywheel;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,37 +28,92 @@ public class Flywheel extends SubsystemBase {
 
   private final FlywheelIO io;
   private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+  private final SimpleMotorFeedforward ffModel;
+  private final SysIdRoutine sysId;
 
-  private double targetSpeed = 0.0;
+  private double velocityRadPerSec = 0.0;
 
   /** Creates a new Flywheel. */
   public Flywheel(FlywheelIO io) {
     this.io = io;
+
+    switch (Constants.getMode()) {
+      case REAL:
+      case REPLAY:
+        // 10.0 / 67.5
+        ffModel = new SimpleMotorFeedforward(-0.17661, 0.054296, 0.03454);
+        break;
+      case SIM:
+        ffModel = new SimpleMotorFeedforward(0.0, 0.03);
+        break;
+      default:
+        ffModel = new SimpleMotorFeedforward(0.0, 0.0);
+        break;
+    }
+
+    // Configure SysId
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Flywheel/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    io.setSpeedRotPerSec(targetSpeed);
   }
 
-  public void setSpeedRotPerSec(double speedRotPerSec) {
-    targetSpeed = speedRotPerSec;
+  /** Run open loop at the specified voltage. */
+  public void runVolts(double volts) {
+    io.setVoltage(volts);
   }
 
-  /** Returns the current velocity in Rot Per Sec. */
+  /** Run closed loop at the specified velocity. */
+  public void runVelocity(double velocityRPM) {
+    velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
+    io.setVelocity(velocityRadPerSec, ffModel.calculate(velocityRadPerSec));
+
+    // Log flywheel setpoint
+    Logger.recordOutput("Flywheel/SetpointRPM", velocityRPM);
+  }
+
+  /** Stops the flywheel. */
+  public void stop() {
+    io.stop();
+  }
+
+  /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
+  }
+
+  /** Returns the current velocity in RPM. */
   @AutoLogOutput
-  public double getVelocityRotPerSec() {
-    return inputs.velocityRotPerSec;
+  public double getVelocityRPM() {
+    return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
   }
 
-  @AutoLogOutput(key = "Flywheel/TargetSpeed")
-  public double getTargetRot() {
-    return targetSpeed;
+  /** Returns the current velocity in radians per second. */
+  public double getCharacterizationVelocity() {
+    return inputs.velocityRadPerSec;
   }
 
   public boolean atTargetSpeed() {
-    return Math.abs(inputs.velocityRotPerSec - getTargetRot()) < 0.3;
+    return Math.abs(Units.radiansToRotations(inputs.velocityRadPerSec - getTargetSpeed())) < 0.3;
+  }
+
+  @AutoLogOutput(key = "Flywheel/velocityRadPerSec")
+  public double getTargetSpeed() {
+    return this.velocityRadPerSec;
   }
 }

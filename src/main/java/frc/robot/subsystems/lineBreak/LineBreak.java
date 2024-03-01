@@ -42,7 +42,7 @@ public class LineBreak extends SubsystemBase {
 
   @AutoLogOutput(key = "/LineBreak/hasGamePiece")
   public boolean hasGamePiece() {
-    return inputs.lineBreakValues.hasGamePiece() || (timeSinceLastGamePiece() < 0.05);
+    return inputs.lineBreakValues.hasGamePiece();
   }
 
   @AutoLogOutput(key = "/LineBreak/hasGamePieceIntake")

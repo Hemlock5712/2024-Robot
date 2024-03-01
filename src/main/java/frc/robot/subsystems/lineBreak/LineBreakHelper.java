@@ -33,7 +33,7 @@ public class LineBreakHelper {
     }
 
     public boolean isShooterLong() {
-      return (magazine2 && magazine3) && !magazine1;
+      return (magazine2 || magazine3) && !magazine1;
     }
   }
 }

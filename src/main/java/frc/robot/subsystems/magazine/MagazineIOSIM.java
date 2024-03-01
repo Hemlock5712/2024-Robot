@@ -37,8 +37,8 @@ public class MagazineIOSIM implements MagazineIO {
   }
 
   @Override
-  public void runRPM(double speedRPM) {
-    double speedRPS = speedRPM / 60.0;
+  public void runRadPerSec(double radPerSec) {
+    double speedRPS = radPerSec / 60.0;
     leader.setControl(
         new VelocityVoltage(0)
             .withVelocity(speedRPS)

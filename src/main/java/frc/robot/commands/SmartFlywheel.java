@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
@@ -28,15 +29,16 @@ public class SmartFlywheel extends Command {
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
       // 40.5 SHOOT SPEEED
-      flywheel.setSpeedRotPerSec(0);
+      flywheel.runVelocity(Units.rotationsToRadians(0));
       return;
     }
     if (SmartController.getInstance().isSmartControlEnabled()) {
-      flywheel.setSpeedRotPerSec(
-          SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
+      flywheel.runVelocity(
+          Units.rotationsToRadians(
+              SmartController.getInstance().getTargetAimingParameters().shooterSpeed()));
 
     } else {
-      flywheel.setSpeedRotPerSec(0);
+      flywheel.runVelocity(Units.rotationsToRadians(0));
     }
   }
 
