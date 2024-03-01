@@ -34,16 +34,18 @@ public class SmartArm extends Command {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
       return;
     }
+    if (SmartController.getInstance().isSmartControlEnabled()
+        && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
+      arm.setArmTarget(ArmConstants.frontAmp.arm().getRadians());
+      arm.setWristTarget(ArmConstants.frontAmp.wrist().getRadians());
+      return;
+    }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
           && SmartController.getInstance().isSmartControlEnabled()) {
         arm.setArmTarget(ArmConstants.shoot.arm().getRadians());
         arm.setWristTarget(
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-      } else if (SmartController.getInstance().isSmartControlEnabled()
-          && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-        arm.setArmTarget(ArmConstants.frontAmp.arm().getRadians());
-        arm.setWristTarget(ArmConstants.frontAmp.wrist().getRadians());
       }
     } else {
       arm.setArmTarget(ArmConstants.intake.arm().getRadians());

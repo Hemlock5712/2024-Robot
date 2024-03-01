@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
 import frc.robot.subsystems.arm.Arm;
@@ -54,6 +53,7 @@ import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
+import frc.robot.subsystems.leds.LedController;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIO;
 import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
@@ -87,9 +87,11 @@ public class RobotContainer {
   private final Intake intake;
   private final LineBreak lineBreak;
   private final Magazine magazine;
+  private final LedController ledController;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController controller2 = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -119,6 +121,7 @@ public class RobotContainer {
                 new AprilTagVisionIOLimelight("limelight-fr"),
                 new AprilTagVisionIOLimelight("limelight-bl"),
                 new AprilTagVisionIOLimelight("limelight-br"));
+        ledController = new LedController();
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -135,6 +138,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
+        ledController = new LedController();
         break;
       default:
         // Replayed robot, disable IO implementations
@@ -151,6 +155,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
         lineBreak = new LineBreak(new LineBreakIO() {});
+        ledController = new LedController();
         break;
     }
 
@@ -227,16 +232,6 @@ public class RobotContainer {
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.addOption(
-        "Flywheel SysId (Quasistatic Forward)",
-        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Flywheel SysId (Quasistatic Reverse)",
-        flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Flywheel SysId (Dynamic Forward)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Flywheel SysId (Dynamic Reverse)", flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
@@ -264,6 +259,7 @@ public class RobotContainer {
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
+    ledController.setDefaultCommand(new HandleLEDs(ledController, lineBreak));
 
     controller
         .start()
@@ -284,6 +280,14 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
+
+    controller2
+        .a()
+        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+    controller2
+        .y()
+        .onTrue(
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));

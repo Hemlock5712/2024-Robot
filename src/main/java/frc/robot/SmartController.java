@@ -30,14 +30,17 @@ public class SmartController {
     shooterSpeedMap.put(1.375, 35.5);
     shooterSpeedMap.put(2.807, 40.5);
     shooterSpeedMap.put(3.2, 40.5);
-    shooterSpeedMap.put(4.063, 42.5);
+    shooterSpeedMap.put(4.063, 43.5);
+    shooterSpeedMap.put(4.27, 45.5);
     // shooterSpeedMap.put(3.966, 40.5);
 
     // Units: radians
     shooterAngleMap.put(1.375, Units.degreesToRadians(85));
+    shooterAngleMap.put(2.0, Units.degreesToRadians(65));
     shooterAngleMap.put(2.807, Units.degreesToRadians(65));
     shooterAngleMap.put(3.2, Units.degreesToRadians(61));
     shooterAngleMap.put(4.063, Units.degreesToRadians(57.5));
+    shooterAngleMap.put(4.27, Units.degreesToRadians(56.5));
     // shooterAngleMap.put(3.966, Units.degreesToRadians(58));
 
     // Units: seconds
@@ -165,7 +168,7 @@ public class SmartController {
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 1000, ArmConstants.frontAmp.wrist()));
+        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.frontAmp.wrist()));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {

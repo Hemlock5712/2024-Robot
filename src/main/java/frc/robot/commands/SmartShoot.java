@@ -23,6 +23,7 @@ public class SmartShoot extends Command {
   Magazine magazine;
   LineBreak lineBreak;
   Timer timer;
+  Timer flywheelTimer;
 
   /** Creates a new Shoot. */
   public SmartShoot(
@@ -33,6 +34,7 @@ public class SmartShoot extends Command {
     this.pose = pose;
     this.lineBreak = lineBreak;
     timer = new Timer();
+    flywheelTimer = new Timer();
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -42,6 +44,7 @@ public class SmartShoot extends Command {
   public void initialize() {
     SmartController.getInstance().enableSmartControl();
     if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
+    flywheelTimer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +58,7 @@ public class SmartShoot extends Command {
                     .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
                     .getRadians())
             < Units.degreesToRadians(2.5)
-        && flywheel.atTargetSpeed()) {
+        && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2))) {
       magazine.forward();
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();

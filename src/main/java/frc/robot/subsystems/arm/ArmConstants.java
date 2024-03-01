@@ -5,9 +5,9 @@ import frc.robot.Constants;
 
 public final class ArmConstants {
   public static final ArmPositions backAmp =
-      new ArmPositions(Rotation2d.fromDegrees(80), Rotation2d.fromDegrees(-45));
+      new ArmPositions(Rotation2d.fromDegrees(23), Rotation2d.fromDegrees(65));
   public static final ArmPositions frontAmp =
-      new ArmPositions(Rotation2d.fromDegrees(50), Rotation2d.fromDegrees(35));
+      new ArmPositions(Rotation2d.fromDegrees(30), Rotation2d.fromDegrees(-55));
   public static final ArmPositions intake =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
