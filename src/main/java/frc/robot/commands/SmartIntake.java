@@ -36,6 +36,7 @@ public class SmartIntake extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+      intake.setIntakeMode(IntakePositions.UP);
       intake.stop();
       return;
     }

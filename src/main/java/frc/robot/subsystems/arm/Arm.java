@@ -89,8 +89,8 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
-    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(3)))
+    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(1.5)))
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
-            < (Units.degreesToRadians(5)));
+            < (Units.degreesToRadians(3)));
   }
 }
