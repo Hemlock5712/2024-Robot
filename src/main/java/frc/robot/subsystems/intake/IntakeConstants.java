@@ -10,7 +10,7 @@ public final class IntakeConstants {
       new IntakePositions(Rotation2d.fromDegrees(185));
   public static final IntakePositions bumperPosition =
       new IntakePositions(Rotation2d.fromDegrees(178));
-  public static final IntakePositions upPosition = new IntakePositions(Rotation2d.fromDegrees(95));
+  public static final IntakePositions upPosition = new IntakePositions(Rotation2d.fromDegrees(90));
 
   public record IntakePositions(Rotation2d angle) {}
 }

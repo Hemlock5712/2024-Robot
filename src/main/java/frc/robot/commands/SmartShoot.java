@@ -24,10 +24,16 @@ public class SmartShoot extends Command {
   LineBreak lineBreak;
   Timer timer;
   Timer flywheelTimer;
+  double forceShootTimeout;
 
   /** Creates a new Shoot. */
   public SmartShoot(
-      Arm arm, Flywheel flywheel, Magazine magazine, LineBreak lineBreak, Supplier<Pose2d> pose) {
+      Arm arm,
+      Flywheel flywheel,
+      Magazine magazine,
+      LineBreak lineBreak,
+      Supplier<Pose2d> pose,
+      double forceShootTimeout) {
     this.arm = arm;
     this.flywheel = flywheel;
     this.magazine = magazine;
@@ -35,6 +41,7 @@ public class SmartShoot extends Command {
     this.lineBreak = lineBreak;
     timer = new Timer();
     flywheelTimer = new Timer();
+    this.forceShootTimeout = forceShootTimeout;
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -50,15 +57,17 @@ public class SmartShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().isSmartControlEnabled()
-        && arm.isArmWristInTargetPose()
-        && Math.abs(
-                pose.get()
-                    .getRotation()
-                    .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
-                    .getRadians())
-            < Units.degreesToRadians(2.5)
-        && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2))) {
+    if ((SmartController.getInstance().isSmartControlEnabled()
+            && arm.isArmWristInTargetPose()
+            && Math.abs(
+                    pose.get()
+                        .getRotation()
+                        .minus(
+                            SmartController.getInstance().getTargetAimingParameters().robotAngle())
+                        .getRadians())
+                < Units.degreesToRadians(1.5)
+            && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2)))
+        || flywheelTimer.hasElapsed(forceShootTimeout)) {
       magazine.forward();
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();

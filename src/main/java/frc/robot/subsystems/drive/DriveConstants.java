@@ -109,19 +109,19 @@ public final class DriveConstants {
 
   public static HeadingControllerConstants headingControllerConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new HeadingControllerConstants(6.0, 0.0);
+        case COMPBOT -> new HeadingControllerConstants(5.0, 0.0);
         case SIMBOT -> new HeadingControllerConstants(7, 0.0);
       };
 
   public static final PIDConstants PPtranslationConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new PIDConstants(10, 0.0, 0.0);
+        case COMPBOT -> new PIDConstants(5, 0.0, 0.0);
         case SIMBOT -> new PIDConstants(10, 0.0, 0.0);
       };
 
   public static final PIDConstants PProtationConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new PIDConstants(10, 0.0, 0.0);
+        case COMPBOT -> new PIDConstants(5, 0.0, 0.0);
         case SIMBOT -> new PIDConstants(10, 0.0, 0.0);
       };
 

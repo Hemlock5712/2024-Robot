@@ -17,7 +17,7 @@ public class LineBreakIODigitalInput implements LineBreakIO {
         new LineBreakValues(
             !lowerIntakeSensor.get(),
             !upperIntake1Sensor.get(),
-            upperIntake2Sensor.getVoltage() > 1,
+            false,
             magazine1Sensor.getVoltage() > 1,
             magazine2Sensor.getVoltage() > 1,
             magazine3Sensor.getVoltage() > 1);

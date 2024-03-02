@@ -1,0 +1,109 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.621147479583095,
+        "y": 6.832582112369194
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.992185070287084,
+        "y": 7.4379534634703495
+      },
+      "isLocked": false,
+      "linkedName": "W1"
+    },
+    {
+      "anchor": {
+        "x": 8.135753943824273,
+        "y": 7.425470941337363
+      },
+      "prevControl": {
+        "x": 7.609516993914477,
+        "y": 7.729518956840803
+      },
+      "nextControl": {
+        "x": 8.413432611591647,
+        "y": 7.265034377738435
+      },
+      "isLocked": false,
+      "linkedName": "C1"
+    },
+    {
+      "anchor": {
+        "x": 2.175897504337382,
+        "y": 6.298431941496651
+      },
+      "prevControl": {
+        "x": 2.479945519840822,
+        "y": 6.403679331478609
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SA"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": -169.02088221539697,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeDown"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SIMGamePiecePickup"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -159.1982039149841,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -154.6638777128919,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

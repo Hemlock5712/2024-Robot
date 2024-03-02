@@ -33,7 +33,7 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
   TalonFXConfiguration config = new TalonFXConfiguration();
 
   public IntakeWheelsIOTalonFX() {
-    config.CurrentLimits.SupplyCurrentLimit = 80.0;
+    config.CurrentLimits.SupplyCurrentLimit = 30.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

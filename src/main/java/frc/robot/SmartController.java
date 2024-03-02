@@ -30,20 +30,23 @@ public class SmartController {
 
     shooterSpeedMap.put(1.45, 40.5);
     shooterSpeedMap.put(2.087, 40.5);
-    shooterSpeedMap.put(2.475, 40.5);
-    shooterSpeedMap.put(3.013, 40.5);
-    shooterSpeedMap.put(3.278, 40.5);
+    shooterSpeedMap.put(2.24, 40.5);
+    shooterSpeedMap.put(2.74, 40.5);
+    shooterSpeedMap.put(3.0, 40.5);
+    shooterSpeedMap.put(3.0, 40.5);
 
     // Units: radians
     shooterAngleMap.put(1.45, Units.degreesToRadians(85));
-    shooterAngleMap.put(2.087, Units.degreesToRadians(75));
-    shooterAngleMap.put(2.475, Units.degreesToRadians(68));
-    shooterAngleMap.put(3.013, Units.degreesToRadians(63));
-    shooterAngleMap.put(3.278, Units.degreesToRadians(61.75));
+    shooterAngleMap.put(1.7, Units.degreesToRadians(75));
+    shooterAngleMap.put(2.24, Units.degreesToRadians(72));
+    shooterAngleMap.put(2.74, Units.degreesToRadians(67));
+    shooterAngleMap.put(3.0, Units.degreesToRadians(63));
+    shooterAngleMap.put(3.5, Units.degreesToRadians(61.5));
+    shooterAngleMap.put(3.87, Units.degreesToRadians(61));
 
     // Units: seconds
-    flightTimeMap.put(Units.inchesToMeters(40), 0.5);
-    flightTimeMap.put(Units.inchesToMeters(150), 0.8);
+    flightTimeMap.put(1.2, 0.2);
+    flightTimeMap.put(4.0, 0.5);
   }
 
   public static SmartController getInstance() {

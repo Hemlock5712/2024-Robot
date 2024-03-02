@@ -184,26 +184,41 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot",
-        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
+        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5)
+            .deadlineWith(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0))
+            .andThen(
+                new ScheduleCommand(
+                    Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
+    NamedCommands.registerCommand(
+        "QuickShoot",
+        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.5)
+            .deadlineWith(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0))
             .andThen(
                 new ScheduleCommand(
                     Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
 
-    // Temporary workaround for the above line to prevent blocking at each pickup.
     NamedCommands.registerCommand(
-        "SIMGamePiecePickup",
-        new ScheduleCommand(
-            Commands.defer(
-                () ->
-                    new InstantCommand(
-                            () -> lineBreak.setGamePiece(false, true, false, false, false, false))
-                        .andThen(Commands.waitSeconds(0.2))
-                        .andThen(
-                            new InstantCommand(
-                                () ->
-                                    lineBreak.setGamePiece(
-                                        false, false, false, false, true, false))),
-                Set.of())));
+        "EnableSmartControl",
+        Commands.runOnce(() -> SmartController.getInstance().enableSmartControl()));
+
+    // Temporary workaround for the above line to prevent blocking at each pickup.
+    // NamedCommands.registerCommand(
+    //     "SIMGamePiecePickup",
+    //     new ScheduleCommand(
+    //         Commands.defer(
+    //             () ->
+    //                 new InstantCommand(
+    //                         () -> lineBreak.setGamePiece(false, true, false, false, false,
+    // false))
+    //                     .andThen(Commands.waitSeconds(0.2))
+    //                     .andThen(
+    //                         new InstantCommand(
+    //                             () ->
+    //                                 lineBreak.setGamePiece(
+    //                                     false, false, false, false, true, false))),
+    //             Set.of())));
+
+    NamedCommands.registerCommand("SIMGamePiecePickup", Commands.none());
 
     NamedCommands.registerCommand(
         "SmartControl",
@@ -212,8 +227,10 @@ public class RobotContainer {
             new SmartArm(arm, lineBreak),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
-    NamedCommands.registerCommand(
-        "IntakeDown", new InstantCommand(() -> intake.enableIntakeRequest()));
+    NamedCommands.registerCommand("IntakeDown", new InstantCommand(intake::enableIntakeRequest));
+    NamedCommands.registerCommand("IntakeUp", new InstantCommand(intake::disableIntakeRequest));
+
+    NamedCommands.registerCommand("Magazine", new ManualMagazine(magazine, lineBreak));
 
     NamedCommands.registerCommand(
         "Preload",
@@ -269,7 +286,7 @@ public class RobotContainer {
 
     controller
         .leftBumper()
-        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 3));
 
     controller
         .rightBumper()

@@ -88,6 +88,7 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.kI = ArmConstants.wristControlConstants.kI();
     wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
     wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
+    wristConfig.Slot0.kS = .16;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;

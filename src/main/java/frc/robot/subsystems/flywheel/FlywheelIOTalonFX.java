@@ -35,7 +35,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   TalonFXConfiguration config = new TalonFXConfiguration();
 
   public FlywheelIOTalonFX() {
-    config.CurrentLimits.SupplyCurrentLimit = 80.0;
+    config.CurrentLimits.SupplyCurrentLimit = 30.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

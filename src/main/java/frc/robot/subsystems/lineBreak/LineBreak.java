@@ -14,6 +14,7 @@ public class LineBreak extends SubsystemBase {
   private final LineBreakIO lineBreakIO;
   private final LineBreakIOInputs inputs = new LineBreakIOInputs();
   private double lastGamePieceSeenTime;
+  private double loadedFor;
 
   /** Creates a new LineBreak. */
   public LineBreak(LineBreakIO lineBreakIO) {

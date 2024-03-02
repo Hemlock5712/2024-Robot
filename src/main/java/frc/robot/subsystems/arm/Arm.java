@@ -91,6 +91,6 @@ public class Arm extends SubsystemBase {
   public boolean isArmWristInTargetPose() {
     return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(1.5)))
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
-            < (Units.degreesToRadians(3)));
+            < (Units.degreesToRadians(1)));
   }
 }
