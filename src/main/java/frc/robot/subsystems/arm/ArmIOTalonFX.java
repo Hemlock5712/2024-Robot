@@ -56,7 +56,7 @@ public class ArmIOTalonFX implements ArmIO {
     wristEncoderConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     wristEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    wristEncoderConfig.MagnetSensor.MagnetOffset = 0.224121;
+    wristEncoderConfig.MagnetSensor.MagnetOffset = 0.050244;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = armEncoder.getConfigurator().apply(armEncoderConfig, 0.1) == StatusCode.OK;

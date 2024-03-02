@@ -73,7 +73,7 @@ public final class DriveConstants {
               // -0.486084
               new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(-0.487061), true),
               // -0.052002
-              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(-0.086914 + .5), true)
+              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(0.336914), true)
             };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];
