@@ -29,17 +29,20 @@ public class SmartMagazine extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE
+        || lineBreak.isShooterLoaded()
+        || lineBreak.hasNoGamePiece()) {
       magazine.stop();
       return;
     }
-    if (lineBreak.hasGamePiece() && !(lineBreak.isShooterLong() || lineBreak.isShooterLoaded())) {
-      magazine.forward();
+
+    if (lineBreak.isShooterLong()) {
+      magazine.slowBackward();
     } else {
-      if (lineBreak.isShooterLong()) {
-        magazine.backward();
+      if (lineBreak.isMagazine1Sensor() || lineBreak.isMagazine2Sensor()) {
+        magazine.slowForward();
       } else {
-        magazine.stop();
+        magazine.forward();
       }
     }
   }

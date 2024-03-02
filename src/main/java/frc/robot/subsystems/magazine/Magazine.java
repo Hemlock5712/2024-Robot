@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.magazine;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -22,33 +21,37 @@ public class Magazine extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     magazineIO.updateInputs(inputs);
-    magazineIO.runRPM(getTargetSpeed());
+    magazineIO.runRadPerSec(getTargetRadPerSec());
   }
 
   public void forward() {
-    targetSpeed = 1000;
+    targetSpeed = 5;
   }
 
   public void backward() {
-    targetSpeed = -1000;
+    targetSpeed = -5;
+  }
+
+  public void slowForward() {
+    targetSpeed = 1.8;
+  }
+
+  public void slowBackward() {
+    targetSpeed = -1.8;
   }
 
   public void stop() {
     targetSpeed = 0;
   }
 
-  public void setSpeed(double speedRPM) {
-    targetSpeed = speedRPM;
-  }
-
-  @AutoLogOutput(key = "Magazine/TargetSpeed")
-  public double getTargetSpeed() {
+  @AutoLogOutput(key = "Magazine/TargetRadPerSec")
+  public double getTargetRadPerSec() {
     return targetSpeed;
   }
 
-  @AutoLogOutput(key = "Magazine/VelocitRotPerSec")
+  @AutoLogOutput(key = "Magazine/VelocitRadPerSec")
   public double velocitRadsPerSec() {
     // Convert Radians per second to Meters per second
-    return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
+    return inputs.velocityRadPerSec;
   }
 }

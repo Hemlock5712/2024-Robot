@@ -19,7 +19,6 @@ import frc.robot.subsystems.lineBreak.LineBreak;
 public class PathFinderAndFollow extends Command {
   private Command scoreCommand;
   private Command pathRun;
-  private DriveModeType driveMode;
   private LineBreak lineBreak;
   boolean lastLineBreak = false;
   private DriveModeType lastDriveMode = DriveModeType.AMP;

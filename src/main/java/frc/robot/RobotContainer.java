@@ -35,6 +35,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -44,17 +45,23 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
+import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
-import frc.robot.subsystems.intake.IntakeWheesIOSIM;
+import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
+import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
+import frc.robot.subsystems.leds.LedController;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.lineBreak.LineBreakIO;
+import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
 import frc.robot.subsystems.lineBreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
+import frc.robot.subsystems.magazine.MagazineIOSpark;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOLimelight;
@@ -75,14 +82,16 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Flywheel flywheel;
-  private AprilTagVision aprilTagVision;
-  private Arm arm;
-  private Intake intake;
-  private LineBreak lineBreak;
-  private Magazine magazine;
+  private final AprilTagVision aprilTagVision;
+  private final Arm arm;
+  private final Intake intake;
+  private final LineBreak lineBreak;
+  private final Magazine magazine;
+  private final LedController ledController;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController controller2 = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -100,17 +109,19 @@ public class RobotContainer {
                 new ModuleIOTalonFX(moduleConfigs[2]),
                 new ModuleIOTalonFX(moduleConfigs[3]));
 
-        flywheel = new Flywheel(new FlywheelIO() {});
-        arm = new Arm(new ArmIO() {});
-        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
-        magazine = new Magazine(new MagazineIO() {});
-        lineBreak = new LineBreak(new LineBreakIO() {});
+        flywheel = new Flywheel(new FlywheelIOTalonFX());
+        arm = new Arm(new ArmIOTalonFX());
+        magazine = new Magazine(new MagazineIOSpark());
+        lineBreak = new LineBreak(new LineBreakIODigitalInput());
+        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
                 new AprilTagVisionIOLimelight("limelight-fr"),
                 new AprilTagVisionIOLimelight("limelight-bl"),
                 new AprilTagVisionIOLimelight("limelight-br"));
+        ledController = new LedController();
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -122,17 +133,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         flywheel = new Flywheel(new FlywheelIOSim());
-        // aprilTagVision =
-        //     new AprilTagVision(
-        //         new AprilTagVisionIOPhotonVisionSIM(
-        //             "photonCamera1",
-        //             new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
-        //             drive::getPose));
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         arm = new Arm(new ArmIOSim());
-        intake = new Intake(new IntakeActuatorSim(), new IntakeWheesIOSIM());
+        intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
+        ledController = new LedController();
         break;
       default:
         // Replayed robot, disable IO implementations
@@ -148,6 +154,8 @@ public class RobotContainer {
         arm = new Arm(new ArmIO() {});
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
+        lineBreak = new LineBreak(new LineBreakIO() {});
+        ledController = new LedController();
         break;
     }
 
@@ -169,10 +177,10 @@ public class RobotContainer {
                     0),
                 new Rotation3d(0, 0, drive.getPose().getRotation().getRadians())));
 
-    RobotGamePieceVisualizer.setArmTransformSupplier(() -> arm.getFlywheelPosition());
-    RobotGamePieceVisualizer.setShooterAngleSupplier(() -> arm.getWristAngleAbsolute());
-    RobotGamePieceVisualizer.setIsMagazineLoadedSupplier(() -> lineBreak.hasGamePieceIntake());
-    RobotGamePieceVisualizer.setIsShooterLoadedSupplier(() -> lineBreak.isShooterLoaded());
+    RobotGamePieceVisualizer.setArmTransformSupplier(arm::getFlywheelPosition);
+    RobotGamePieceVisualizer.setShooterAngleSupplier(arm::getWristAngleAbsolute);
+    RobotGamePieceVisualizer.setIsMagazineLoadedSupplier(lineBreak::hasGamePieceIntake);
+    RobotGamePieceVisualizer.setIsShooterLoadedSupplier(lineBreak::isShooterLoaded);
 
     NamedCommands.registerCommand(
         "Shoot",
@@ -180,17 +188,6 @@ public class RobotContainer {
             .andThen(
                 new ScheduleCommand(
                     Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
-    // NamedCommands.registerCommand(
-    //     "SIMGamePiecePickup", new ScheduleCommand(new SimulateGamePiecePickup(lineBreak, arm)));
-
-    /*
-    Register a command that calls the SimulateGamePiecePickup command without blocking.
-    Currently broken, due to what seems like a race condition.
-     */
-    // NamedCommands.registerCommand(
-    //     "SIMGamePiecePickup",
-    //     new ScheduleCommand(
-    //         Commands.defer(() -> new SimulateGamePiecePickup(lineBreak, arm), Set.of())));
 
     // Temporary workaround for the above line to prevent blocking at each pickup.
     NamedCommands.registerCommand(
@@ -235,40 +232,6 @@ public class RobotContainer {
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // autoChooser.addOption(
-    // "Flywheel FF Characterization",
-    // new FeedForwardCharacterization(
-    // flywheel, flywheel::runCharacterizationVolts,
-    // flywheel::getCharacterizationVelocity));
-    // NamedCommands.registerCommand(
-    //     "Run Flywheel",
-    //     Commands.startEnd(
-    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel)
-    //         .withTimeout(5.0));
-
-    // Set up SysId routines
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Forward)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Reverse)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Forward)",
-    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Reverse)",
-    // flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
@@ -292,21 +255,11 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
-    intake.setDefaultCommand(
-        new SmartIntake(intake, lineBreak, () -> arm.isArmWristInIntakePosition()));
+    intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
-
-    controller
-        .leftBumper()
-        .whileTrue(Commands.runOnce(() -> SmartController.getInstance().toggleDriveMode()));
-    controller
-        .rightBumper()
-        .whileTrue(
-            Commands.startEnd(
-                () -> SmartController.getInstance().enableSmartControl(),
-                () -> SmartController.getInstance().disableSmartControl()));
+    ledController.setDefaultCommand(new HandleLEDs(ledController, lineBreak));
 
     controller
         .start()
@@ -314,25 +267,31 @@ public class RobotContainer {
         .onTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
-    controller.a().whileTrue(new PathFinderAndFollow(lineBreak));
+    controller
+        .leftBumper()
+        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose));
+
+    controller
+        .rightBumper()
+        .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest));
 
     controller
         .b()
         .whileTrue(
-            Commands.startEnd(
-                () -> intake.enableIntakeRequest(), () -> intake.disableIntakeRequest()));
+            Commands.parallel(
+                Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
 
-    controller
-        .x()
-        .whileTrue(
-            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose)
-                .alongWith(
-                    new ScheduleCommand(
-                        Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
+    controller2
+        .a()
+        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+    controller2
+        .y()
+        .onTrue(
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
-      controller.pov(0).onTrue(new InstantCommand(() -> lineBreak.bumpGamePiece()));
-      controller.pov(180).onTrue(new InstantCommand(() -> lineBreak.shootGamePiece()));
+      controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));
+      controller.pov(180).onTrue(new InstantCommand(lineBreak::shootGamePiece));
     }
   }
 

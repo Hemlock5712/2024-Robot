@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -22,6 +23,7 @@ public class SmartShoot extends Command {
   Magazine magazine;
   LineBreak lineBreak;
   Timer timer;
+  Timer flywheelTimer;
 
   /** Creates a new Shoot. */
   public SmartShoot(
@@ -32,6 +34,7 @@ public class SmartShoot extends Command {
     this.pose = pose;
     this.lineBreak = lineBreak;
     timer = new Timer();
+    flywheelTimer = new Timer();
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -41,6 +44,7 @@ public class SmartShoot extends Command {
   public void initialize() {
     SmartController.getInstance().enableSmartControl();
     if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
+    flywheelTimer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,14 +52,13 @@ public class SmartShoot extends Command {
   public void execute() {
     if (SmartController.getInstance().isSmartControlEnabled()
         && arm.isArmWristInTargetPose()
-        // && Math.abs(
-        //         pose.get()
-        //             .getRotation()
-        //
-        // .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
-        //             .getRadians())
-        //     < 0.1
-        && flywheel.atTargetSpeed()) {
+        && Math.abs(
+                pose.get()
+                    .getRotation()
+                    .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
+                    .getRadians())
+            < Units.degreesToRadians(2.5)
+        && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2))) {
       magazine.forward();
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();
@@ -72,6 +75,6 @@ public class SmartShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lineBreak.hasNoGamePiece();
+    return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
   }
 }

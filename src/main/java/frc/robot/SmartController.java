@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
-import frc.robot.commands.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldConstants;
 import org.littletonrobotics.junction.Logger;
@@ -27,22 +27,19 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
-    shooterSpeedMap.put(Units.inchesToMeters(60), 5000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(80), 6000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(100), 7000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(120), 8000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(140), 9000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(160), 10000.0);
-    shooterSpeedMap.put(Units.inchesToMeters(180), 11000.0);
+
+    shooterSpeedMap.put(1.45, 40.5);
+    shooterSpeedMap.put(2.087, 40.5);
+    shooterSpeedMap.put(2.475, 40.5);
+    shooterSpeedMap.put(3.013, 40.5);
+    shooterSpeedMap.put(3.278, 40.5);
 
     // Units: radians
-    shooterAngleMap.put(Units.inchesToMeters(60), Units.degreesToRadians(-45));
-    shooterAngleMap.put(Units.inchesToMeters(80), Units.degreesToRadians(-38));
-    shooterAngleMap.put(Units.inchesToMeters(100), Units.degreesToRadians(-34));
-    shooterAngleMap.put(Units.inchesToMeters(120), Units.degreesToRadians(-32));
-    shooterAngleMap.put(Units.inchesToMeters(140), Units.degreesToRadians(-30));
-    shooterAngleMap.put(Units.inchesToMeters(160), Units.degreesToRadians(-29));
-    shooterAngleMap.put(Units.inchesToMeters(180), Units.degreesToRadians(-28));
+    shooterAngleMap.put(1.45, Units.degreesToRadians(85));
+    shooterAngleMap.put(2.087, Units.degreesToRadians(75));
+    shooterAngleMap.put(2.475, Units.degreesToRadians(68));
+    shooterAngleMap.put(3.013, Units.degreesToRadians(63));
+    shooterAngleMap.put(3.278, Units.degreesToRadians(61.75));
 
     // Units: seconds
     flightTimeMap.put(Units.inchesToMeters(40), 0.5);
@@ -169,7 +166,7 @@ public class SmartController {
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 1000, ArmConstants.frontAmp.wrist()));
+        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.frontAmp.wrist()));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {

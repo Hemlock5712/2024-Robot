@@ -5,19 +5,19 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.IntakeConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeActuatorIO actuatorIO;
   private final IntakeWheelsIO wheelsIO;
+
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
   private boolean intakeRequest = false;
-  private IntakePositions intakePositions = IntakePositions.UP;
+  private IntakePositions intakePositions = IntakePositions.BUMPER;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
   IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");
@@ -37,10 +37,10 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
-    wheelsIO.runRPM(getTargetSpeed());
+    wheelsIO.setSpeedRotPerSec(getTargetRot());
     switch (intakePositions) {
       case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().getRadians());
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
         break;
       case FLOOR:
         actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
@@ -55,19 +55,16 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    targetSpeed = 1000;
+    setSpeedRotPerSec(30);
   }
 
   public void outtake() {
-    targetSpeed = -1000;
+    setSpeedRotPerSec(-30);
   }
 
-  public void stopIntake() {
-    targetSpeed = 0;
-  }
-
-  public void setSpeed(double speedRPM) {
-    targetSpeed = speedRPM;
+  /** Stops the intake. */
+  public void stop() {
+    setSpeedRotPerSec(0);
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
@@ -87,9 +84,23 @@ public class Intake extends SubsystemBase {
     return intakeRequest;
   }
 
+  public void setSpeedRotPerSec(double speedRotPerSec) {
+    targetSpeed = speedRotPerSec;
+  }
+
+  /** Returns the current velocity in Rot Per Sec. */
+  @AutoLogOutput
+  public double getVelocityRotPerSec() {
+    return wheelsInputs.velocityRotPerSec;
+  }
+
   @AutoLogOutput(key = "Intake/TargetSpeed")
-  public double getTargetSpeed() {
+  public double getTargetRot() {
     return targetSpeed;
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(wheelsInputs.velocityRotPerSec - getTargetRot()) < 0.5;
   }
 
   public enum IntakePositions {

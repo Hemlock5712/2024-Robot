@@ -13,6 +13,4 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void gotoSetPoint(double setPosition) {}
-
-  public default void stop() {}
 }

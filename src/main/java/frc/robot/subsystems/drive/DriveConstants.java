@@ -66,30 +66,14 @@ public final class DriveConstants {
       switch (Constants.getRobot()) {
         case COMPBOT ->
             new ModuleConfig[] {
-              new ModuleConfig(
-                  1,
-                  2,
-                  9,
-                  Rotation2d.fromRotations(-0.383).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  3,
-                  4,
-                  10,
-                  Rotation2d.fromRotations(-0.251).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  5,
-                  6,
-                  11,
-                  Rotation2d.fromRotations(-0.057).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  7,
-                  8,
-                  12,
-                  Rotation2d.fromRotations(-0.470).plus(Rotation2d.fromDegrees(180)),
-                  true)
+              // 0.454346
+              new ModuleConfig(1, 2, 9, Rotation2d.fromRotations(-0.041504 + .5), true),
+              // -0.305420
+              new ModuleConfig(3, 4, 10, Rotation2d.fromRotations(-0.310547 + .5), true),
+              // -0.486084
+              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(-0.487061), true),
+              // -0.052002
+              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(0.336914), true)
             };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];

@@ -5,18 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.SmartController;
-import frc.robot.SmartController.DriveModeType;
-import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.leds.LedController;
+import frc.robot.subsystems.lineBreak.LineBreak;
 
-public class SmartFlywheel extends Command {
-  Flywheel flywheel;
+public class HandleLEDs extends Command {
+  LedController ledController;
+  LineBreak lineBreak;
 
-  /** Creates a new SmartFlywheel. */
-  public SmartFlywheel(Flywheel flywheel) {
-    this.flywheel = flywheel;
+  /** Creates a new HandleLEDs. */
+  public HandleLEDs(LedController ledController, LineBreak lineBreak) {
+    this.ledController = ledController;
+    this.lineBreak = lineBreak;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(flywheel);
+    addRequirements(ledController);
   }
 
   // Called when the command is initially scheduled.
@@ -26,17 +27,10 @@ public class SmartFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      // 40.5 SHOOT SPEEED
-      flywheel.setSpeedRotPerSec(0);
-      return;
-    }
-    if (SmartController.getInstance().isSmartControlEnabled()) {
-      flywheel.setSpeedRotPerSec(
-          SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
-
+    if (lineBreak.hasGamePiece()) {
+      ledController.setHasGamePiece(true);
     } else {
-      flywheel.setSpeedRotPerSec(0);
+      ledController.setHasGamePiece(false);
     }
   }
 

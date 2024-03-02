@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.lineBreak.LineBreak;
 
 public class SmartArm extends Command {
@@ -21,12 +22,22 @@ public class SmartArm extends Command {
     addRequirements(arm);
   }
 
+  @Override
+  public void initialize() {
+    arm.setArmTarget(arm.getArmAngleRelative());
+    arm.setWristTarget(arm.getWristAngleRelative());
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      arm.setArmTarget(arm.getArmAngle());
-      arm.setWristTarget(arm.getRelativeWristTarget());
+      return;
+    }
+    if (SmartController.getInstance().isSmartControlEnabled()
+        && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
+      arm.setArmTarget(ArmConstants.frontAmp.arm().getRadians());
+      arm.setWristTarget(ArmConstants.frontAmp.wrist().getRadians());
       return;
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
@@ -35,10 +46,6 @@ public class SmartArm extends Command {
         arm.setArmTarget(ArmConstants.shoot.arm().getRadians());
         arm.setWristTarget(
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-      } else if (SmartController.getInstance().isSmartControlEnabled()
-          && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-        arm.setArmTarget(ArmConstants.frontAmp.arm().getRadians());
-        arm.setWristTarget(ArmConstants.frontAmp.wrist().getRadians());
       }
     } else {
       arm.setArmTarget(ArmConstants.intake.arm().getRadians());
