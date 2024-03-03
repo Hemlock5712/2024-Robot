@@ -42,8 +42,8 @@ public class SmartArm extends Command {
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
-              && (SmartController.getInstance().isSmartControlEnabled()
-          || SmartController.getInstance()
+          && (SmartController.getInstance().isSmartControlEnabled()
+              || SmartController.getInstance()
                       .getTargetAimingParameters()
                       .effectiveDistanceToSpeaker()
                   < SmartController.getInstance().getMaxDistance())) {
