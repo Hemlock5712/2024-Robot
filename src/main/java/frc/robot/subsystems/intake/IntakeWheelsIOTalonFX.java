@@ -75,4 +75,9 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
   public void setVotSpeed(double appliedVolts) {
     leader.setVoltage(appliedVolts);
   }
+
+  @Override
+  public void stop() {
+    leader.stopMotor();
+  }
 }

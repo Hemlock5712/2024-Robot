@@ -71,4 +71,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   public void setSpeedRotPerSec(double velocityRotPerSec) {
     leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
   }
+
+  @Override
+  public void stop() {
+    leader.stopMotor();
+  }
 }

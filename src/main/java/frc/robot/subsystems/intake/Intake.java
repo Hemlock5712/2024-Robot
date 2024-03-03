@@ -37,19 +37,6 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
-    wheelsIO.setSpeedRotPerSec(getTargetRot());
-    switch (intakePositions) {
-      case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
-        break;
-      case FLOOR:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
-        break;
-      case UP:
-        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
-        break;
-    }
-
     visualizerMeasured.update(actuatorInputs.angle);
     visualizerSetpoint.update(0);
   }
@@ -64,11 +51,22 @@ public class Intake extends SubsystemBase {
 
   /** Stops the intake. */
   public void stop() {
-    setSpeedRotPerSec(0);
+    wheelsIO.stop();
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
     this.intakePositions = intakePositions;
+    switch (intakePositions) {
+      case BUMPER:
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
+        break;
+      case FLOOR:
+        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
+        break;
+      case UP:
+        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
+        break;
+    }
   }
 
   public void enableIntakeRequest() {
@@ -86,6 +84,7 @@ public class Intake extends SubsystemBase {
 
   public void setSpeedRotPerSec(double speedRotPerSec) {
     targetSpeed = speedRotPerSec;
+    wheelsIO.setSpeedRotPerSec(targetSpeed);
   }
 
   /** Returns the current velocity in Rot Per Sec. */

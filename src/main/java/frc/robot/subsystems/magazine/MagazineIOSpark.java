@@ -31,4 +31,9 @@ public class MagazineIOSpark implements MagazineIO {
     // double speed = controller.calculate(leader.getEncoder().getVelocity(), radPerSec);
     // leader.setVoltage(speed);
   }
+
+  @Override
+  public void stop() {
+    leader.stopMotor();
+  }
 }

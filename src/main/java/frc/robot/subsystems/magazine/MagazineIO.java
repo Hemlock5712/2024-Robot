@@ -16,4 +16,6 @@ public interface MagazineIO {
   public default void runRPM(double speedRPM) {}
 
   public default void runRadPerSec(double voltage) {}
+
+  public default void stop() {}
 }

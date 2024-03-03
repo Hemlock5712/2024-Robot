@@ -6,6 +6,7 @@ package frc.robot.subsystems.magazine;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Magazine extends SubsystemBase {
   private final MagazineIO magazineIO;
@@ -21,27 +22,32 @@ public class Magazine extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     magazineIO.updateInputs(inputs);
-    magazineIO.runRadPerSec(getTargetRadPerSec());
+    Logger.processInputs("Magazine", inputs);
   }
 
   public void forward() {
-    targetSpeed = 5;
+    setSpeedRadPerSec(5);
   }
 
   public void backward() {
-    targetSpeed = -5;
+    setSpeedRadPerSec(-5);
   }
 
   public void slowForward() {
-    targetSpeed = 1.8;
+    setSpeedRadPerSec(1.8);
   }
 
   public void slowBackward() {
-    targetSpeed = -1.8;
+    setSpeedRadPerSec(-1.8);
   }
 
   public void stop() {
-    targetSpeed = 0;
+    magazineIO.stop();
+  }
+
+  public void setSpeedRadPerSec(double speedRadPerSec) {
+    targetSpeed = speedRadPerSec;
+    magazineIO.runRadPerSec(targetSpeed);
   }
 
   @AutoLogOutput(key = "Magazine/TargetRadPerSec")

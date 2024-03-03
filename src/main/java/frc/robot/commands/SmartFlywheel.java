@@ -28,15 +28,20 @@ public class SmartFlywheel extends Command {
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
       // 40.5 SHOOT SPEEED
-      flywheel.setSpeedRotPerSec(0);
+      flywheel.stop();
       return;
     }
-    if (SmartController.getInstance().isSmartControlEnabled()) {
+    if (SmartController.getInstance().isSmartControlEnabled()
+        || (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+            && SmartController.getInstance()
+                    .getTargetAimingParameters()
+                    .effectiveDistanceToSpeaker()
+                < SmartController.getInstance().getMaxDistance())) {
       flywheel.setSpeedRotPerSec(
           SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
 
     } else {
-      flywheel.setSpeedRotPerSec(0);
+      flywheel.stop();
     }
   }
 

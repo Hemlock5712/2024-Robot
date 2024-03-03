@@ -33,11 +33,15 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
-    io.setSpeedRotPerSec(targetSpeed);
   }
 
   public void setSpeedRotPerSec(double speedRotPerSec) {
     targetSpeed = speedRotPerSec;
+    io.setSpeedRotPerSec(targetSpeed);
+  }
+
+  public void stop() {
+    io.stop();
   }
 
   /** Returns the current velocity in Rot Per Sec. */
