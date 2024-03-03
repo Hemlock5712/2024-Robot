@@ -79,7 +79,7 @@ public class DriveCommands {
           omega = Math.copySign(omega * omega, omega);
 
           if (SmartController.getInstance().isSmartControlEnabled()) {
-            linearMagnitude = Math.min(linearMagnitude, 0.5);
+            linearMagnitude = Math.min(linearMagnitude, 0.75);
           }
 
           // Calcaulate new linear velocity

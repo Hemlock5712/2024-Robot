@@ -24,7 +24,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     motor.setIdleMode(IdleMode.kCoast);
     motor.setSmartCurrentLimit(30);
     intakeEncoder = new CANcoder(0);
-    pidController = new PIDController(0.13, 0, 0);
+    pidController = new PIDController(0.2, 0, 0);
     pidController.enableContinuousInput(0, 2 * Math.PI);
     // Create a new ArmFeedforward with gains kS, kG, kV, and kA
     feedForward = new ArmFeedforward(0, 0.06, 0, 0);
@@ -52,11 +52,11 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
 
   @Override
   public void setIntakeAngle(double angleRad) {
+    double intakeRad =
+        Rotation2d.fromRotations(intakeEncoder.getAbsolutePosition().refresh().getValue())
+            .getRadians();
     double pidSpeed =
-        pidController.calculate(
-                Rotation2d.fromRotations(intakeEncoder.getAbsolutePosition().refresh().getValue())
-                    .getRadians(),
-                angleRad)
+        pidController.calculate(intakeRad, angleRad)
             + feedForward.calculate(
                 Rotation2d.fromRotations(intakeEncoder.getAbsolutePosition().refresh().getValue())
                     .getRadians(),

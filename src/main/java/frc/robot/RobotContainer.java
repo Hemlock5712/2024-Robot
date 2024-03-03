@@ -284,33 +284,30 @@ public class RobotContainer {
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller
-        .leftBumper()
+        .leftTrigger()
         .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 3));
 
     controller
-        .rightBumper()
+        .rightTrigger()
         .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest));
 
-    controller
-        .leftTrigger()
-        .whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
+    controller.a().whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
+
+    controller.b().whileTrue(Commands.run(SmartController.getInstance()::disableSmartControl));
 
     controller
-        .rightTrigger()
-        .whileTrue(Commands.run(SmartController.getInstance()::disableSmartControl));
-
-    controller
-        .b()
+        .rightBumper()
         .whileTrue(
             Commands.parallel(
                 Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
 
     controller2
         .a()
-        .onTrue(Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+        .whileTrue(
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
     controller2
         .y()
-        .onTrue(
+        .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
