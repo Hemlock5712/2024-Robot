@@ -198,8 +198,7 @@ public class RobotContainer {
                     Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
 
     NamedCommands.registerCommand(
-        "EnableSmartControl",
-        Commands.runOnce(() -> SmartController.getInstance().enableSmartControl()));
+        "EnableSmartControl", Commands.runOnce(SmartController.getInstance()::enableSmartControl));
 
     // Temporary workaround for the above line to prevent blocking at each pickup.
     // NamedCommands.registerCommand(
@@ -223,7 +222,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "SmartControl",
         Commands.parallel(
-            new SmartFlywheel(flywheel, lineBreak::isShooterLoaded),
+            new SmartFlywheel(flywheel),
             new SmartArm(arm, lineBreak),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
@@ -271,7 +270,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
-    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak::isShooterLoaded));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(
@@ -291,6 +290,14 @@ public class RobotContainer {
     controller
         .rightBumper()
         .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest));
+
+    controller
+        .leftTrigger()
+        .whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
+
+    controller
+        .rightTrigger()
+        .whileTrue(Commands.run(SmartController.getInstance()::disableSmartControl));
 
     controller
         .b()

@@ -99,16 +99,9 @@ public class DriveCommands {
           double robotRelativeXVel = linearVelocity.getX() * drivetrainConfig.maxLinearVelocity();
           double robotRelativeYVel = linearVelocity.getY() * drivetrainConfig.maxLinearVelocity();
 
-          // Amp Mode
-          if (SmartController.getInstance().isSmartControlEnabled()
-              && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-            SmartController.getInstance().calculateAmp();
-            AimingParameters calculatedAim =
-                SmartController.getInstance().getTargetAimingParameters();
-            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
-          }
           // Speaker Mode
-          else {
+          if (SmartController.getInstance().isSmartControlEnabled()
+              && SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER) {
             measuredGyroAngle = drive.getPose().getRotation();
             Translation2d deadbandFieldRelativeVelocity =
                 (drive.getFieldRelativeVelocity().getNorm() < autoAimFieldVelocityDeadband.get())
@@ -120,6 +113,14 @@ public class DriveCommands {
                 SmartController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
             feedForwardRadialVelocity = calculatedAim.radialVelocity();
+          }
+          // Amp Mode
+          else if (SmartController.getInstance().isSmartControlEnabled()
+              && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
+            SmartController.getInstance().calculateAmp();
+            AimingParameters calculatedAim =
+                SmartController.getInstance().getTargetAimingParameters();
+            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
           }
           ChassisSpeeds chassisSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(

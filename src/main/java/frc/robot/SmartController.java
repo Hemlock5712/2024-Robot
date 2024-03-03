@@ -19,10 +19,8 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.shoot.wrist(), 0);
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 2500, ArmConstants.shoot.wrist());
   private boolean smartControl = false;
-
-  private final double MAX_DISTANCE = 3.87;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
@@ -34,7 +32,8 @@ public class SmartController {
     shooterSpeedMap.put(2.087, 40.5);
     shooterSpeedMap.put(2.24, 40.5);
     shooterSpeedMap.put(2.74, 40.5);
-    shooterSpeedMap.put(MAX_DISTANCE, 40.5);
+    shooterSpeedMap.put(3.0, 40.5);
+    shooterSpeedMap.put(3.0, 40.5);
 
     // Units: radians
     shooterAngleMap.put(1.45, Units.degreesToRadians(85));
@@ -43,11 +42,11 @@ public class SmartController {
     shooterAngleMap.put(2.74, Units.degreesToRadians(67));
     shooterAngleMap.put(3.0, Units.degreesToRadians(63));
     shooterAngleMap.put(3.5, Units.degreesToRadians(61.5));
-    shooterAngleMap.put(MAX_DISTANCE, Units.degreesToRadians(61));
+    shooterAngleMap.put(3.87, Units.degreesToRadians(61));
 
     // Units: seconds
     flightTimeMap.put(1.2, 0.2);
-    flightTimeMap.put(MAX_DISTANCE, 0.5);
+    flightTimeMap.put(4.0, 0.5);
   }
 
   public static SmartController getInstance() {
@@ -131,14 +130,14 @@ public class SmartController {
     double shotTime = flightTimeMap.get(distanceToSpeaker);
     Translation2d movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-    double effectiveDistanceToSpeaker = toTestGoal.getNorm();
-    double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
+    double newDistanceToSpeaker = toTestGoal.getNorm();
+    double newShotTime = flightTimeMap.get(newDistanceToSpeaker);
     for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
       shotTime = newShotTime;
       movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
       toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-      effectiveDistanceToSpeaker = toTestGoal.getNorm();
-      newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
+      newDistanceToSpeaker = toTestGoal.getNorm();
+      newShotTime = flightTimeMap.get(newDistanceToSpeaker);
     }
     Rotation2d setpointAngle =
         movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
@@ -155,7 +154,7 @@ public class SmartController {
 
     // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
     double radialVelocity = 0.0;
-    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", effectiveDistanceToSpeaker);
+    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", newDistanceToSpeaker);
     Logger.recordOutput(
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
@@ -164,15 +163,13 @@ public class SmartController {
         new AimingParameters(
             setpointAngle,
             radialVelocity,
-            shooterSpeedMap.get(effectiveDistanceToSpeaker),
-            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-            effectiveDistanceToSpeaker));
+            shooterSpeedMap.get(newDistanceToSpeaker),
+            new Rotation2d(shooterAngleMap.get(newDistanceToSpeaker))));
   }
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(
-            Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.frontAmp.wrist(), 0));
+        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.frontAmp.wrist()));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
@@ -184,20 +181,12 @@ public class SmartController {
   }
 
   public record AimingParameters(
-      Rotation2d robotAngle,
-      double radialVelocity,
-      double shooterSpeed,
-      Rotation2d shooterAngle,
-      double effectiveDistanceToSpeaker) {}
+      Rotation2d robotAngle, double radialVelocity, double shooterSpeed, Rotation2d shooterAngle) {}
 
   /** Possible Drive Modes. */
   public enum DriveModeType {
     AMP,
     SPEAKER,
     SAFE,
-  }
-
-  public double getMaxDistance() {
-    return MAX_DISTANCE;
   }
 }
