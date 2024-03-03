@@ -223,7 +223,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "SmartControl",
         Commands.parallel(
-            new SmartFlywheel(flywheel),
+            new SmartFlywheel(flywheel, lineBreak::isShooterLoaded),
             new SmartArm(arm, lineBreak),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
@@ -271,7 +271,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
-    flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak::isShooterLoaded));
     intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
     magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
     lineBreak.setDefaultCommand(

@@ -41,12 +41,15 @@ public class SmartArm extends Command {
       return;
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
+      // Is in Speaker mode and
+      // Is within distance and loaded
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
           && (SmartController.getInstance().isSmartControlEnabled()
-              || SmartController.getInstance()
-                      .getTargetAimingParameters()
-                      .effectiveDistanceToSpeaker()
-                  < SmartController.getInstance().getMaxDistance())) {
+              || (SmartController.getInstance()
+                          .getTargetAimingParameters()
+                          .effectiveDistanceToSpeaker()
+                      < SmartController.getInstance().getMaxDistance()
+                  && lineBreak.isShooterLoaded()))) {
         arm.setArmTarget(ArmConstants.shoot.arm().getRadians());
         arm.setWristTarget(
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());

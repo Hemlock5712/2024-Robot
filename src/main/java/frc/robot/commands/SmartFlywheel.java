@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
+import java.util.function.BooleanSupplier;
 
 public class SmartFlywheel extends Command {
   Flywheel flywheel;
+  BooleanSupplier isLoaded;
 
   /** Creates a new SmartFlywheel. */
-  public SmartFlywheel(Flywheel flywheel) {
+  public SmartFlywheel(Flywheel flywheel, BooleanSupplier isLoaded) {
     this.flywheel = flywheel;
+    this.isLoaded = isLoaded;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
   }
@@ -31,12 +34,15 @@ public class SmartFlywheel extends Command {
       flywheel.stop();
       return;
     }
+    // Is Smart Control Enabled or 
+    // In Speaker mode and shooter is loaded and within distance
     if (SmartController.getInstance().isSmartControlEnabled()
         || (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
-            && SmartController.getInstance()
-                    .getTargetAimingParameters()
-                    .effectiveDistanceToSpeaker()
-                < SmartController.getInstance().getMaxDistance())) {
+            && (SmartController.getInstance()
+                        .getTargetAimingParameters()
+                        .effectiveDistanceToSpeaker()
+                    < SmartController.getInstance().getMaxDistance()
+                && isLoaded.getAsBoolean()))) {
       flywheel.setSpeedRotPerSec(
           SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
 
