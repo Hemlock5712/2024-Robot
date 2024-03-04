@@ -19,7 +19,7 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 2500, ArmConstants.shoot.wrist());
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist());
   private boolean smartControl = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
