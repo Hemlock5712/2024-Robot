@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.Logger;
 public class Magazine extends SubsystemBase {
   private final MagazineIO magazineIO;
   private final MagazineIOInputsAutoLogged inputs = new MagazineIOInputsAutoLogged();
-  private double targetSpeed = 0;
+  private double targetVoltage = 0;
 
   /** Creates a new Magazine. */
   public Magazine(MagazineIO magazineIO) {
@@ -46,13 +46,13 @@ public class Magazine extends SubsystemBase {
   }
 
   public void setSpeedRadPerSec(double speedRadPerSec) {
-    targetSpeed = speedRadPerSec;
-    magazineIO.runRadPerSec(targetSpeed);
+    targetVoltage = speedRadPerSec;
+    magazineIO.runVoltage(targetVoltage);
   }
 
   @AutoLogOutput(key = "Magazine/TargetRadPerSec")
-  public double getTargetRadPerSec() {
-    return targetSpeed;
+  public double getTargetVoltage() {
+    return targetVoltage;
   }
 
   @AutoLogOutput(key = "Magazine/VelocitRadPerSec")

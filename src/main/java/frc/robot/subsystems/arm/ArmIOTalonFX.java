@@ -164,4 +164,10 @@ public class ArmIOTalonFX implements ArmIO {
     armMotor.setNeutralMode(armBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
     wristMotor.setNeutralMode(wristBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
   }
+
+  @Override
+  public void stop() {
+    armMotor.stopMotor();
+    wristMotor.stopMotor();
+  }
 }

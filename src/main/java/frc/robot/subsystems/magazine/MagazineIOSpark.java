@@ -26,13 +26,6 @@ public class MagazineIOSpark implements MagazineIO {
   }
 
   @Override
-  public void runRadPerSec(double radPerSec) {
-    runVoltage(radPerSec);
-    // double speed = controller.calculate(leader.getEncoder().getVelocity(), radPerSec);
-    // leader.setVoltage(speed);
-  }
-
-  @Override
   public void stop() {
     leader.stopMotor();
   }

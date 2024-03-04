@@ -24,8 +24,7 @@ public class SmartArm extends Command {
 
   @Override
   public void initialize() {
-    arm.setArmTarget(arm.getArmAngleRelative());
-    arm.setWristTarget(arm.getWristAngleRelative());
+    arm.setArmAndWristTarget(arm.getArmAngleRelative(), arm.getWristAngleRelative());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,20 +35,20 @@ public class SmartArm extends Command {
     }
     if (SmartController.getInstance().isSmartControlEnabled()
         && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-      arm.setArmTarget(ArmConstants.frontAmp.arm().getRadians());
-      arm.setWristTarget(ArmConstants.frontAmp.wrist().getRadians());
+      arm.setArmAndWristTarget(
+          ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
       return;
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
       if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
           && SmartController.getInstance().isSmartControlEnabled()) {
-        arm.setArmTarget(ArmConstants.shoot.arm().getRadians());
-        arm.setWristTarget(
+        arm.setArmAndWristTarget(
+            ArmConstants.shoot.arm().getRadians(),
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
       }
     } else {
-      arm.setArmTarget(ArmConstants.intake.arm().getRadians());
-      arm.setWristTarget(ArmConstants.intake.wrist().getRadians());
+      arm.setArmAndWristTarget(
+          ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
     }
   }
 

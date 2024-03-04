@@ -28,24 +28,39 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = getRelativeWristTarget();
-    double realArmTarget = getRelativeArmTarget();
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", realArmTarget);
-    Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
-    io.setArmTarget(realArmTarget);
-    io.setWristTarget(realWristTarget);
-    // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(realArmTarget, realWristTarget);
   }
 
-  public void setArmTarget(double target) {
-    armTarget = target;
+  public void setArmTarget(double armTarget) {
+    this.armTarget = armTarget;
+    io.setArmTarget(armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
   }
 
-  public void setWristTarget(double target) {
-    wristTarget = target;
+  public void setWristTarget(double wristTarget) {
+    this.wristTarget = wristTarget;
+    io.setWristTarget(wristTarget);
+    Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
+  }
+
+  public void setArmAndWristTarget(double armTarget, double wristTarget) {
+    this.wristTarget = wristTarget;
+    this.armTarget = armTarget;
+
+    io.setWristTarget(wristTarget);
+    Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
+
+    io.setArmTarget(armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
+  }
+
+  public void stop() {
+    io.stop();
   }
 
   public double getWristAngleRelative() {

@@ -305,6 +305,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)));
+
     controller2
         .y()
         .whileTrue(
