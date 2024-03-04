@@ -16,8 +16,8 @@ public class Arm extends SubsystemBase {
   ArmVisualizer visualizerMeasured;
   ArmVisualizer visualizerSetpoint;
 
-  private double armTarget = getArmAngleRelative();
-  private double wristTarget = getWristAngleRelative();
+  private double armTarget = ArmConstants.intake.arm().getRadians();
+  private double wristTarget = ArmConstants.intake.wrist().getRadians();
 
   public Arm(ArmIO io) {
     this.io = io;
