@@ -31,6 +31,7 @@ public class SmartArm extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+      arm.stop();
       return;
     }
     if (SmartController.getInstance().isSmartControlEnabled()
