@@ -34,9 +34,10 @@ public class SmartController {
     shooterSpeedMap.put(2.74, 40.5);
     shooterSpeedMap.put(3.0, 40.5);
     shooterSpeedMap.put(3.211, 40.5);
-    shooterSpeedMap.put(3.2110000001, 50.0);
+
     // NEW
-    shooterSpeedMap.put(3.344, 50.0);
+    // shooterSpeedMap.put(3.2110000001, 50.0);
+    // shooterSpeedMap.put(3.344, 50.0);
 
     // Units: radians
     // OLD
@@ -45,9 +46,11 @@ public class SmartController {
     shooterAngleMap.put(2.24, Units.degreesToRadians(72));
     shooterAngleMap.put(2.41, Units.degreesToRadians(67));
     shooterAngleMap.put(3.0, Units.degreesToRadians(63));
-    shooterAngleMap.put(3.211, Units.degreesToRadians(63));
-    shooterAngleMap.put(3.2110000001, Units.degreesToRadians(62));
-    shooterAngleMap.put(3.344, Units.degreesToRadians(62));
+    shooterAngleMap.put(3.211, Units.degreesToRadians(62.5));
+
+    // NEW
+    // shooterAngleMap.put(3.2110000001, Units.degreesToRadians(62));
+    // shooterAngleMap.put(3.344, Units.degreesToRadians(62));
 
     // NEW
     // shooterAngleMap.put(3.344, Units.degreesToRadians(62));
