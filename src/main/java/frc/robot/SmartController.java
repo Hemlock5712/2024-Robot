@@ -27,34 +27,38 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
-    // OLD
-    shooterSpeedMap.put(1.45, 40.5);
-    shooterSpeedMap.put(2.087, 40.5);
-    shooterSpeedMap.put(2.24, 40.5);
-    shooterSpeedMap.put(2.74, 40.5);
-    shooterSpeedMap.put(3.0, 40.5);
-    shooterSpeedMap.put(3.211, 40.5);
-
     // NEW
-    // shooterSpeedMap.put(3.2110000001, 50.0);
-    // shooterSpeedMap.put(3.344, 50.0);
+    shooterSpeedMap.put(1.4, 40.5);
+    shooterSpeedMap.put(1.57, 40.5);
+    shooterSpeedMap.put(2.195, 40.5);
+    shooterSpeedMap.put(2.361, 40.5);
+    shooterSpeedMap.put(2.633, 40.5);
+    shooterSpeedMap.put(2.709, 40.5);
+    // OLD
+    // shooterSpeedMap.put(1.45, 40.5);
+    // shooterSpeedMap.put(2.087, 40.5);
+    // shooterSpeedMap.put(2.24, 40.5);
+    // shooterSpeedMap.put(2.74, 40.5);
+    // shooterSpeedMap.put(3.0, 40.5);
+    // shooterSpeedMap.put(3.211, 40.5);
 
     // Units: radians
+    // NEW
+    shooterAngleMap.put(1.4, Units.degreesToRadians(80));
+    shooterAngleMap.put(1.57, Units.degreesToRadians(75));
+    shooterAngleMap.put(2.195, Units.degreesToRadians(70));
+    shooterAngleMap.put(2.361, Units.degreesToRadians(67));
+    shooterAngleMap.put(2.633, Units.degreesToRadians(63));
+    shooterAngleMap.put(2.709, Units.degreesToRadians(61.5));
+
     // OLD
-    shooterAngleMap.put(1.45, Units.degreesToRadians(80));
-    shooterAngleMap.put(1.7, Units.degreesToRadians(75));
-    shooterAngleMap.put(2.24, Units.degreesToRadians(72));
-    shooterAngleMap.put(2.41, Units.degreesToRadians(67));
-    shooterAngleMap.put(3.0, Units.degreesToRadians(63));
-    shooterAngleMap.put(3.211, Units.degreesToRadians(62.5));
+    // shooterAngleMap.put(1.45, Units.degreesToRadians(80));
+    // shooterAngleMap.put(1.7, Units.degreesToRadians(75));
+    // shooterAngleMap.put(2.24, Units.degreesToRadians(72));
+    // shooterAngleMap.put(2.41, Units.degreesToRadians(67));
+    // shooterAngleMap.put(3.0, Units.degreesToRadians(63));
+    // shooterAngleMap.put(3.211, Units.degreesToRadians(62.5));
 
-    // NEW
-    // shooterAngleMap.put(3.2110000001, Units.degreesToRadians(62));
-    // shooterAngleMap.put(3.344, Units.degreesToRadians(62));
-
-    // NEW
-    // shooterAngleMap.put(3.344, Units.degreesToRadians(62));
-    // Units: seconds
     flightTimeMap.put(1.2, 0.2);
     flightTimeMap.put(4.0, 0.5);
   }
@@ -140,14 +144,14 @@ public class SmartController {
     double shotTime = flightTimeMap.get(distanceToSpeaker);
     Translation2d movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-    double newDistanceToSpeaker = toTestGoal.getNorm();
-    double newShotTime = flightTimeMap.get(newDistanceToSpeaker);
+    double effectiveDistanceToSpeaker = toTestGoal.getNorm();
+    double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
     for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
       shotTime = newShotTime;
       movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
       toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-      newDistanceToSpeaker = toTestGoal.getNorm();
-      newShotTime = flightTimeMap.get(newDistanceToSpeaker);
+      effectiveDistanceToSpeaker = toTestGoal.getNorm();
+      newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
     }
     Rotation2d setpointAngle =
         movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
@@ -164,7 +168,7 @@ public class SmartController {
 
     // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
     double radialVelocity = 0.0;
-    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", newDistanceToSpeaker);
+    Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", effectiveDistanceToSpeaker);
     Logger.recordOutput(
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
@@ -173,8 +177,8 @@ public class SmartController {
         new AimingParameters(
             setpointAngle,
             radialVelocity,
-            shooterSpeedMap.get(newDistanceToSpeaker),
-            new Rotation2d(shooterAngleMap.get(newDistanceToSpeaker))));
+            shooterSpeedMap.get(effectiveDistanceToSpeaker),
+            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker))));
   }
 
   public void calculateAmp() {
