@@ -7,7 +7,7 @@ public final class ArmConstants {
   public static final ArmPositions backAmp =
       new ArmPositions(Rotation2d.fromDegrees(23), Rotation2d.fromDegrees(65));
   public static final ArmPositions frontAmp =
-      new ArmPositions(Rotation2d.fromDegrees(30), Rotation2d.fromDegrees(-55));
+      new ArmPositions(Rotation2d.fromDegrees(28), Rotation2d.fromDegrees(-57));
   public static final ArmPositions intake =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
@@ -22,7 +22,7 @@ public final class ArmConstants {
   public static final MotorFeedbackController wristControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(30, 30, .3, 0);
+        case COMPBOT -> new MotorFeedbackController(30, 0, 0, -0.05);
           // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 
