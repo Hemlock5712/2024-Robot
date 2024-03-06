@@ -32,8 +32,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
+import frc.robot.commands.climber.CalibrateClimber;
 import frc.robot.commands.climber.ManualClimber;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -280,7 +282,7 @@ public class RobotContainer {
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
-    magazine.setDefaultCommand(new SmartMagazine(magazine, lineBreak));
+    magazine.setDefaultCommand(new SmartMagazine(magazine, intake, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
     ledController.setDefaultCommand(new HandleLEDs(ledController, lineBreak));
@@ -324,13 +326,18 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
-    controller
-        .y()
-        .whileTrue(
-            Commands.startEnd(
-                () -> new ManualClimber(climber, 40, 0),
-                () -> new ManualClimber(climber, 0, 0),
-                climber));
+    controller2
+        .leftTrigger(0.5)
+        .and(controller2.b())
+        .onTrue(new ManualClimber(climber, 5.2, 0))
+        .onFalse(new ManualClimber(climber, 0, 0));
+
+    controller2
+        .leftTrigger(0.5)
+        .and(controller2.pov(0))
+        .toggleOnTrue(new ManualArm(arm, flywheel, ArmConstants.trap));
+
+    controller2.back().whileTrue(new CalibrateClimber(climber));
 
     // controller2
     //     .start()

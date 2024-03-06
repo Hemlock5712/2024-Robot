@@ -54,7 +54,7 @@ public class LedController extends SubsystemBase {
     if (DriverStation.isDisabled()) {
       // candle.animate(new FireAnimation(1, 0.5, -1, 0.5, 0.5));
       if (DriverStation.getAlliance().isEmpty()) {
-        candle.animate(new RainbowAnimation());
+        candle.animate(new RainbowAnimation(0.5, 0.5, stripLength, false, startOffset));
         return;
       }
       if (DriverStation.getAlliance().get() == Alliance.Red) {

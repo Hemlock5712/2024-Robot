@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    setSpeedRotPerSec(40);
+    setSpeedRotPerSec(60);
   }
 
   public void outtake() {

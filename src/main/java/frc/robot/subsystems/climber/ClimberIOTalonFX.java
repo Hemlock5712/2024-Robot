@@ -44,13 +44,14 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.Feedback.SensorToMechanismRatio = 20;
 
     // kV assumes linear however get to operating velocity
 
-    config.Slot0.kS = 0.0; // Add 0.25 V output to overcome static friction
-    config.Slot0.kV = 0.0; // A velocity target of 1 rps results in 0.12 V output
+    config.Slot0.kS = 0.228; // Add 0.25 V output to overcome static friction
+    config.Slot0.kV = 1.0 / 6.7; // A velocity target of 1 rps results in 0.12 V output
     config.Slot0.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    config.Slot0.kP = 0.0; // An error of 1 rps results in 0.11 V output
+    config.Slot0.kP = 5.0; // An error of 1 rps results in 0.11 V output
     config.Slot0.kI = 0.0; // no output for integrated error
     config.Slot0.kD = 0.0; // no output for error derivative
 
@@ -60,6 +61,10 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot1.kP = 0.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
+
+    config.MotionMagic.MotionMagicCruiseVelocity = 8;
+    config.MotionMagic.MotionMagicAcceleration = 20;
+    config.MotionMagic.MotionMagicJerk = 200;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;

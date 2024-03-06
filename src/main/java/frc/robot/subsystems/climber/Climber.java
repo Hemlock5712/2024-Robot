@@ -12,6 +12,7 @@ public class Climber extends SubsystemBase {
   private final ClimberIO io;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private double targetPosition = 0;
+  private boolean isCalibrated = false;
 
   /** Creates a new Elevator. */
   public Climber(ClimberIO io) {
@@ -40,6 +41,11 @@ public class Climber extends SubsystemBase {
 
   public void resetClimberPositionToZero() {
     io.resetPositionToZero();
+    isCalibrated = true;
+  }
+
+  public boolean isCalibrated() {
+    return isCalibrated;
   }
 
   @AutoLogOutput(key = "Elevator/SetPoint")

@@ -26,7 +26,7 @@ public class Magazine extends SubsystemBase {
   }
 
   public void forward() {
-    setSpeedRadPerSec(5);
+    setSpeedRadPerSec(6);
   }
 
   public void backward() {

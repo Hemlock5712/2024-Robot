@@ -22,7 +22,9 @@ public class ManualClimber extends Command {
 
   @Override
   public void initialize() {
-    climber.setCustomPosition(targetPosition, slot);
+    if (climber.isCalibrated()) {
+      climber.setCustomPosition(targetPosition, slot);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
