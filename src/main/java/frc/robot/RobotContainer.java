@@ -191,7 +191,7 @@ public class RobotContainer {
                     Commands.defer(() -> new ShotVisualizer(drive, arm, flywheel), Set.of()))));
     NamedCommands.registerCommand(
         "QuickShoot",
-        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.5)
+        new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.0)
             .deadlineWith(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0))
             .andThen(
                 new ScheduleCommand(
@@ -289,7 +289,8 @@ public class RobotContainer {
 
     controller
         .rightTrigger()
-        .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest));
+        .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest)
+        .deadlineWith(new VibrateController(controller, lineBreak)));
 
     controller.a().whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
 

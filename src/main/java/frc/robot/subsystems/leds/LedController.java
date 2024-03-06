@@ -8,6 +8,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation;
@@ -52,7 +53,11 @@ public class LedController extends SubsystemBase {
     // This method will be called once per scheduler run
     if (DriverStation.isDisabled()) {
       // candle.animate(new FireAnimation(1, 0.5, -1, 0.5, 0.5));
-      if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
+      if (DriverStation.getAlliance().isEmpty()) {
+        candle.animate(new RainbowAnimation());
+        return;
+      }
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
         candle.animate(
             new LarsonAnimation(150, 0, 0, 0, 0.05, stripLength, BounceMode.Front, 7, 8));
       } else {

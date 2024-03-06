@@ -6,12 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -34,31 +28,38 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Amp-W1"
+                        "pathName": "A1-P1"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "A1-P2"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Magazine"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "QuickShoot"
+                        "name": "Shoot"
                       }
                     },
                     {
@@ -70,13 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W1-C1"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
+                        "pathName": "A1-P3"
                       }
                     },
                     {
@@ -86,7 +81,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C1-SA"
+                              "pathName": "A1-P4"
                             }
                           },
                           {
@@ -101,19 +96,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SA-C2"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "SIMGamePiecePickup"
+                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -123,7 +112,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C2-SA"
+                              "pathName": "A1-P5"
                             }
                           },
                           {
@@ -138,7 +127,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "Shoot"
                       }
                     }
                   ]

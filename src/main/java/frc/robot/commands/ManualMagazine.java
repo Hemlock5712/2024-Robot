@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
@@ -13,18 +14,22 @@ import frc.robot.subsystems.magazine.Magazine;
 public class ManualMagazine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
+  Timer timer;
 
   /** Creates a new SmartMagazine. */
   public ManualMagazine(Magazine magazine, LineBreak lineBreak) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.magazine = magazine;
     this.lineBreak = lineBreak;
+    this.timer = new Timer();
     addRequirements(magazine);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.restart();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -54,6 +59,6 @@ public class ManualMagazine extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lineBreak.isShooterLoaded();
+    return lineBreak.isShooterLoaded() || (timer.hasElapsed(3) && lineBreak.hasNoGamePiece());
   }
 }

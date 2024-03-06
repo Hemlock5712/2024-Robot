@@ -116,37 +116,6 @@
                       "data": {
                         "name": "Shoot"
                       }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SS-C3"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "C3-SS"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "QuickShoot"
-                      }
                     }
                   ]
                 }
