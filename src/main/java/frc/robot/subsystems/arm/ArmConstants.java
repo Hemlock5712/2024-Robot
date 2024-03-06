@@ -12,6 +12,8 @@ public final class ArmConstants {
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
+  public static final ArmPositions trap =
+      new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(-48));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {

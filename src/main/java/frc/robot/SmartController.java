@@ -21,6 +21,7 @@ public class SmartController {
   private AimingParameters targetAimingParameters =
       new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist());
   private boolean smartControl = false;
+  private boolean emergencyIntakeMode = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
@@ -98,6 +99,18 @@ public class SmartController {
    */
   public boolean isSmartControlEnabled() {
     return this.smartControl;
+  }
+
+  public void setEmergencyIntakeMode(boolean emergencyMode) {
+    this.emergencyIntakeMode = emergencyMode;
+  }
+
+  public boolean getEmergencyIntakeMode() {
+    return this.emergencyIntakeMode;
+  }
+
+  public void toggleEmergencyIntakeMode() {
+    this.emergencyIntakeMode = !emergencyIntakeMode;
   }
 
   /**

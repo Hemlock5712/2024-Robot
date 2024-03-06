@@ -32,10 +32,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
+import frc.robot.commands.climber.ManualClimber;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -88,6 +92,7 @@ public class RobotContainer {
   private final LineBreak lineBreak;
   private final Magazine magazine;
   private final LedController ledController;
+  private final Climber climber;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -122,6 +127,7 @@ public class RobotContainer {
                 new AprilTagVisionIOLimelight("limelight-bl"),
                 new AprilTagVisionIOLimelight("limelight-br"));
         ledController = new LedController();
+        climber = new Climber(new ClimberIOTalonFX());
         break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -139,6 +145,7 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
         ledController = new LedController();
+        climber = new Climber(new ClimberIO() {});
         break;
       default:
         // Replayed robot, disable IO implementations
@@ -156,6 +163,7 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIO() {});
         lineBreak = new LineBreak(new LineBreakIO() {});
         ledController = new LedController();
+        climber = new Climber(new ClimberIO() {});
         break;
     }
 
@@ -289,8 +297,12 @@ public class RobotContainer {
 
     controller
         .rightTrigger()
-        .whileTrue(Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest)
-        .deadlineWith(new VibrateController(controller, lineBreak)));
+        .whileTrue(
+            Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest)
+                .deadlineWith(new VibrateController(controller, lineBreak)));
+    // Commands.either(
+    //         new ManualArm(arm, flywheel, ArmConstants.frontAmp),
+    //         () -> SmartController.getInstance().getEmergencyIntakeMode())
 
     controller.a().whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
 
@@ -311,6 +323,19 @@ public class RobotContainer {
         .y()
         .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+
+    controller
+        .y()
+        .whileTrue(
+            Commands.startEnd(
+                () -> new ManualClimber(climber, 40, 0),
+                () -> new ManualClimber(climber, 0, 0),
+                climber));
+
+    // controller2
+    //     .start()
+    //     .and(controller2.back())
+    //     .onTrue(Commands.runOnce(SmartController.getInstance()::toggleEmergencyIntakeMode));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));
