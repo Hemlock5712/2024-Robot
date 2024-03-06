@@ -60,8 +60,8 @@ public class SmartController {
     // shooterAngleMap.put(3.0, Units.degreesToRadians(63));
     // shooterAngleMap.put(3.211, Units.degreesToRadians(62.5));
 
-    flightTimeMap.put(1.2, 0.2);
-    flightTimeMap.put(4.0, 0.5);
+    flightTimeMap.put(1.2, 0.3);
+    flightTimeMap.put(2.709, 0.75);
   }
 
   public static SmartController getInstance() {

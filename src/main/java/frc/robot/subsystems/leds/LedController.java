@@ -18,10 +18,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
+import frc.robot.subsystems.vision.AprilTagVision;
 
 public class LedController extends SubsystemBase {
 
   CANdle candle;
+  AprilTagVision aprilTags;
 
   boolean hasGamePiece = false;
   boolean safeMode = false;
@@ -30,10 +32,11 @@ public class LedController extends SubsystemBase {
   int startOffset = 8;
 
   /** Creates a new LedController. */
-  public LedController() {
+  public LedController(AprilTagVision aprilTags) {
     candle = new CANdle(33);
     candle.configLEDType(LEDStripType.GRB);
     candle.configV5Enabled(true);
+    this.aprilTags = aprilTags;
   }
 
   public void setHasGamePiece(boolean hasGamePiece) {
@@ -52,6 +55,10 @@ public class LedController extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (DriverStation.isDisabled()) {
+      if (aprilTags.getPoseEstimationCount() == 0) {
+        candle.animate(new StrobeAnimation(0, 255, 0, 0, 0.25, stripLength, startOffset));
+        return;
+      }
       // candle.animate(new FireAnimation(1, 0.5, -1, 0.5, 0.5));
       if (DriverStation.getAlliance().isEmpty()) {
         candle.animate(new RainbowAnimation(0.5, 0.5, stripLength, false, startOffset));

@@ -128,7 +128,7 @@ public class RobotContainer {
                 new AprilTagVisionIOLimelight("limelight-fr"),
                 new AprilTagVisionIOLimelight("limelight-bl"),
                 new AprilTagVisionIOLimelight("limelight-br"));
-        ledController = new LedController();
+        ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIOTalonFX());
         break;
       case SIM:
@@ -146,7 +146,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorSim(), new IntakeWheelsIOSIM());
         magazine = new Magazine(new MagazineIOSIM());
         lineBreak = new LineBreak(new LineBreakIOSim());
-        ledController = new LedController();
+        ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIO() {});
         break;
       default:
@@ -164,7 +164,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         magazine = new Magazine(new MagazineIO() {});
         lineBreak = new LineBreak(new LineBreakIO() {});
-        ledController = new LedController();
+        ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIO() {});
         break;
     }
@@ -308,13 +308,15 @@ public class RobotContainer {
 
     controller.a().whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
 
-    controller.b().whileTrue(Commands.run(SmartController.getInstance()::disableSmartControl));
+    controller.b().whileTrue(Commands.runOnce(SmartController.getInstance()::disableSmartControl));
 
     controller
         .rightBumper()
         .whileTrue(
             Commands.parallel(
                 Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
+
+    controller.y().whileTrue(new ManualArm(arm, flywheel, ArmConstants.emergencyIntake, () -> -5));
 
     controller2
         .a()
