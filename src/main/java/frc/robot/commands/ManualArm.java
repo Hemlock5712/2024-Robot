@@ -34,7 +34,11 @@ public class ManualArm extends Command {
   @Override
   public void initialize() {
     arm.setArmAndWristTarget(armPosition.arm().getRadians(), armPosition.wrist().getRadians());
-    flywheel.setSpeedRotPerSec(flywheelSpeed.getAsDouble());
+    if (flywheelSpeed.getAsDouble() == 0.0) {
+      flywheel.stop();
+    } else {
+      flywheel.setSpeedRotPerSec(flywheelSpeed.getAsDouble());
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,7 +47,9 @@ public class ManualArm extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    flywheel.stop();
+  }
 
   // Returns true when the command should end.
   @Override

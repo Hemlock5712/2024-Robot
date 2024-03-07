@@ -32,7 +32,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
     intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     intakeEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    intakeEncoderConfig.MagnetSensor.MagnetOffset = -0.715 + 0.25;
+    intakeEncoderConfig.MagnetSensor.MagnetOffset = -.577 + .25;
     // intakeEncoderConfig.MagnetSensor.MagnetOffset = 0;
     for (int i = 0; i < 4; i++) {
       boolean statusOK =

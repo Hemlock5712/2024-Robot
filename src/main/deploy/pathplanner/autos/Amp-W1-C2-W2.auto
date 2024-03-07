@@ -79,13 +79,13 @@
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "W1-C1"
+                                    "pathName": "W1-C2"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "C1-SA"
+                                    "pathName": "C2-SA"
                                   }
                                 }
                               ]

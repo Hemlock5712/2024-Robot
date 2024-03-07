@@ -6,12 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -38,13 +32,19 @@
                       }
                     },
                     {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source-W3-W2-W1-P1"
+                      }
+                    },
+                    {
                       "type": "parallel",
                       "data": {
                         "commands": [
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Mid-W2"
+                              "pathName": "Source-W3-W2-W1-P2"
                             }
                           },
                           {
@@ -59,19 +59,19 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeUp"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source-W3-W2-W1-P3"
                       }
                     },
                     {
@@ -79,28 +79,9 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "sequential",
+                            "type": "path",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "W2-C3"
-                                  }
-                                },
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "SIMGamePiecePickup"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "C3-SM"
-                                  }
-                                }
-                              ]
+                              "pathName": "Source-W3-W2-W1-P4"
                             }
                           },
                           {
@@ -115,13 +96,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "IntakeUp"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -129,28 +110,9 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "sequential",
+                            "type": "path",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "SM-C4"
-                                  }
-                                },
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "SIMGamePiecePickup"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "C4-SM"
-                                  }
-                                }
-                              ]
+                              "pathName": "Source-W3-W2-W1-P5"
                             }
                           },
                           {

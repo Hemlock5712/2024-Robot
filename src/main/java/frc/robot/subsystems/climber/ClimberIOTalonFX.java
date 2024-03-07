@@ -44,7 +44,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    config.Feedback.SensorToMechanismRatio = 20;
+    config.Feedback.SensorToMechanismRatio = 25;
 
     // kV assumes linear however get to operating velocity
 

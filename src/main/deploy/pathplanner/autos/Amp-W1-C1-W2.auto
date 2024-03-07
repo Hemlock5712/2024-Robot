@@ -26,15 +26,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "QuickShoot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeDown"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "QuickShoot"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -52,13 +59,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "QuickShoot"
+                        "name": "Shoot"
                       }
                     },
                     {
@@ -68,25 +69,26 @@
                       }
                     },
                     {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W1-C1"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
                       "type": "parallel",
                       "data": {
                         "commands": [
                           {
-                            "type": "path",
+                            "type": "sequential",
                             "data": {
-                              "pathName": "C1-SA"
+                              "commands": [
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "W1-C1"
+                                  }
+                                },
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "C1-SA"
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -107,19 +109,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SA-C2"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
+                        "name": "Shoot"
                       }
                     },
                     {
@@ -129,19 +119,13 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C2-SA"
+                              "pathName": "SA-W2"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Magazine"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "EnableSmartControl"
                             }
                           }
                         ]
@@ -150,7 +134,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "Shoot"
                       }
                     }
                   ]
