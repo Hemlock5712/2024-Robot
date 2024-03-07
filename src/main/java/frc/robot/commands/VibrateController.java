@@ -29,7 +29,7 @@ public class VibrateController extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (lineBreak.hasGamePiece() && !lineBreak.isShooterLoaded() && !lineBreak.isShooterLong()) {
+    if (lineBreak.hasGamePiece()) {
       controller.getHID().setRumble(RumbleType.kBothRumble, 1);
     } else {
       controller.getHID().setRumble(RumbleType.kBothRumble, 0);
