@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -64,7 +65,18 @@ public class Intake extends SubsystemBase {
         actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
         break;
       case UP:
-        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
+        if (!actuatorInputs.limitswitchTriggered) {
+          actuatorIO.setVoltage(-2.2);
+        } else {
+          actuatorIO.setVoltage(-0.01);
+        }
+        // } else {
+        //   actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
+        // }
+        if (actuatorInputs.limitswitchTriggered) {
+          actuatorIO.resetEncoder();
+        }
+
         break;
     }
   }
@@ -75,6 +87,10 @@ public class Intake extends SubsystemBase {
 
   public void disableIntakeRequest() {
     this.intakeRequest = false;
+  }
+
+  public boolean isAtOrAbovePosition() {
+    return (actuatorInputs.targetAngle - actuatorInputs.angle) + Units.degreesToRadians(15) > 0;
   }
 
   @AutoLogOutput(key = "Intake/IntakeRequest")

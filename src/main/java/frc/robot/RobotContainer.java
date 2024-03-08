@@ -281,7 +281,8 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
-    intake.setDefaultCommand(new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
+    intake.setDefaultCommand(
+        new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition).ignoringDisable(true));
     magazine.setDefaultCommand(new SmartMagazine(magazine, intake, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
@@ -321,7 +322,9 @@ public class RobotContainer {
     controller2
         .a()
         .whileTrue(
-            Commands.startEnd(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP), () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+            Commands.startEnd(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.AMP),
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller2
         .y()
@@ -359,5 +362,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public void intakeUp() {
+    intake.disableIntakeRequest();
   }
 }

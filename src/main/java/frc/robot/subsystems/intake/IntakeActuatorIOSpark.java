@@ -8,15 +8,18 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkLimitSwitch;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 public class IntakeActuatorIOSpark implements IntakeActuatorIO {
   CANSparkMax motor;
   PIDController pidController;
   CANcoder intakeEncoder;
   ArmFeedforward feedForward;
+  CANcoderConfiguration intakeEncoderConfig;
 
   public IntakeActuatorIOSpark() {
     motor = new CANSparkMax(19, MotorType.kBrushless);
@@ -29,10 +32,9 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     // Create a new ArmFeedforward with gains kS, kG, kV, and kA
     feedForward = new ArmFeedforward(0, 0.06, 0, 0);
 
-    CANcoderConfiguration intakeEncoderConfig = new CANcoderConfiguration();
+    intakeEncoderConfig = new CANcoderConfiguration();
     intakeEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     intakeEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    intakeEncoderConfig.MagnetSensor.MagnetOffset = -.577 + .25;
     // intakeEncoderConfig.MagnetSensor.MagnetOffset = 0;
     for (int i = 0; i < 4; i++) {
       boolean statusOK =
@@ -48,6 +50,8 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     inputs.currentAmps = new double[] {motor.getOutputCurrent()};
     inputs.tempCelcius = new double[] {motor.getMotorTemperature()};
     inputs.targetAngle = pidController.getSetpoint();
+    inputs.limitswitchTriggered =
+        motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
   }
 
   @Override
@@ -62,5 +66,24 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
                     .getRadians(),
                 angleRad);
     motor.set(pidSpeed);
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    motor.setVoltage(voltage);
+  }
+
+  @Override
+  public void resetEncoder() {
+    if (Math.abs(
+            intakeEncoder.getAbsolutePosition().refresh().getValueAsDouble()
+                - Units.degreesToRotations(90))
+        > Units.degreesToRotations(3)) {
+      intakeEncoderConfig.MagnetSensor.MagnetOffset = 0;
+      intakeEncoder.getConfigurator().apply(intakeEncoderConfig);
+      intakeEncoderConfig.MagnetSensor.MagnetOffset =
+          -intakeEncoder.getAbsolutePosition().refresh().getValueAsDouble() + 0.25;
+      intakeEncoder.getConfigurator().apply(intakeEncoderConfig);
+    }
   }
 }
