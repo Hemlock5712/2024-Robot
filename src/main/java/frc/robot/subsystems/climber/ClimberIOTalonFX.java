@@ -55,10 +55,10 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot0.kI = 0.0; // no output for integrated error
     config.Slot0.kD = 0.0; // no output for error derivative
 
-    config.Slot1.kS = 0.0;
-    config.Slot1.kV = 0.0;
+    config.Slot1.kS = 0.228;
+    config.Slot1.kV = 1.0 / 6.7;
     config.Slot1.kA = 0.0;
-    config.Slot1.kP = 0.0;
+    config.Slot1.kP = 6.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 

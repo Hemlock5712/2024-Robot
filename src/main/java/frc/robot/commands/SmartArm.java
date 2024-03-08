@@ -46,6 +46,9 @@ public class SmartArm extends Command {
         arm.setArmAndWristTarget(
             ArmConstants.shoot.arm().getRadians(),
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      } else {
+        arm.setArmAndWristTarget(
+            ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
       }
     } else {
       arm.setArmAndWristTarget(

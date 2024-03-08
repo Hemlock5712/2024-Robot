@@ -335,14 +335,16 @@ public class RobotContainer {
         .leftTrigger(0.5)
         .and(controller2.b())
         .onTrue(new ManualClimber(climber, 5.2, 0))
-        .onFalse(new ManualClimber(climber, 0, 0));
+        .onFalse(new ManualClimber(climber, 2.4, 1));
 
     controller2
         .leftTrigger(0.5)
         .and(controller2.pov(0))
         .toggleOnTrue(new ManualArm(arm, flywheel, ArmConstants.trap));
 
-    controller2.back().whileTrue(new CalibrateClimber(climber));
+    controller2.x().whileTrue(new CalibrateClimber(climber));
+
+    controller.x().whileTrue(new ManualShoot(arm, flywheel, magazine, lineBreak, 1.5));
 
     // controller2
     //     .start()

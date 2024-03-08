@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SmartController;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants.ArmPositions;
 import frc.robot.subsystems.flywheel.Flywheel;
@@ -49,6 +51,7 @@ public class ManualArm extends Command {
   @Override
   public void end(boolean interrupted) {
     flywheel.stop();
+    SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER);
   }
 
   // Returns true when the command should end.

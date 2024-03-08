@@ -56,7 +56,7 @@ public class LedController extends SubsystemBase {
     // This method will be called once per scheduler run
     if (DriverStation.isDisabled()) {
       if (aprilTags.getPoseEstimationCount() == 0) {
-        candle.animate(new StrobeAnimation(0, 255, 0, 0, 0.25, stripLength, startOffset));
+        candle.animate(new SingleFadeAnimation(0, 100, 0, 0, 0.3, stripLength, startOffset));
         return;
       }
       // candle.animate(new FireAnimation(1, 0.5, -1, 0.5, 0.5));
