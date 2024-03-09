@@ -48,6 +48,10 @@ public class Climber extends SubsystemBase {
     return isCalibrated;
   }
 
+  public double getPosition() {
+    return inputs.position;
+  }
+
   @AutoLogOutput(key = "Elevator/SetPoint")
   public double getSetPoint() {
     return targetPosition;

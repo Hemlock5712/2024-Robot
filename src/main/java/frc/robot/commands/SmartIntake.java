@@ -25,6 +25,7 @@ public class SmartIntake extends Command {
     this.intake = intake;
     this.isArmWristInIntakePosition = isArmWristInIntakePosition;
     this.lineBreak = lineBreak;
+
     addRequirements(intake);
   }
 

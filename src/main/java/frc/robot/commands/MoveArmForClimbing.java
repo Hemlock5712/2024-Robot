@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.climber.Climber;
 
 public class MoveArmForClimbing extends Command {
@@ -13,17 +14,34 @@ public class MoveArmForClimbing extends Command {
   private Arm arm;
 
   /** Creates a new MoveArmForClimbing. */
-  public MoveArmForClimbing() {
+  public MoveArmForClimbing(Arm arm, Climber climber) {
+    this.arm = arm;
+    this.climber = climber;
+    addRequirements(arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (climber.isCalibrated()) {
+      arm.setArmAndWristTarget(
+          ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (climber.getPosition() < 3.5) {
+      arm.setArmAndWristTarget(
+          (climber.getPosition() / 3.5) * ArmConstants.trap.arm().getRadians(),
+          ArmConstants.trap.wrist().getRadians());
+    } else {
+      arm.setArmAndWristTarget(
+          ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

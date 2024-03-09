@@ -331,11 +331,19 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
+    // controller2
+    //     .leftTrigger(0.5)
+    //     .and(controller2.b())
+    //     .onTrue(new ManualClimber(climber, 5.2, 0))
+    //     .onFalse(new ManualClimber(climber, 2.4, 1));
+
     controller2
         .leftTrigger(0.5)
         .and(controller2.b())
         .onTrue(new ManualClimber(climber, 5.2, 0))
-        .onFalse(new ManualClimber(climber, 2.4, 1));
+        .onFalse(new ManualClimber(climber, 0.5, 1));
+
+    controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
 
     controller2
         .leftTrigger(0.5)

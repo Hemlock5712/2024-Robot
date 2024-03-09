@@ -15,7 +15,8 @@ public interface IntakeActuatorIO {
     public double appliedVolts = 0;
     public double[] currentAmps = new double[] {};
     public double[] tempCelcius = new double[] {};
-    public boolean limitswitchTriggered;
+    public boolean upLimitSwitchTriggered;
+    public boolean downLimitSwitchTriggered;
   }
 
   /** Updates the set of loggable inputs. */

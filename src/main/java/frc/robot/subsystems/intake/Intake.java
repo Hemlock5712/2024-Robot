@@ -62,10 +62,15 @@ public class Intake extends SubsystemBase {
         actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
         break;
       case FLOOR:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
+        // actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
+        if (!actuatorInputs.downLimitSwitchTriggered) {
+          actuatorIO.setVoltage(2);
+        } else {
+          actuatorIO.setVoltage(0);
+        }
         break;
       case UP:
-        if (!actuatorInputs.limitswitchTriggered) {
+        if (!actuatorInputs.upLimitSwitchTriggered) {
           actuatorIO.setVoltage(-2.2);
         } else {
           actuatorIO.setVoltage(-0.01);
@@ -73,9 +78,6 @@ public class Intake extends SubsystemBase {
         // } else {
         //   actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
         // }
-        if (actuatorInputs.limitswitchTriggered) {
-          actuatorIO.resetEncoder();
-        }
 
         break;
     }
