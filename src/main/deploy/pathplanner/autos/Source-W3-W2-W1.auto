@@ -110,9 +110,22 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "path",
+                            "type": "sequential",
                             "data": {
-                              "pathName": "Source-W3-W2-W1-P5"
+                              "commands": [
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "Source-W3-W2-W1-P5"
+                                  }
+                                },
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "Source-W3-W2-W1-P6"
+                                  }
+                                }
+                              ]
                             }
                           },
                           {

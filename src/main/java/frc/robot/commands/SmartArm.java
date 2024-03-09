@@ -44,9 +44,9 @@ public class SmartArm extends Command {
       return;
     }
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
-      if (climber.getPosition() < 3.5) {
+      if (climber.getPosition() < 4) {
         arm.setArmAndWristTarget(
-            (climber.getPosition() / 3.5) * ArmConstants.trap.arm().getRadians(),
+            (climber.getPosition() / 4) * ArmConstants.trap.arm().getRadians(),
             ArmConstants.trap.wrist().getRadians());
       } else {
         arm.setArmAndWristTarget(

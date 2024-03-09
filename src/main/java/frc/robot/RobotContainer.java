@@ -295,7 +295,7 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 3));
+        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5));
 
     controller
         .rightTrigger()
@@ -337,12 +337,12 @@ public class RobotContainer {
     //     .onFalse(new ManualClimber(climber, 2.4, 1));
 
     controller2
-        .leftTrigger(0.5)
+        .pov(180)
         .toggleOnTrue(
             Commands.startEnd(
                 () -> climber.setRequestingClimb(true), () -> climber.setRequestingClimb(false)));
     controller2
-        .x()
+        .pov(0)
         .toggleOnTrue(
             Commands.runEnd(
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),

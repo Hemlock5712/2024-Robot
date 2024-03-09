@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3219547677741104,
-        "y": 2.546662368304093
+        "x": 2.3697597188753416,
+        "y": 6.500814752248828
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.432201894957052,
-        "y": 1.0510503267084166
+        "x": 1.9700988239185788,
+        "y": 6.329529081240632
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "P5End"
     },
     {
       "anchor": {
-        "x": 7.997085391363186,
-        "y": 0.8
+        "x": 1.4854713072574635,
+        "y": 6.138615211040798
       },
       "prevControl": {
-        "x": 5.961547865225377,
-        "y": 0.8
+        "x": 1.8232420006879377,
+        "y": 6.300157716594503
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 180.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.37384154646483,
+    "rotation": -161.90609345593685,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Source-W3-W2-W1",
   "previewStartingState": {
-    "rotation": 116.81452324138763,
+    "rotation": -138.392090532576,
     "velocity": 0
   },
   "useDefaultConstraints": true

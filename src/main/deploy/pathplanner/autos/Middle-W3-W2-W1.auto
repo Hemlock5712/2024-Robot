@@ -110,15 +110,28 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Source-W3-W2-W1-P5"
-                            }
-                          },
-                          {
                             "type": "named",
                             "data": {
                               "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "sequential",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "Source-W3-W2-W1-P5"
+                                  }
+                                },
+                                {
+                                  "type": "path",
+                                  "data": {
+                                    "pathName": "Source-W3-W2-W1-P6"
+                                  }
+                                }
+                              ]
                             }
                           }
                         ]
