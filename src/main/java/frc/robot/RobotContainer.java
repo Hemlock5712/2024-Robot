@@ -32,8 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.commands.*;
-import frc.robot.commands.climber.CalibrateClimber;
-import frc.robot.commands.climber.ManualClimber;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIO;
@@ -233,7 +231,7 @@ public class RobotContainer {
         "SmartControl",
         Commands.parallel(
             new SmartFlywheel(flywheel),
-            new SmartArm(arm, lineBreak),
+            new SmartArm(arm, lineBreak, climber),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
     NamedCommands.registerCommand("IntakeDown", new InstantCommand(intake::enableIntakeRequest));
@@ -279,7 +277,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    arm.setDefaultCommand(new SmartArm(arm, lineBreak));
+    arm.setDefaultCommand(new SmartArm(arm, lineBreak, climber));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition).ignoringDisable(true));
@@ -287,6 +285,7 @@ public class RobotContainer {
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));
     ledController.setDefaultCommand(new HandleLEDs(ledController, lineBreak));
+    climber.setDefaultCommand(new SmartClimb(climber));
 
     controller
         .start()
@@ -339,18 +338,24 @@ public class RobotContainer {
 
     controller2
         .leftTrigger(0.5)
-        .and(controller2.b())
-        .onTrue(new ManualClimber(climber, 5.2, 0))
-        .onFalse(new ManualClimber(climber, 0.5, 1));
-
-    controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
-
+        .toggleOnTrue(
+            Commands.startEnd(
+                () -> climber.setRequestingClimb(true), () -> climber.setRequestingClimb(false)));
     controller2
-        .leftTrigger(0.5)
-        .and(controller2.pov(0))
-        .toggleOnTrue(new ManualArm(arm, flywheel, ArmConstants.trap));
+        .x()
+        .toggleOnTrue(
+            Commands.runEnd(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
-    controller2.x().whileTrue(new CalibrateClimber(climber));
+    // controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
+
+    // controller2
+    //     .leftTrigger(0.5)
+    //     .and(controller2.pov(0))
+    //     .toggleOnTrue(new ManualArm(arm, flywheel, ArmConstants.trap));
+
+    // controller2.x().whileTrue(new CalibrateClimber(climber));
 
     controller.x().whileTrue(new ManualShoot(arm, flywheel, magazine, lineBreak, 1.5));
 

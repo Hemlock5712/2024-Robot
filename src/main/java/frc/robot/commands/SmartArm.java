@@ -9,16 +9,19 @@ import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.lineBreak.LineBreak;
 
 public class SmartArm extends Command {
   Arm arm;
   LineBreak lineBreak;
+  Climber climber;
 
   /** Creates a new moveArm. */
-  public SmartArm(Arm arm, LineBreak lineBreak) {
+  public SmartArm(Arm arm, LineBreak lineBreak, Climber climber) {
     this.arm = arm;
     this.lineBreak = lineBreak;
+    this.climber = climber;
     addRequirements(arm);
   }
 
@@ -38,6 +41,17 @@ public class SmartArm extends Command {
         && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
       arm.setArmAndWristTarget(
           ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
+      return;
+    }
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
+      if (climber.getPosition() < 3.5) {
+        arm.setArmAndWristTarget(
+            (climber.getPosition() / 3.5) * ArmConstants.trap.arm().getRadians(),
+            ArmConstants.trap.wrist().getRadians());
+      } else {
+        arm.setArmAndWristTarget(
+            ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
+      }
       return;
     }
     if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {

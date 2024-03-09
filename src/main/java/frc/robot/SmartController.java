@@ -215,5 +215,6 @@ public class SmartController {
     AMP,
     SPEAKER,
     SAFE,
+    CLIMBER,
   }
 }

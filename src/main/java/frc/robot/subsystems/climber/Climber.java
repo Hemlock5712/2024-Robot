@@ -13,6 +13,7 @@ public class Climber extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private double targetPosition = 0;
   private boolean isCalibrated = false;
+  private boolean isRequestingClimb = false;
 
   /** Creates a new Elevator. */
   public Climber(ClimberIO io) {
@@ -60,5 +61,13 @@ public class Climber extends SubsystemBase {
   @AutoLogOutput(key = "Elevator/LimitSwitch")
   public boolean isLimitSwitchTriggered() {
     return inputs.limitSwitchTriggered;
+  }
+
+  public void setRequestingClimb(boolean requesting) {
+    isRequestingClimb = requesting;
+  }
+
+  public boolean isRequestingClimb() {
+    return isRequestingClimb;
   }
 }
