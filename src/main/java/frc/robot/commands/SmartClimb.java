@@ -32,7 +32,7 @@ public class SmartClimb extends Command {
         climber.setCustomPosition(5.2, 0);
       } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER)
           && climber.isRequestingClimb()) {
-        climber.setCustomPosition(0.5, 1);
+        climber.setCustomPosition(0.0, 1);
 
       } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE)) {
         return;

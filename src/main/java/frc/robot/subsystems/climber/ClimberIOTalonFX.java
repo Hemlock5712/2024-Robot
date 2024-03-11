@@ -51,14 +51,14 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot0.kS = 0.228; // Add 0.25 V output to overcome static friction
     config.Slot0.kV = 1.0 / 6.7; // A velocity target of 1 rps results in 0.12 V output
     config.Slot0.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    config.Slot0.kP = 5.0; // An error of 1 rps results in 0.11 V output
+    config.Slot0.kP = 6.0; // An error of 1 rps results in 0.11 V output
     config.Slot0.kI = 0.0; // no output for integrated error
     config.Slot0.kD = 0.0; // no output for error derivative
 
     config.Slot1.kS = 0.228;
     config.Slot1.kV = 1.0 / 6.7;
     config.Slot1.kA = 0.0;
-    config.Slot1.kP = 6.0;
+    config.Slot1.kP = 8.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 
