@@ -69,6 +69,7 @@ public class SmartController {
       instance = new SmartController();
     }
     Logger.recordOutput("SmartController/smartControl", instance.smartControl);
+    Logger.recordOutput("SmartController/driveModeType", instance.driveModeType.toString());
     return instance;
   }
 

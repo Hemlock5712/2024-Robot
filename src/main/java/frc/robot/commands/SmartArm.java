@@ -27,26 +27,35 @@ public class SmartArm extends Command {
 
   @Override
   public void initialize() {
-    arm.setArmAndWristTarget(arm.getArmAngleRelative(), arm.getWristAngleRelative());
+    arm.stop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
+    DriveModeType driveModeType = SmartController.getInstance().getDriveModeType();
+    boolean isSmartControlled = SmartController.getInstance().isSmartControlEnabled();
+    if (driveModeType == DriveModeType.SAFE) {
       arm.stop();
       return;
     }
-    if (SmartController.getInstance().isSmartControlEnabled()
-        && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
-      arm.setArmAndWristTarget(
-          ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
-      return;
-    }
-    if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
-      if (climber.getPosition() < 4) {
+    if ((lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && isSmartControlled) {
+      if (driveModeType == DriveModeType.AMP) {
         arm.setArmAndWristTarget(
-            (climber.getPosition() / 4) * ArmConstants.trap.arm().getRadians(),
+            ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
+        return;
+      }
+      if (driveModeType == DriveModeType.SPEAKER) {
+        arm.setArmAndWristTarget(
+            ArmConstants.shoot.arm().getRadians(),
+            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+        return;
+      }
+    }
+    if (driveModeType == DriveModeType.CLIMBER) {
+      if (climber.getPosition() < 3.5) {
+        arm.setArmAndWristTarget(
+            (climber.getPosition() / 3.5) * ArmConstants.trap.arm().getRadians(),
             ArmConstants.trap.wrist().getRadians());
       } else {
         arm.setArmAndWristTarget(
@@ -54,20 +63,8 @@ public class SmartArm extends Command {
       }
       return;
     }
-    if (lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) {
-      if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
-          && SmartController.getInstance().isSmartControlEnabled()) {
-        arm.setArmAndWristTarget(
-            ArmConstants.shoot.arm().getRadians(),
-            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-      } else {
-        arm.setArmAndWristTarget(
-            ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
-      }
-    } else {
-      arm.setArmAndWristTarget(
-          ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
-    }
+    arm.setArmAndWristTarget(
+        ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
   }
 
   // Called once the command ends or is interrupted.
