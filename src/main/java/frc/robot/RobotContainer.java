@@ -290,8 +290,9 @@ public class RobotContainer {
     controller
         .start()
         .and(controller.back())
-        .onTrue(
-            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+        .whileTrue(
+            Commands.runOnce(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller
         .leftTrigger()

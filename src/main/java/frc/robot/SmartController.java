@@ -132,15 +132,6 @@ public class SmartController {
     this.driveModeType = driveModeType;
   }
 
-  /** Toggles the drive mode between AMP and SPEAKER. */
-  public void toggleDriveMode() {
-    if (this.driveModeType == DriveModeType.AMP) {
-      setDriveMode(SmartController.DriveModeType.SPEAKER);
-    } else {
-      setDriveMode(SmartController.DriveModeType.AMP);
-    }
-  }
-
   /** Enables heading control based on the current drive mode. */
   public void enableSmartControl() {
     this.smartControl = true;
