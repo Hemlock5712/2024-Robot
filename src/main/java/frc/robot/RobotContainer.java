@@ -331,6 +331,13 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
+    controller2
+        .x()
+        .toggleOnTrue(
+            Commands.runEnd(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.FEED),
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+
     // controller2
     //     .leftTrigger(0.5)
     //     .and(controller2.b())

@@ -16,6 +16,8 @@ public final class ArmConstants {
       new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(-48));
   public static final ArmPositions emergencyIntake =
       new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
+  public static final ArmPositions feed =
+      new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
 
   public static final ArmPositions manualShot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(58.75));

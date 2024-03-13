@@ -51,6 +51,11 @@ public class SmartArm extends Command {
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
         return;
       }
+      if (driveModeType == DriveModeType.FEED) {
+        arm.setArmAndWristTarget(
+            ArmConstants.feed.arm().getRadians(), ArmConstants.feed.arm().getRadians());
+        return;
+      }
     }
     if (driveModeType == DriveModeType.CLIMBER) {
       if (climber.getPosition() < 3.5) {
