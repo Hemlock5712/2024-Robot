@@ -68,8 +68,11 @@ public class SmartArm extends Command {
       }
       return;
     }
-    arm.setArmAndWristTarget(
+    if(lineBreak.timeSinceLastGamePiece() > 0.5){
+      arm.setArmAndWristTarget(
         ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
+    }
+    
   }
 
   // Called once the command ends or is interrupted.
