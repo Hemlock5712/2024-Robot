@@ -20,6 +20,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
   CANcoder intakeEncoder;
   ArmFeedforward feedForward;
   CANcoderConfiguration intakeEncoderConfig;
+  IdleMode currentIdleMode = IdleMode.kCoast;
 
   public IntakeActuatorIOSpark() {
     motor = new CANSparkMax(19, MotorType.kBrushless);
@@ -86,6 +87,22 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
       intakeEncoderConfig.MagnetSensor.MagnetOffset =
           -intakeEncoder.getAbsolutePosition().refresh().getValueAsDouble() + 0.25;
       intakeEncoder.getConfigurator().apply(intakeEncoderConfig);
+    }
+  }
+
+  @Override
+  public void brakeMode() {
+    if (currentIdleMode != IdleMode.kBrake) {
+      motor.setIdleMode(IdleMode.kBrake);
+      currentIdleMode = IdleMode.kBrake;
+    }
+  }
+
+  @Override
+  public void coastMode() {
+    if (currentIdleMode != IdleMode.kCoast) {
+      motor.setIdleMode(IdleMode.kCoast);
+      currentIdleMode = IdleMode.kCoast;
     }
   }
 }

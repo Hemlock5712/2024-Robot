@@ -33,4 +33,8 @@ public interface IntakeActuatorIO {
   public default void setVoltage(double voltage) {}
 
   public default void resetEncoder() {}
+
+  public default void brakeMode() {}
+
+  public default void coastMode() {}
 }

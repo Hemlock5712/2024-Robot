@@ -18,7 +18,6 @@ public class Intake extends SubsystemBase {
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
   private boolean intakeRequest = false;
-  private IntakePositions intakePositions = IntakePositions.BUMPER;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
   IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");
@@ -56,30 +55,20 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
-    this.intakePositions = intakePositions;
-    switch (intakePositions) {
-      case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
-        break;
-      case FLOOR:
-        // actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
-        if (!actuatorInputs.downLimitSwitchTriggered) {
-          actuatorIO.setVoltage(2);
-        } else {
-          actuatorIO.setVoltage(0);
-        }
-        break;
-      case UP:
-        if (!actuatorInputs.upLimitSwitchTriggered) {
-          actuatorIO.setVoltage(-2.2);
-        } else {
-          actuatorIO.setVoltage(-0.01);
-        }
-        // } else {
-        //   actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
-        // }
-
-        break;
+    if (intakePositions == IntakePositions.FLOOR) {
+      if (!actuatorInputs.downLimitSwitchTriggered) {
+        actuatorIO.setVoltage(2);
+      } else {
+        actuatorIO.setVoltage(0);
+      }
+      actuatorIO.coastMode();
+    } else {
+      if (!actuatorInputs.upLimitSwitchTriggered) {
+        actuatorIO.setVoltage(-2.2);
+      } else {
+        actuatorIO.setVoltage(-0.01);
+      }
+      actuatorIO.brakeMode();
     }
   }
 
@@ -122,7 +111,6 @@ public class Intake extends SubsystemBase {
 
   public enum IntakePositions {
     FLOOR,
-    UP,
-    BUMPER
+    UP
   }
 }
