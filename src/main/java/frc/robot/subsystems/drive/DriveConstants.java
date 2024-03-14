@@ -15,15 +15,24 @@ import frc.robot.Constants;
 public final class DriveConstants {
   public static DrivetrainConfig drivetrainConfig =
       switch (Constants.getRobot()) {
+          /**
+           * Values of path planner and potential other drivetrain changes. 60 As follows: 4.608,
+           * 6.627, 11.277, 33.436
+           *
+           * <p>40A As follows: 4.608, 4.418, 11.277 (646), 22.290 (1277)
+           *
+           * <p>PathPlanner default values: "maxVelocity": 2.5, "maxAcceleration": 3.0,
+           * "maxAngularVelocity": 540.0, "maxAngularAcceleration": 720.0
+           */
         default ->
             new DrivetrainConfig(
                 Units.inchesToMeters(2.0),
                 Units.inchesToMeters(22.75),
                 Units.inchesToMeters(22.75),
-                Units.feetToMeters(12.16),
-                Units.feetToMeters(21.32),
+                4.608,
+                4.418,
                 11.277,
-                33.436);
+                22.290);
       };
   public static final double wheelRadius = Units.inchesToMeters(2.0);
   public static final Translation2d[] moduleTranslations =
@@ -121,7 +130,7 @@ public final class DriveConstants {
 
   public static final PIDConstants PProtationConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new PIDConstants(5, 0.0, 0.0);
+        case COMPBOT -> new PIDConstants(7.5, 0.0, 0.0);
         case SIMBOT -> new PIDConstants(10, 0.0, 0.0);
       };
 

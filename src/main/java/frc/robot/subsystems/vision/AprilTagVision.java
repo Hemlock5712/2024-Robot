@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class AprilTagVision extends SubsystemBase {
@@ -48,6 +49,15 @@ public class AprilTagVision extends SubsystemBase {
 
   public void setDataInterfaces(Consumer<List<TimestampedVisionUpdate>> visionConsumer) {
     this.visionConsumer = visionConsumer;
+  }
+
+  @AutoLogOutput(key = "/AprilTagVision/poseEstimateCount")
+  public int getPoseEstimationCount() {
+    int count = 0;
+    for (AprilTagVisionIOInputs input : inputs) {
+      count += input.poseEstimates.size();
+    }
+    return count;
   }
 
   public AprilTagVision(AprilTagVisionIO... io) {

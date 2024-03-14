@@ -6,12 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -26,34 +20,77 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Mid-P1"
+                      }
+                    },
+                    {
                       "type": "parallel",
                       "data": {
                         "commands": [
                           {
-                            "type": "named",
+                            "type": "path",
                             "data": {
-                              "name": "IntakeDown"
+                              "pathName": "Source-W3-W2-W1-P2"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "QuickShoot"
+                              "name": "Magazine"
                             }
                           }
                         ]
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Amp-W1"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Magazine"
+                        "name": "IntakeDown"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Source-W3-W2-W1-P3"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Source-W3-W2-W1-P4"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -73,53 +110,28 @@
                       "data": {
                         "commands": [
                           {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          },
+                          {
                             "type": "sequential",
                             "data": {
                               "commands": [
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "W1-C1"
+                                    "pathName": "Source-W3-W2-W1-P5"
                                   }
                                 },
                                 {
                                   "type": "path",
                                   "data": {
-                                    "pathName": "C1-SA"
+                                    "pathName": "Source-W3-W2-W1-P6"
                                   }
                                 }
                               ]
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "SA-W2"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
                             }
                           }
                         ]

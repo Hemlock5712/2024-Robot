@@ -7,10 +7,8 @@ public final class IntakeConstants {
   public record MotorFeedbackController(double kP, double kI, double kD, double kFF) {}
 
   public static final IntakePositions floorPosition =
-      new IntakePositions(Rotation2d.fromDegrees(185));
-  public static final IntakePositions bumperPosition =
-      new IntakePositions(Rotation2d.fromDegrees(178));
-  public static final IntakePositions upPosition = new IntakePositions(Rotation2d.fromDegrees(90));
+      new IntakePositions(Rotation2d.fromDegrees(184));
+  public static final IntakePositions upPosition = new IntakePositions(Rotation2d.fromDegrees(91));
 
   public record IntakePositions(Rotation2d angle) {}
 }

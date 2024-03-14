@@ -33,7 +33,7 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
   TalonFXConfiguration config = new TalonFXConfiguration();
 
   public IntakeWheelsIOTalonFX() {
-    config.CurrentLimits.SupplyCurrentLimit = 30.0;
+    config.CurrentLimits.SupplyCurrentLimit = 40.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -74,5 +74,10 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
   @Override
   public void setVotSpeed(double appliedVolts) {
     leader.setVoltage(appliedVolts);
+  }
+
+  @Override
+  public void stop() {
+    leader.stopMotor();
   }
 }

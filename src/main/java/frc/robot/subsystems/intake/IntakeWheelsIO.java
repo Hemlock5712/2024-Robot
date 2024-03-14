@@ -20,4 +20,6 @@ public interface IntakeWheelsIO {
   public default void setSpeedRotPerSec(double velocityRotPerSec) {}
 
   public default void setVotSpeed(double appliedVolts) {}
+
+  public default void stop() {}
 }

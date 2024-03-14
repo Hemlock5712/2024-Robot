@@ -88,7 +88,7 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.kI = ArmConstants.wristControlConstants.kI();
     wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
     wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
-    wristConfig.Slot0.kS = .16;
+    wristConfig.Slot0.kS = 0.0;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
@@ -163,5 +163,11 @@ public class ArmIOTalonFX implements ArmIO {
   public void setBrakeMode(boolean armBrake, boolean wristBrake) {
     armMotor.setNeutralMode(armBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
     wristMotor.setNeutralMode(wristBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+  }
+
+  @Override
+  public void stop() {
+    armMotor.stopMotor();
+    wristMotor.stopMotor();
   }
 }

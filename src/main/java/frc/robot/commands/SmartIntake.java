@@ -25,6 +25,7 @@ public class SmartIntake extends Command {
     this.intake = intake;
     this.isArmWristInIntakePosition = isArmWristInIntakePosition;
     this.lineBreak = lineBreak;
+
     addRequirements(intake);
   }
 
@@ -42,10 +43,6 @@ public class SmartIntake extends Command {
     }
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {
       intake.setIntakeMode(IntakePositions.FLOOR);
-      intake.intake();
-    } else if (lineBreak.hasGamePiece() && lineBreak.inLowerIntake()) {
-      intake.disableIntakeRequest();
-      intake.setIntakeMode(IntakePositions.BUMPER);
       intake.intake();
     } else {
       intake.setIntakeMode(IntakePositions.UP);

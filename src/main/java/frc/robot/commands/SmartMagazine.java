@@ -7,18 +7,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.lineBreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 
 public class SmartMagazine extends Command {
   Magazine magazine;
   LineBreak lineBreak;
+  Intake intake;
 
   /** Creates a new SmartMagazine. */
-  public SmartMagazine(Magazine magazine, LineBreak lineBreak) {
+  public SmartMagazine(Magazine magazine, Intake intake, LineBreak lineBreak) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.magazine = magazine;
     this.lineBreak = lineBreak;
+    this.intake = intake;
     addRequirements(magazine);
   }
 
@@ -31,7 +34,7 @@ public class SmartMagazine extends Command {
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE
         || lineBreak.isShooterLoaded()
-        || lineBreak.hasNoGamePiece()) {
+        || (lineBreak.hasNoGamePiece() && !intake.getIntakeRequest())) {
       magazine.stop();
       return;
     }
@@ -39,10 +42,12 @@ public class SmartMagazine extends Command {
     if (lineBreak.isShooterLong()) {
       magazine.slowBackward();
     } else {
-      if (lineBreak.isMagazine1Sensor() || lineBreak.isMagazine2Sensor()) {
+      if (lineBreak.isMagazine2Sensor()) {
         magazine.slowForward();
       } else {
-        magazine.forward();
+        if (intake.getIntakeRequest()) {
+          magazine.forward();
+        }
       }
     }
   }

@@ -8,6 +8,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation;
@@ -17,10 +18,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
+import frc.robot.subsystems.vision.AprilTagVision;
 
 public class LedController extends SubsystemBase {
 
   CANdle candle;
+  AprilTagVision aprilTags;
 
   boolean hasGamePiece = false;
   boolean safeMode = false;
@@ -29,10 +32,11 @@ public class LedController extends SubsystemBase {
   int startOffset = 8;
 
   /** Creates a new LedController. */
-  public LedController() {
+  public LedController(AprilTagVision aprilTags) {
     candle = new CANdle(33);
     candle.configLEDType(LEDStripType.GRB);
     candle.configV5Enabled(true);
+    this.aprilTags = aprilTags;
   }
 
   public void setHasGamePiece(boolean hasGamePiece) {
@@ -51,8 +55,16 @@ public class LedController extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (DriverStation.isDisabled()) {
+      if (aprilTags.getPoseEstimationCount() == 0) {
+        candle.animate(new SingleFadeAnimation(0, 100, 0, 0, 0.3, stripLength, startOffset));
+        return;
+      }
       // candle.animate(new FireAnimation(1, 0.5, -1, 0.5, 0.5));
-      if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
+      if (DriverStation.getAlliance().isEmpty()) {
+        candle.animate(new RainbowAnimation(0.5, 0.5, stripLength, false, startOffset));
+        return;
+      }
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
         candle.animate(
             new LarsonAnimation(150, 0, 0, 0, 0.05, stripLength, BounceMode.Front, 7, 8));
       } else {

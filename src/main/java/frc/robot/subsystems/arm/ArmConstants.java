@@ -7,11 +7,20 @@ public final class ArmConstants {
   public static final ArmPositions backAmp =
       new ArmPositions(Rotation2d.fromDegrees(23), Rotation2d.fromDegrees(65));
   public static final ArmPositions frontAmp =
-      new ArmPositions(Rotation2d.fromDegrees(30), Rotation2d.fromDegrees(-55));
+      new ArmPositions(Rotation2d.fromDegrees(31), Rotation2d.fromDegrees(-60));
   public static final ArmPositions intake =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
+  public static final ArmPositions trap =
+      new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(-48));
+  public static final ArmPositions emergencyIntake =
+      new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
+  public static final ArmPositions feed =
+      new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
+
+  public static final ArmPositions manualShot =
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(58.75));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {
@@ -22,7 +31,7 @@ public final class ArmConstants {
   public static final MotorFeedbackController wristControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(28, 20, .3, 0);
+        case COMPBOT -> new MotorFeedbackController(30, 0, 0, -0.05);
           // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 
