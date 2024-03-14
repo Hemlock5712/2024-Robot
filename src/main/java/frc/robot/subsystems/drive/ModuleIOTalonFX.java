@@ -55,6 +55,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Double> driveVelocity;
   private final StatusSignal<Double> driveAppliedVolts;
   private final StatusSignal<Double> driveCurrent;
+  private final StatusSignal<Double> driveTemp;
 
   private final StatusSignal<Double> turnAbsolutePosition;
   private final StatusSignal<Double> turnPosition;
@@ -62,6 +63,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Double> turnVelocity;
   private final StatusSignal<Double> turnAppliedVolts;
   private final StatusSignal<Double> turnCurrent;
+  private final StatusSignal<Double> turnTemp;
 
   private final Rotation2d absoluteEncoderOffset;
 
@@ -80,15 +82,15 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     for (int i = 0; i < 4; i++) {
-      boolean error = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
+      boolean statusOK = driveTalon.getConfigurator().apply(driveConfig, 0.1) == StatusCode.OK;
       setDriveBrakeMode(true);
-      error = error && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
+      statusOK = statusOK && turnTalon.getConfigurator().apply(turnConfig, 0.1) == StatusCode.OK;
       setTurnBrakeMode(true);
-      error =
-          error
+      statusOK =
+          statusOK
               && cancoder.getConfigurator().apply(new CANcoderConfiguration(), 0.1)
                   == StatusCode.OK;
-      if (!error) break;
+      if (statusOK) break;
     }
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
@@ -99,6 +101,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveVelocity = driveTalon.getVelocity();
     driveAppliedVolts = driveTalon.getMotorVoltage();
     driveCurrent = driveTalon.getSupplyCurrent();
+    driveTemp = driveTalon.getDeviceTemp();
 
     turnAbsolutePosition = cancoder.getAbsolutePosition();
     turnPosition = turnTalon.getPosition();
@@ -107,6 +110,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnVelocity = turnTalon.getVelocity();
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getSupplyCurrent();
+    turnTemp = turnTalon.getDeviceTemp();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         DriveConstants.odometryFrequency, drivePosition, turnPosition);
@@ -115,10 +119,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveVelocity,
         driveAppliedVolts,
         driveCurrent,
+        driveTemp,
         turnAbsolutePosition,
         turnVelocity,
         turnAppliedVolts,
-        turnCurrent);
+        turnCurrent,
+        turnTemp);
     driveTalon.optimizeBusUtilization();
     turnTalon.optimizeBusUtilization();
   }
@@ -130,11 +136,13 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveVelocity,
         driveAppliedVolts,
         driveCurrent,
+        driveTemp,
         turnAbsolutePosition,
         turnPosition,
         turnVelocity,
         turnAppliedVolts,
-        turnCurrent);
+        turnCurrent,
+        turnTemp);
 
     inputs.drivePositionRad =
         Units.rotationsToRadians(drivePosition.getValueAsDouble())
@@ -144,6 +152,7 @@ public class ModuleIOTalonFX implements ModuleIO {
             / moduleConstants.driveReduction();
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
+    inputs.driveTemp = driveTemp.getValueAsDouble();
 
     inputs.turnAbsolutePosition =
         Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
@@ -154,6 +163,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / moduleConstants.turnReduction();
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = new double[] {turnCurrent.getValueAsDouble()};
+    inputs.turnTemp = turnTemp.getValueAsDouble();
 
     inputs.odometryTimestamps =
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.533285612025769,
-        "y": 2.4348026877871947
+        "x": 7.573670110180848,
+        "y": 2.150564202036745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.580089863058243,
-        "y": 1.1718340080036815
+        "x": 5.620474361213322,
+        "y": 0.8875955222532317
       },
       "isLocked": false,
-      "linkedName": "C4"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.306495915317413,
-        "y": 2.9371364646128226
+        "x": 2.0417302044568513,
+        "y": 3.4328213852157243
       },
       "prevControl": {
-        "x": 4.055465713793683,
-        "y": 1.6447964201831808
+        "x": 3.310851037400185,
+        "y": 2.291126628744782
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,12 +36,30 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableSmartControl"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 4.61,
-    "maxAcceleration": 6.63,
-    "maxAngularVelocity": 646.124506,
-    "maxAngularAcceleration": 1915.74
+    "maxVelocity": 4.4,
+    "maxAcceleration": 4.418,
+    "maxAngularVelocity": 646.0,
+    "maxAngularAcceleration": 1277.1229
   },
   "goalEndState": {
     "velocity": 0,

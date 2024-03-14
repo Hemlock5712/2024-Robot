@@ -7,19 +7,15 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
-public class IntakeWheesIOSIM implements IntakeWheelsIO {
+public class IntakeWheelsIOSIM implements IntakeWheelsIO {
   TalonFX leader = new TalonFX(45);
   TalonFXSimState leaderSim = leader.getSimState();
   FlywheelSim flywheelSim;
 
-  public IntakeWheesIOSIM() {
+  public IntakeWheelsIOSIM() {
     leaderSim = leader.getSimState();
     flywheelSim = new FlywheelSim(DCMotor.getNeo550(1), 3.0, 0.01);
     TalonFXConfiguration config = new TalonFXConfiguration();
-    var slot0Configs = config.Slot0;
-    slot0Configs.kP = 9.2;
-    slot0Configs.kI = 0;
-    slot0Configs.kD = 0;
     config.Feedback.SensorToMechanismRatio = 3.0;
     leader.getConfigurator().apply(config);
   }
@@ -31,18 +27,13 @@ public class IntakeWheesIOSIM implements IntakeWheelsIO {
     leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
     leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
-    inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
+    inputs.velocityRotPerSec = leader.getVelocity().refresh().getValue();
     inputs.appliedVolts = leaderSim.getMotorVoltage();
     inputs.currentAmps = new double[] {leaderSim.getSupplyCurrent()};
   }
 
   @Override
-  public void runRPM(double speedRPM) {
-    double speedRPS = speedRPM / 60.0;
-    leader.setControl(
-        new VelocityVoltage(0)
-            .withVelocity(speedRPS)
-            .withEnableFOC(true)
-            .withFeedForward(speedRPS * 0.0135));
+  public void setSpeedRotPerSec(double velocityRotPerSec) {
+    leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
   }
 }

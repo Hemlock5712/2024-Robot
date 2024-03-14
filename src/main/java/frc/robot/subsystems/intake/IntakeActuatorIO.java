@@ -12,6 +12,11 @@ public interface IntakeActuatorIO {
     public boolean isDown = false;
     public double angle = 0;
     public double targetAngle = 0;
+    public double appliedVolts = 0;
+    public double[] currentAmps = new double[] {};
+    public double[] tempCelcius = new double[] {};
+    public boolean upLimitSwitchTriggered;
+    public boolean downLimitSwitchTriggered;
   }
 
   /** Updates the set of loggable inputs. */
@@ -22,4 +27,14 @@ public interface IntakeActuatorIO {
   // public default void intakeDown() {}
 
   public default void setIntakeAngle(double angleRad) {}
+
+  public default void configurePID(double kP, double kI, double kD, double kFF) {}
+
+  public default void setVoltage(double voltage) {}
+
+  public default void resetEncoder() {}
+
+  public default void brakeMode() {}
+
+  public default void coastMode() {}
 }

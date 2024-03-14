@@ -1,22 +1,10 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.338998314360265,
-      "y": 5.522617590689727
-    },
-    "rotation": 179.54164354199952
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
         {
           "type": "parallel",
           "data": {
@@ -34,6 +22,55 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "IntakeDown"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp-W1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Magazine"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "W1-W2"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "Shoot"
                       }
                     },
@@ -46,61 +83,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Mid-W2"
+                        "pathName": "W2-W3"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W2-C3"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C3-SM"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SM-C4"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C4-SM"
+                        "name": "Magazine"
                       }
                     },
                     {

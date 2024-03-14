@@ -122,6 +122,21 @@ public class DriveCommands {
                 SmartController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
           }
+          // Feed Mode
+          else if (SmartController.getInstance().isSmartControlEnabled()
+              && SmartController.getInstance().getDriveModeType() == DriveModeType.FEED) {
+            measuredGyroAngle = drive.getPose().getRotation();
+            Translation2d deadbandFieldRelativeVelocity =
+                (drive.getFieldRelativeVelocity().getNorm() < autoAimFieldVelocityDeadband.get())
+                    ? new Translation2d(0, 0)
+                    : drive.getFieldRelativeVelocity();
+            SmartController.getInstance()
+                .calculateFeed(drive.getPose(), deadbandFieldRelativeVelocity);
+            AimingParameters calculatedAim =
+                SmartController.getInstance().getTargetAimingParameters();
+            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
+            feedForwardRadialVelocity = calculatedAim.radialVelocity();
+          }
           ChassisSpeeds chassisSpeeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   robotRelativeXVel,

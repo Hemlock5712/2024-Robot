@@ -6,7 +6,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.ArmConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -17,12 +16,11 @@ public class Arm extends SubsystemBase {
   ArmVisualizer visualizerMeasured;
   ArmVisualizer visualizerSetpoint;
 
-  private double armTarget = 0;
-  private double wristTarget = 0;
+  private double armTarget = ArmConstants.intake.arm().getRadians();
+  private double wristTarget = ArmConstants.intake.wrist().getRadians();
 
   public Arm(ArmIO io) {
     this.io = io;
-
     visualizerMeasured = new ArmVisualizer("ArmMeasured", null);
     visualizerSetpoint = new ArmVisualizer("ArmSetpoint", new Color8Bit(Color.kOrange));
   }
@@ -30,23 +28,39 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    double realWristTarget = getRelativeWristTarget();
     Logger.processInputs("Arm", inputs);
-    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
-    Logger.recordOutput("Arm/WristTargetPositionRad", realWristTarget);
-    io.setArmTarget(armTarget);
-    io.setWristTarget(realWristTarget);
-    // This method will be called once per scheduler run
     visualizerMeasured.update(inputs.armRelativePositionRad, inputs.wristRelativePositionRad);
-    visualizerSetpoint.update(armTarget, realWristTarget);
   }
 
-  public void setArmTarget(double target) {
-    armTarget = target;
+  public void setArmTarget(double armTarget) {
+    this.armTarget = armTarget;
+    io.setArmTarget(armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
   }
 
-  public void setWristTarget(double target) {
-    wristTarget = target;
+  public void setWristTarget(double wristTarget) {
+    this.wristTarget = wristTarget;
+    io.setWristTarget(wristTarget);
+    Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
+  }
+
+  public void setArmAndWristTarget(double armTarget, double wristTarget) {
+    this.wristTarget = wristTarget;
+    this.armTarget = armTarget;
+
+    io.setWristTarget(wristTarget);
+    Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
+
+    io.setArmTarget(armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", armTarget);
+
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
+  }
+
+  public void stop() {
+    io.stop();
   }
 
   public double getWristAngleRelative() {
@@ -57,12 +71,20 @@ public class Arm extends SubsystemBase {
     return inputs.wristAbsolutePositionRad;
   }
 
-  public double getArmAngle() {
+  public double getArmAngleAbsolute() {
+    return inputs.armAbsolutePositionRad;
+  }
+
+  public double getArmAngleRelative() {
     return inputs.armRelativePositionRad;
   }
 
   public double getRelativeWristTarget() {
-    return wristTarget + inputs.armAbsolutePositionRad;
+    return wristTarget;
+  }
+
+  public double getRelativeArmTarget() {
+    return armTarget;
   }
 
   public Transform3d getFlywheelPosition() {
@@ -74,16 +96,16 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInIntakePosition")
   public boolean isArmWristInIntakePosition() {
-    return (Math.abs(ArmConstants.intake.arm().getRadians() - getArmAngle())
+    return (Math.abs(ArmConstants.intake.arm().getRadians() - getArmAngleRelative())
             < (Units.degreesToRadians(1)))
-        && (Math.abs(ArmConstants.intake.wrist().getRadians() - getWristAngleAbsolute())
+        && (Math.abs(ArmConstants.intake.wrist().getRadians() - getWristAngleRelative())
             < (Units.degreesToRadians(1)));
   }
 
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
-    return (Math.abs(armTarget - getArmAngle()) < (Units.degreesToRadians(1)))
+    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(3)))
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
-            < (Units.degreesToRadians(1)));
+            < (Units.degreesToRadians(3)));
   }
 }

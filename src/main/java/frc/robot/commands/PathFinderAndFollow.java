@@ -9,7 +9,6 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.SmartController;
@@ -20,7 +19,6 @@ import frc.robot.subsystems.lineBreak.LineBreak;
 public class PathFinderAndFollow extends Command {
   private Command scoreCommand;
   private Command pathRun;
-  private DriveModeType driveMode;
   private LineBreak lineBreak;
   boolean lastLineBreak = false;
   private DriveModeType lastDriveMode = DriveModeType.AMP;
@@ -96,7 +94,11 @@ public class PathFinderAndFollow extends Command {
   public Command getAmpAutonPathCommand() {
     PathPlannerPath ampPath = PathPlannerPath.fromPathFile("Amp Placement Path");
     PathConstraints constraints =
-        new PathConstraints(drivetrainConfig.maxLinearVelocity(), drivetrainConfig.maxLinearAcceleration(), drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration());
+        new PathConstraints(
+            drivetrainConfig.maxLinearVelocity(),
+            drivetrainConfig.maxLinearAcceleration(),
+            drivetrainConfig.maxAngularVelocity(),
+            drivetrainConfig.maxAngularAcceleration());
     pathRun = AutoBuilder.pathfindThenFollowPath(ampPath, constraints, 0.0);
     return Commands.sequence(pathRun);
   }
@@ -104,7 +106,11 @@ public class PathFinderAndFollow extends Command {
   public Command getIntakeAutonPathCommand() {
     PathPlannerPath intakePath = PathPlannerPath.fromPathFile("Intake Path");
     PathConstraints constraints =
-        new PathConstraints(drivetrainConfig.maxLinearVelocity(), drivetrainConfig.maxLinearAcceleration(), drivetrainConfig.maxAngularVelocity(), drivetrainConfig.maxAngularAcceleration());
+        new PathConstraints(
+            drivetrainConfig.maxLinearVelocity(),
+            drivetrainConfig.maxLinearAcceleration(),
+            drivetrainConfig.maxAngularVelocity(),
+            drivetrainConfig.maxAngularAcceleration());
     pathRun = AutoBuilder.pathfindThenFollowPath(intakePath, constraints, 0.0);
     return Commands.sequence(pathRun);
   }

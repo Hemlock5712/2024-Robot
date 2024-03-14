@@ -62,7 +62,8 @@ public class FieldConstants {
 
     /** Center of the speaker opening (blue alliance) */
     public static Pose2d centerSpeakerOpening =
-        new Pose2d(0.0, fieldWidth - Units.inchesToMeters(104.0), new Rotation2d());
+        new Pose2d(
+            Units.inchesToMeters(8.75), fieldWidth - Units.inchesToMeters(104.0), new Rotation2d());
 
     public static Translation3d centerSpeakerOpening3d =
         bottomRightSpeaker.plus(topLeftSpeaker).div(2);
@@ -85,6 +86,9 @@ public class FieldConstants {
       new Translation3d(0.0, Units.inchesToMeters(238.815), Units.inchesToMeters(78.324));
   public static Translation3d bottomLeftSpeaker =
       new Translation3d(0.0, Units.inchesToMeters(197.765), Units.inchesToMeters(78.324));
+
+  public static Translation2d cornerFeedLocation =
+      new Translation2d(Units.inchesToMeters(12), Units.inchesToMeters(325));
 
   public static double aprilTagWidth = Units.inchesToMeters(6.50);
   public static AprilTagFieldLayout aprilTags;
