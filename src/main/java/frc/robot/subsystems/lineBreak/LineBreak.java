@@ -25,7 +25,7 @@ public class LineBreak extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     lineBreakIO.updateInputs(inputs);
-    if (hasGamePiece()) {
+    if (inputs.lineBreakValues.hasGamePiece()) {
       lastGamePieceSeenTime = Timer.getFPGATimestamp();
     }
   }
@@ -37,7 +37,7 @@ public class LineBreak extends SubsystemBase {
 
   @AutoLogOutput(key = "/LineBreak/hasNoGamePiece")
   public boolean hasNoGamePiece() {
-    return timeSinceLastGamePiece() > 0.1;
+    return !hasGamePiece();
   }
 
   @AutoLogOutput(key = "/LineBreak/hasGamePiece")
@@ -57,7 +57,7 @@ public class LineBreak extends SubsystemBase {
 
   @AutoLogOutput(key = "/LineBreak/inLowerIntake")
   public boolean inLowerIntake() {
-    return inputs.lineBreakValues.InLowerIntake();
+    return inputs.lineBreakValues.inLowerIntake();
   }
 
   @AutoLogOutput(key = "/LineBreak/isShooterLoaded")
@@ -68,6 +68,31 @@ public class LineBreak extends SubsystemBase {
   @AutoLogOutput(key = "/LineBreak/isShooterLong")
   public boolean isShooterLong() {
     return inputs.lineBreakValues.isShooterLong();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/magazine3Sensor")
+  public boolean isMagazine3Sensor() {
+    return inputs.lineBreakValues.magazine3();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/magazine2Sensor")
+  public boolean isMagazine2Sensor() {
+    return inputs.lineBreakValues.magazine2();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/magazine1Sensor")
+  public boolean isMagazine1Sensor() {
+    return inputs.lineBreakValues.magazine1();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/upperIntake1Sensor")
+  public boolean isupperIntake1Sensor() {
+    return inputs.lineBreakValues.upperIntake1();
+  }
+
+  @AutoLogOutput(key = "/LineBreak/upperInt2Sensor")
+  public boolean isupperIntake2Sensor() {
+    return inputs.lineBreakValues.upperIntake2();
   }
 
   public void bumpGamePiece() {

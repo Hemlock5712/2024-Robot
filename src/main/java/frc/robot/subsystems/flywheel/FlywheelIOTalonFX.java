@@ -10,25 +10,22 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-/*
+
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
-  private static final double GEAR_RATIO = 1.5;
 
-  private final TalonFX leader = new TalonFX(0);
-  private final TalonFX follower = new TalonFX(1);
+  private final TalonFX leader = new TalonFX(53);
+  private final TalonFX follower = new TalonFX(54);
 
   private final StatusSignal<Double> leaderPosition = leader.getPosition();
   private final StatusSignal<Double> leaderVelocity = leader.getVelocity();
@@ -36,14 +33,39 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
   private final StatusSignal<Double> followerCurrent = follower.getSupplyCurrent();
 
+  final MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(0);
+
+  TalonFXConfiguration config = new TalonFXConfiguration();
+
   public FlywheelIOTalonFX() {
-    var config = new TalonFXConfiguration();
-    config.CurrentLimits.SupplyCurrentLimit = 30.0;
+    config.CurrentLimits.SupplyCurrentLimit = 40.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    leader.getConfigurator().apply(config);
-    follower.getConfigurator().apply(config);
-    follower.setControl(new Follower(leader.getDeviceID(), false));
+
+    // set slot 0 gains
+
+    // kV assumes linear however get to operating velocity
+
+    config.Slot0.kS = 0.31; // Add 0.25 V output to overcome static friction
+    config.Slot0.kV = 7.25 / 50.0; // A velocity target of 1 rps results in 0.12 V output
+    config.Slot0.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
+    config.Slot0.kP = 0.9; // An error of 1 rps results in 0.11 V output
+    config.Slot0.kI = 0.0; // no output for integrated error
+    config.Slot0.kD = 0.001; // no output for error derivative
+
+    // set Motion Magic Velocity settings
+    var motionMagicConfigs = config.MotionMagic;
+    // Some value that is achievable
+    motionMagicConfigs.MotionMagicAcceleration =
+        50.0; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = 500; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
+    for (int i = 0; i < 4; i++) {
+      boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      statusOK = statusOK && follower.getConfigurator().apply(config, 0.1) == StatusCode.OK;
+      if (statusOK) break;
+    }
+    follower.setControl(new Follower(leader.getDeviceID(), true));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
@@ -55,45 +77,19 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   public void updateInputs(FlywheelIOInputs inputs) {
     BaseStatusSignal.refreshAll(
         leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
-    inputs.positionRad = Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / GEAR_RATIO;
-    inputs.velocityRadPerSec =
-        Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / GEAR_RATIO;
+    inputs.velocityRotPerSec = leaderVelocity.getValueAsDouble();
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
     inputs.currentAmps =
         new double[] {leaderCurrent.getValueAsDouble(), followerCurrent.getValueAsDouble()};
   }
 
   @Override
-  public void setVoltage(double volts) {
-    leader.setControl(new VoltageOut(volts));
-  }
-
-  @Override
-  public void setVelocity(double velocityRadPerSec, double ffVolts) {
-    leader.setControl(
-        new VelocityVoltage(
-            Units.radiansToRotations(velocityRadPerSec),
-            0.0,
-            true,
-            ffVolts,
-            0,
-            false,
-            false,
-            false));
+  public void setSpeedRotPerSec(double velocityRotPerSec) {
+    leader.setControl(request.withVelocity(velocityRotPerSec));
   }
 
   @Override
   public void stop() {
     leader.stopMotor();
   }
-
-  @Override
-  public void configurePID(double kP, double kI, double kD) {
-    var config = new Slot0Configs();
-    config.kP = kP;
-    config.kI = kI;
-    config.kD = kD;
-    leader.getConfigurator().apply(config);
-  }
 }
- */

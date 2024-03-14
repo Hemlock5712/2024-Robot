@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -22,16 +23,25 @@ public class SmartShoot extends Command {
   Magazine magazine;
   LineBreak lineBreak;
   Timer timer;
+  Timer flywheelTimer;
+  double forceShootTimeout;
 
   /** Creates a new Shoot. */
   public SmartShoot(
-      Arm arm, Flywheel flywheel, Magazine magazine, LineBreak lineBreak, Supplier<Pose2d> pose) {
+      Arm arm,
+      Flywheel flywheel,
+      Magazine magazine,
+      LineBreak lineBreak,
+      Supplier<Pose2d> pose,
+      double forceShootTimeout) {
     this.arm = arm;
     this.flywheel = flywheel;
     this.magazine = magazine;
     this.pose = pose;
     this.lineBreak = lineBreak;
     timer = new Timer();
+    flywheelTimer = new Timer();
+    this.forceShootTimeout = forceShootTimeout;
     addRequirements(magazine);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -41,21 +51,23 @@ public class SmartShoot extends Command {
   public void initialize() {
     SmartController.getInstance().enableSmartControl();
     if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
+    flywheelTimer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (SmartController.getInstance().isSmartControlEnabled()
-        && arm.isArmWristInTargetPose()
-        // && Math.abs(
-        //         pose.get()
-        //             .getRotation()
-        //
-        // .minus(SmartController.getInstance().getTargetAimingParameters().robotAngle())
-        //             .getRadians())
-        //     < 0.1
-        && flywheel.atTargetSpeed()) {
+    if ((SmartController.getInstance().isSmartControlEnabled()
+            && arm.isArmWristInTargetPose()
+            && Math.abs(
+                    pose.get()
+                        .getRotation()
+                        .minus(
+                            SmartController.getInstance().getTargetAimingParameters().robotAngle())
+                        .getRadians())
+                < Units.degreesToRadians(1.5)
+            && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2)))
+        || flywheelTimer.hasElapsed(forceShootTimeout)) {
       magazine.forward();
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();
@@ -72,6 +84,6 @@ public class SmartShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lineBreak.hasNoGamePiece();
+    return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
   }
 }

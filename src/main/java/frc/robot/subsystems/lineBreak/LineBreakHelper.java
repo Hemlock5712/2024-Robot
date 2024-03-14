@@ -20,9 +20,8 @@ public class LineBreakHelper {
           && (upperIntake2 || magazine1 || magazine2 || magazine3);
     }
 
-    public boolean InLowerIntake() {
-      return (lowerIntake || upperIntake1)
-          && !(upperIntake2 || magazine1 || magazine2 || magazine3);
+    public boolean inLowerIntake() {
+      return (upperIntake2 || upperIntake1);
     }
 
     public boolean hasGamePieceIntake() {
@@ -30,12 +29,11 @@ public class LineBreakHelper {
     }
 
     public boolean isShooterLoaded() {
-      return !(lowerIntake || upperIntake1 || upperIntake2 || magazine1 || magazine3) && magazine2;
+      return (magazine1 && magazine2 && magazine3);
     }
 
     public boolean isShooterLong() {
-      return magazine3;
+      return (magazine2 || magazine3) && !magazine1;
     }
   }
-  ;
 }

@@ -93,11 +93,6 @@ public class ArmIOSim implements ArmIO {
 
     wristMotor.getConfigurator().apply(wristConfig);
 
-    // var motionMagicConfig = armConfig.MotionMagic;
-    // motionMagicConfig.MotionMagicCruiseVelocity = 40;
-    // motionMagicConfig.MotionMagicAcceleration = 90;
-    // motionMagicConfig.MotionMagicJerk = 1200;
-
     armSim =
         new SingleJointedArmSim(
             DCMotor.getKrakenX60Foc(2),

@@ -42,7 +42,7 @@ public class ShotVisualizer extends Command {
             new Rotation3d(0, 0, robotPosition.getRotation().getRadians()));
 
     NoteVisualizer.shootNote(
-        robotPosition3d, -arm.getWristAngleAbsolute(), flywheel.getVelocityMetersPerSec());
+        robotPosition3d, -arm.getWristAngleAbsolute(), flywheel.getVelocityRotPerSec());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

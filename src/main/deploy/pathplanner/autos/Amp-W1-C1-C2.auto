@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.7233010829658023,
-      "y": 6.716697069757776
-    },
-    "rotation": -121.03221023846726
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -34,13 +28,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "IntakeDown"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "IntakeDown"
+                        "name": "QuickShoot"
                       }
                     },
                     {
@@ -52,13 +46,19 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "Magazine"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "SIMGamePiecePickup"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "QuickShoot"
                       }
                     },
                     {
@@ -80,21 +80,34 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "parallel",
                       "data": {
-                        "pathName": "C1-SA"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "C1-SA"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "EnableSmartControl"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
+                        "name": "QuickShoot"
                       }
                     },
                     {
@@ -110,15 +123,34 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "parallel",
                       "data": {
-                        "pathName": "C2-SA"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "C2-SA"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "EnableSmartControl"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "QuickShoot"
                       }
                     }
                   ]

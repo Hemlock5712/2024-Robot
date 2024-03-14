@@ -1,20 +1,20 @@
 package frc.robot.subsystems.magazine;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class MagazineIOSIM implements MagazineIO {
-  TalonFX leader = new TalonFX(45);
+  TalonFX leader = new TalonFX(18);
   TalonFXSimState leaderSim = leader.getSimState();
-  FlywheelSim flywheelSim;
+  FlywheelSim magazineSIM;
 
   public MagazineIOSIM() {
     leaderSim = leader.getSimState();
-    flywheelSim = new FlywheelSim(DCMotor.getNeo550(1), 3.0, 0.01);
+    magazineSIM = new FlywheelSim(DCMotor.getNeo550(1), 3.0, 0.01);
     TalonFXConfiguration config = new TalonFXConfiguration();
     var slot0Configs = config.Slot0;
     slot0Configs.kP = 9.2;
@@ -26,10 +26,10 @@ public class MagazineIOSIM implements MagazineIO {
 
   @Override
   public void updateInputs(MagazineIOInputs inputs) {
-    flywheelSim.setInput(leaderSim.getMotorVoltage());
-    flywheelSim.update(0.02);
-    leaderSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
-    leaderSim.addRotorPosition(0.02 * flywheelSim.getAngularVelocityRadPerSec() / (Math.PI * 2));
+    magazineSIM.setInput(leaderSim.getMotorVoltage());
+    magazineSIM.update(0.02);
+    leaderSim.setRotorVelocity(magazineSIM.getAngularVelocityRadPerSec() / (Math.PI * 2));
+    leaderSim.addRotorPosition(0.02 * magazineSIM.getAngularVelocityRadPerSec() / (Math.PI * 2));
 
     inputs.velocityRadPerSec = leader.getVelocity().refresh().getValue() * (Math.PI * 2.0);
     inputs.appliedVolts = leaderSim.getMotorVoltage();
@@ -37,12 +37,7 @@ public class MagazineIOSIM implements MagazineIO {
   }
 
   @Override
-  public void runRPM(double speedRPM) {
-    double speedRPS = speedRPM / 60.0;
-    leader.setControl(
-        new VelocityVoltage(0)
-            .withVelocity(speedRPS)
-            .withEnableFOC(true)
-            .withFeedForward(speedRPS * 0.0135));
+  public void runVoltage(double voltage) {
+    leader.setControl(new VoltageOut(voltage));
   }
 }

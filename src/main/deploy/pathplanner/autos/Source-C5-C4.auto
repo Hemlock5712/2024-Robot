@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.6673286073844874,
-      "y": 4.41249682499365
-    },
-    "rotation": 119.89836189048474
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -46,7 +40,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Source - W3"
+                        "pathName": "Source-C5"
                       }
                     },
                     {
@@ -56,27 +50,22 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W3-C5"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C5-SS"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "C5-SS"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -104,9 +93,22 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "parallel",
                       "data": {
-                        "pathName": "C4-SS"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "C4-SS"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

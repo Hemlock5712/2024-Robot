@@ -15,15 +15,24 @@ import frc.robot.Constants;
 public final class DriveConstants {
   public static DrivetrainConfig drivetrainConfig =
       switch (Constants.getRobot()) {
+          /**
+           * Values of path planner and potential other drivetrain changes. 60 As follows: 4.608,
+           * 6.627, 11.277, 33.436
+           *
+           * <p>40A As follows: 4.608, 4.418, 11.277 (646), 22.290 (1277)
+           *
+           * <p>PathPlanner default values: "maxVelocity": 2.5, "maxAcceleration": 3.0,
+           * "maxAngularVelocity": 540.0, "maxAngularAcceleration": 720.0
+           */
         default ->
             new DrivetrainConfig(
                 Units.inchesToMeters(2.0),
                 Units.inchesToMeters(22.75),
                 Units.inchesToMeters(22.75),
-                Units.feetToMeters(12.16),
-                Units.feetToMeters(21.32),
+                4.608,
+                4.418,
                 11.277,
-                33.436);
+                22.290);
       };
   public static final double wheelRadius = Units.inchesToMeters(2.0);
   public static final Translation2d[] moduleTranslations =
@@ -66,30 +75,14 @@ public final class DriveConstants {
       switch (Constants.getRobot()) {
         case COMPBOT ->
             new ModuleConfig[] {
-              new ModuleConfig(
-                  1,
-                  2,
-                  9,
-                  Rotation2d.fromRotations(-0.383).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  3,
-                  4,
-                  10,
-                  Rotation2d.fromRotations(-0.251).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  5,
-                  6,
-                  11,
-                  Rotation2d.fromRotations(-0.057).plus(Rotation2d.fromDegrees(180)),
-                  true),
-              new ModuleConfig(
-                  7,
-                  8,
-                  12,
-                  Rotation2d.fromRotations(-0.470).plus(Rotation2d.fromDegrees(180)),
-                  true)
+              // 0.454346
+              new ModuleConfig(1, 2, 9, Rotation2d.fromRotations(-0.041504 + .5), true),
+              // -0.305420
+              new ModuleConfig(3, 4, 10, Rotation2d.fromRotations(-0.310547 + .5), true),
+              // -0.486084
+              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(-0.487061), true),
+              // -0.052002
+              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(0.336914), true)
             };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];
@@ -125,19 +118,19 @@ public final class DriveConstants {
 
   public static HeadingControllerConstants headingControllerConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new HeadingControllerConstants(6.0, 0.0);
+        case COMPBOT -> new HeadingControllerConstants(5.0, 0.0);
         case SIMBOT -> new HeadingControllerConstants(7, 0.0);
       };
 
   public static final PIDConstants PPtranslationConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new PIDConstants(10, 0.0, 0.0);
+        case COMPBOT -> new PIDConstants(5, 0.0, 0.0);
         case SIMBOT -> new PIDConstants(10, 0.0, 0.0);
       };
 
   public static final PIDConstants PProtationConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new PIDConstants(10, 0.0, 0.0);
+        case COMPBOT -> new PIDConstants(7.5, 0.0, 0.0);
         case SIMBOT -> new PIDConstants(10, 0.0, 0.0);
       };
 

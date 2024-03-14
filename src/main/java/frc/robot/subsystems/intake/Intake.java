@@ -4,20 +4,20 @@
 
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.IntakeConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeActuatorIO actuatorIO;
   private final IntakeWheelsIO wheelsIO;
+
   private final IntakeActuatorIOInputsAutoLogged actuatorInputs =
       new IntakeActuatorIOInputsAutoLogged();
   private final IntakeWheelsIOInputsAutoLogged wheelsInputs = new IntakeWheelsIOInputsAutoLogged();
   private double targetSpeed = 0;
   private boolean intakeRequest = false;
-  private IntakePositions intakePositions = IntakePositions.UP;
 
   IntakeVisualizer visualizerMeasured = new IntakeVisualizer("IntakeMeasured");
   IntakeVisualizer visualizerSetpoint = new IntakeVisualizer("IntakeSetpoint");
@@ -37,41 +37,39 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("IntakeActuator", actuatorInputs);
     Logger.processInputs("IntakeWheels", wheelsInputs);
 
-    wheelsIO.runRPM(getTargetSpeed());
-    switch (intakePositions) {
-      case BUMPER:
-        actuatorIO.setIntakeAngle(IntakeConstants.bumperPosition.angle().getRadians());
-        break;
-      case FLOOR:
-        actuatorIO.setIntakeAngle(IntakeConstants.floorPosition.angle().getRadians());
-        break;
-      case UP:
-        actuatorIO.setIntakeAngle(IntakeConstants.upPosition.angle().getRadians());
-        break;
-    }
-
     visualizerMeasured.update(actuatorInputs.angle);
     visualizerSetpoint.update(0);
   }
 
   public void intake() {
-    targetSpeed = 1000;
+    setSpeedRotPerSec(60);
   }
 
   public void outtake() {
-    targetSpeed = -1000;
+    setSpeedRotPerSec(-30);
   }
 
-  public void stopIntake() {
-    targetSpeed = 0;
-  }
-
-  public void setSpeed(double speedRPM) {
-    targetSpeed = speedRPM;
+  /** Stops the intake. */
+  public void stop() {
+    wheelsIO.stop();
   }
 
   public void setIntakeMode(IntakePositions intakePositions) {
-    this.intakePositions = intakePositions;
+    if (intakePositions == IntakePositions.FLOOR) {
+      if (!actuatorInputs.downLimitSwitchTriggered) {
+        actuatorIO.setVoltage(2);
+      } else {
+        actuatorIO.setVoltage(0);
+      }
+      actuatorIO.coastMode();
+    } else {
+      if (!actuatorInputs.upLimitSwitchTriggered) {
+        actuatorIO.setVoltage(-2.2);
+      } else {
+        actuatorIO.setVoltage(-0.01);
+      }
+      actuatorIO.brakeMode();
+    }
   }
 
   public void enableIntakeRequest() {
@@ -82,19 +80,37 @@ public class Intake extends SubsystemBase {
     this.intakeRequest = false;
   }
 
+  public boolean isAtOrAbovePosition() {
+    return (actuatorInputs.targetAngle - actuatorInputs.angle) + Units.degreesToRadians(15) > 0;
+  }
+
   @AutoLogOutput(key = "Intake/IntakeRequest")
   public boolean getIntakeRequest() {
     return intakeRequest;
   }
 
+  public void setSpeedRotPerSec(double speedRotPerSec) {
+    targetSpeed = speedRotPerSec;
+    wheelsIO.setSpeedRotPerSec(targetSpeed);
+  }
+
+  /** Returns the current velocity in Rot Per Sec. */
+  @AutoLogOutput
+  public double getVelocityRotPerSec() {
+    return wheelsInputs.velocityRotPerSec;
+  }
+
   @AutoLogOutput(key = "Intake/TargetSpeed")
-  public double getTargetSpeed() {
+  public double getTargetRot() {
     return targetSpeed;
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(wheelsInputs.velocityRotPerSec - getTargetRot()) < 0.5;
   }
 
   public enum IntakePositions {
     FLOOR,
-    UP,
-    BUMPER
+    UP
   }
 }
