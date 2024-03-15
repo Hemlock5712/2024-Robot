@@ -29,39 +29,44 @@ public class SmartController {
 
   private SmartController() {
     // NEW
-    shooterSpeedMap.put(1.4, 40.5);
-    shooterSpeedMap.put(1.57, 40.5);
-    shooterSpeedMap.put(2.195, 40.5);
-    shooterSpeedMap.put(2.361, 40.5);
-    shooterSpeedMap.put(2.633, 40.5);
-    shooterSpeedMap.put(2.709, 40.5);
-    shooterSpeedMap.put(6.2, 40.5);
-    // OLD
-    // shooterSpeedMap.put(1.45, 40.5);
-    // shooterSpeedMap.put(2.087, 40.5);
-    // shooterSpeedMap.put(2.24, 40.5);
-    // shooterSpeedMap.put(2.74, 40.5);
-    // shooterSpeedMap.put(3.0, 40.5);
-    // shooterSpeedMap.put(3.211, 40.5);
+    // shooterSpeedMap.put(1.4, 40.5);
+    // shooterSpeedMap.put(1.57, 40.5);
+    // shooterSpeedMap.put(2.195, 40.5);
+    // shooterSpeedMap.put(2.361, 40.5);
+    // shooterSpeedMap.put(2.633, 40.5);
+    // shooterSpeedMap.put(2.709, 40.5);
+    // shooterSpeedMap.put(6.2, 40.5);
+    shooterSpeedMap.put(1.177, 25.0);
+    shooterSpeedMap.put(1.464, 26.0);
+    shooterSpeedMap.put(1.734, 27.0);
+    shooterSpeedMap.put(2.135, 28.0);
+    shooterSpeedMap.put(2.469, 29.0);
+    shooterSpeedMap.put(2.889, 30.0);
+    shooterSpeedMap.put(3.174, 31.0);
+    shooterSpeedMap.put(3.635, 32.0);
+    shooterSpeedMap.put(3.913, 34.0);
+    shooterSpeedMap.put(4.079, 36.0);
 
     // Units: radians
-    // NEW
-    shooterAngleMap.put(1.4, Units.degreesToRadians(80));
-    shooterAngleMap.put(1.57, Units.degreesToRadians(75));
-    shooterAngleMap.put(2.195, Units.degreesToRadians(69));
-    shooterAngleMap.put(2.361, Units.degreesToRadians(67));
-    shooterAngleMap.put(2.633, Units.degreesToRadians(63));
-    shooterAngleMap.put(2.709, Units.degreesToRadians(61.5));
-    shooterAngleMap.put(5.2, Units.degreesToRadians(53));
-    shooterAngleMap.put(6.2, Units.degreesToRadians(49));
-
-    // OLD
-    // shooterAngleMap.put(1.45, Units.degreesToRadians(80));
-    // shooterAngleMap.put(1.7, Units.degreesToRadians(75));
-    // shooterAngleMap.put(2.24, Units.degreesToRadians(72));
-    // shooterAngleMap.put(2.41, Units.degreesToRadians(67));
-    // shooterAngleMap.put(3.0, Units.degreesToRadians(63));
-    // shooterAngleMap.put(3.211, Units.degreesToRadians(62.5));
+    // Old
+    // shooterAngleMap.put(1.4, Units.degreesToRadians(80));
+    // shooterAngleMap.put(1.57, Units.degreesToRadians(75));
+    // shooterAngleMap.put(2.195, Units.degreesToRadians(69));
+    // shooterAngleMap.put(2.361, Units.degreesToRadians(67));
+    // shooterAngleMap.put(2.633, Units.degreesToRadians(63));
+    // shooterAngleMap.put(2.709, Units.degreesToRadians(61.5));
+    // shooterAngleMap.put(5.2, Units.degreesToRadians(53));
+    // shooterAngleMap.put(6.2, Units.degreesToRadians(49));
+    shooterAngleMap.put(1.177, Units.degreesToRadians(80));
+    shooterAngleMap.put(1.464, Units.degreesToRadians(78));
+    shooterAngleMap.put(1.734, Units.degreesToRadians(74));
+    shooterAngleMap.put(2.135, Units.degreesToRadians(69));
+    shooterAngleMap.put(2.469, Units.degreesToRadians(61));
+    shooterAngleMap.put(2.889, Units.degreesToRadians(59));
+    shooterAngleMap.put(3.174, Units.degreesToRadians(56));
+    shooterAngleMap.put(3.635, Units.degreesToRadians(53));
+    shooterAngleMap.put(3.913, Units.degreesToRadians(52));
+    shooterAngleMap.put(4.079, Units.degreesToRadians(51));
 
     flightTimeMap.put(1.2, 0.3);
     flightTimeMap.put(2.709, 0.75);

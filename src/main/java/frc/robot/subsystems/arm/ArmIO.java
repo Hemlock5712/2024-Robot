@@ -20,7 +20,7 @@ public interface ArmIO {
 
   public default void setArmTarget(double target) {}
 
-  public default void setWristTarget(double target) {}
+  public default void setWristTarget(double target, double wristAbsolutePosition) {}
 
   public default void updateInputs(ArmIOInputs inputs) {}
 

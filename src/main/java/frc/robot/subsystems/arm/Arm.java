@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
 
   public void setWristTarget(double wristTarget) {
     this.wristTarget = wristTarget;
-    io.setWristTarget(wristTarget);
+    io.setWristTarget(wristTarget, inputs.wristAbsolutePositionRad);
     Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
     visualizerSetpoint.update(this.armTarget, this.wristTarget);
   }
@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
     this.wristTarget = wristTarget;
     this.armTarget = armTarget;
 
-    io.setWristTarget(wristTarget);
+    io.setWristTarget(wristTarget, inputs.wristAbsolutePositionRad);
     Logger.recordOutput("Arm/WristTargetPositionRad", wristTarget);
 
     io.setArmTarget(armTarget);

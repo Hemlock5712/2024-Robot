@@ -46,8 +46,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     // kV assumes linear however get to operating velocity
 
-    config.Slot0.kS = 0.31; // Add 0.25 V output to overcome static friction
-    config.Slot0.kV = 7.25 / 50.0; // A velocity target of 1 rps results in 0.12 V output
+    config.Slot0.kS = 0.366; // Add 0.31 V output to overcome static friction
+    config.Slot0.kV = 8.0 / 54.154; // 7.25 / 50.0
     config.Slot0.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
     config.Slot0.kP = 0.9; // An error of 1 rps results in 0.11 V output
     config.Slot0.kI = 0.0; // no output for integrated error

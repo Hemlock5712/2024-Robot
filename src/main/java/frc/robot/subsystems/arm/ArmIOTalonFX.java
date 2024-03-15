@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -84,11 +85,12 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     wristConfig.Feedback.SensorToMechanismRatio = 1;
 
+    // -.2 //.2
     wristConfig.Slot0.kP = ArmConstants.wristControlConstants.kP();
     wristConfig.Slot0.kI = ArmConstants.wristControlConstants.kI();
     wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
     wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
-    wristConfig.Slot0.kS = 0.0;
+    wristConfig.Slot0.kS = 0.2;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
@@ -139,7 +141,7 @@ public class ArmIOTalonFX implements ArmIO {
 
     inputs.wristRelativePositionRad = wristAbsolutePosition.getValue() * Math.PI * 2;
     inputs.wristAbsolutePositionRad =
-        inputs.wristRelativePositionRad - inputs.armRelativePositionRad;
+        inputs.wristRelativePositionRad + inputs.armRelativePositionRad;
     inputs.wristVelocityRadPerSec = wristSpeed.getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristSupplyCurrent.getValue()};
     inputs.wristTempCelcius = new double[] {wristTemp.refresh().getValue()};
@@ -153,10 +155,14 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
-  public void setWristTarget(double target) {
+  public void setWristTarget(double target, double wristAbsolutePosition) {
     var control = new PositionVoltage(0);
     wristMotor.setControl(
-        control.withPosition(Units.radiansToRotations(target)).withSlot(0).withEnableFOC(true));
+        control
+            .withPosition(Units.radiansToRotations(target))
+            .withSlot(0)
+            .withEnableFOC(true)
+            .withFeedForward(Rotation2d.fromRadians(wristAbsolutePosition).getCos() * 0.06));
   }
 
   @Override

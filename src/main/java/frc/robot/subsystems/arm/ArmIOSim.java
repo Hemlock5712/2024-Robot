@@ -133,7 +133,7 @@ public class ArmIOSim implements ArmIO {
     inputs.armTempCelcius = new double[] {armMotor.getDeviceTemp().getValue()};
     inputs.wristAbsolutePositionRad =
         (wristEncoder.getPosition().refresh().getValue() * Math.PI * 2)
-            - inputs.armRelativePositionRad;
+            + inputs.armRelativePositionRad;
     inputs.wristRelativePositionRad = wristEncoder.getPosition().refresh().getValue() * Math.PI * 2;
     inputs.wristVelocityRadPerSec = wristEncoder.getVelocity().refresh().getValue() * Math.PI * 2;
     inputs.wristCurrentAmps = new double[] {wristMotorSim.getSupplyCurrent()};
