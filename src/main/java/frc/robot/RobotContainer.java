@@ -333,8 +333,8 @@ public class RobotContainer {
 
     controller2
         .x()
-        .toggleOnTrue(
-            Commands.runEnd(
+        .whileTrue(
+            Commands.startEnd(
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.FEED),
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
