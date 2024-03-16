@@ -1,8 +1,8 @@
-package frc.robot.subsystems.lineBreak;
+package frc.robot.subsystems.linebreak;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.subsystems.lineBreak.LineBreakHelper.LineBreakValues;
+import frc.robot.subsystems.linebreak.LineBreakHelper.LineBreakValues;
 
 public class LineBreakIODigitalInput implements LineBreakIO {
   DigitalInput lowerIntakeSensor = new DigitalInput(5);

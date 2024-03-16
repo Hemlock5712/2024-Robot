@@ -10,7 +10,7 @@ import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 public class SmartArm extends Command {
   Arm arm;

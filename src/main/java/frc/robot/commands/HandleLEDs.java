@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.leds.LedController;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 public class HandleLEDs extends Command {
   LedController ledController;

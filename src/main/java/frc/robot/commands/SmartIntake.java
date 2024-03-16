@@ -9,7 +9,7 @@ import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakePositions;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 import java.util.function.BooleanSupplier;
 
 public class SmartIntake extends Command {

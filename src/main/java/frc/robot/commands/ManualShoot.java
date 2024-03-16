@@ -11,7 +11,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 
 public class ManualShoot extends Command {

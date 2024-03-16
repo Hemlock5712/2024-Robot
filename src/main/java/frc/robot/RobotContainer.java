@@ -58,10 +58,10 @@ import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
 import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
 import frc.robot.subsystems.leds.LedController;
-import frc.robot.subsystems.lineBreak.LineBreak;
-import frc.robot.subsystems.lineBreak.LineBreakIO;
-import frc.robot.subsystems.lineBreak.LineBreakIODigitalInput;
-import frc.robot.subsystems.lineBreak.LineBreakIOSim;
+import frc.robot.subsystems.linebreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreakIO;
+import frc.robot.subsystems.linebreak.LineBreakIODigitalInput;
+import frc.robot.subsystems.linebreak.LineBreakIOSim;
 import frc.robot.subsystems.magazine.Magazine;
 import frc.robot.subsystems.magazine.MagazineIO;
 import frc.robot.subsystems.magazine.MagazineIOSIM;
@@ -252,7 +252,8 @@ public class RobotContainer {
             new InstantCommand(
                 () -> {
                   SmartController.getInstance()
-                      .calculateSpeaker(drive.getPose(), new Translation2d(0, 0));
+                      .calculateSpeaker(
+                          drive.getPose(), new Translation2d(0, 0), new Translation2d(0, 0));
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -375,6 +376,11 @@ public class RobotContainer {
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));
       controller.pov(180).onTrue(new InstantCommand(lineBreak::shootGamePiece));
+      controller
+          .pov(90)
+          .onTrue(
+              new InstantCommand(
+                  () -> lineBreak.setGamePiece(false, false, false, true, true, true)));
     }
   }
 

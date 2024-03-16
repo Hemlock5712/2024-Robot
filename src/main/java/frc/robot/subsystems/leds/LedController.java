@@ -75,6 +75,7 @@ public class LedController extends SubsystemBase {
     }
     boolean isSpeakerMode =
         SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER;
+
     boolean isSafeMode = SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE;
     if (isSafeMode) {
       candle.animate(

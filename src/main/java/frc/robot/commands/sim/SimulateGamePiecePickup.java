@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

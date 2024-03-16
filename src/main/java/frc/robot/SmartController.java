@@ -20,6 +20,7 @@ public class SmartController {
   private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
       new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist());
+
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
@@ -150,18 +151,23 @@ public class SmartController {
     this.smartControl = false;
   }
 
-  public void calculateSpeaker(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
+  public void calculateSpeaker(
+      Pose2d fieldRelativePose,
+      Translation2d fieldRelativeVelocity,
+      Translation2d fieldRelativeAcceleration) {
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
     double shotTime = flightTimeMap.get(distanceToSpeaker);
-    Translation2d movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
+    Translation2d speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
+    Translation2d movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
     double effectiveDistanceToSpeaker = toTestGoal.getNorm();
     double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
     for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
       shotTime = newShotTime;
-      movingGoalLocation = speakerPose.minus(fieldRelativeVelocity.times(shotTime));
+      speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
+      movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
       toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
       effectiveDistanceToSpeaker = toTestGoal.getNorm();
       newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);

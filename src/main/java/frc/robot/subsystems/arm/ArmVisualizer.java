@@ -48,9 +48,10 @@ public class ArmVisualizer {
     wristLigamentBack.setAngle(Units.radiansToDegrees(wristAngle) + 270);
 
     Logger.recordOutput("Mechanism2d/" + logKey, mechanism);
-    Transform3d hardpoint =
-        new Transform3d(
-            Units.inchesToMeters(12.25), 0, Units.inchesToMeters(25.15), new Rotation3d(0, 0, 0));
+    // Transform3d hardpoint =
+    //     new Transform3d(
+    //         Units.inchesToMeters(12.25), 0, Units.inchesToMeters(25.15), new Rotation3d(0, 0,
+    // 0));
 
     // Pose3d armPose = new Pose3d(Units.inchesToMeters(10), 0, 0, new Rotation3d(0,
     // armAngle, 0));
