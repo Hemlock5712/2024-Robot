@@ -155,6 +155,9 @@ public class SmartController {
       Pose2d fieldRelativePose,
       Translation2d fieldRelativeVelocity,
       Translation2d fieldRelativeAcceleration) {
+    Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
+    Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
+    Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
@@ -212,28 +215,9 @@ public class SmartController {
     Translation2d movingGoalLocation = feedLocation.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
     double effectiveDistanceToFeedLocation = toTestGoal.getNorm();
-    double newShotTime = flightTimeMap.get(effectiveDistanceToFeedLocation);
-    for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
-      shotTime = newShotTime;
-      movingGoalLocation = feedLocation.minus(fieldRelativeVelocity.times(shotTime));
-      toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-      effectiveDistanceToFeedLocation = toTestGoal.getNorm();
-      newShotTime = flightTimeMap.get(effectiveDistanceToFeedLocation);
-    }
     Rotation2d setpointAngle =
         movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
     double angleDifference = setpointAngle.minus(fieldRelativePose.getRotation()).getRadians();
-
-    // Assuming a constant linear velocity (you can adjust this)
-    // double assumedLinearVelocity = fieldRelativeVelocity.getNorm();
-
-    // Calculate tangential velocity using linear velocity and angle difference
-
-    // double tangentialVelocity = assumedLinearVelocity * Math.sin(angleDifference);
-
-    // Now, calculate angular velocity using tangential velocity and newDistanceToSpeaker
-
-    // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
     double radialVelocity = 0.0;
     Logger.recordOutput(
         "ShotCalculator/effectiveDistanceToFeedLocation", effectiveDistanceToFeedLocation);
