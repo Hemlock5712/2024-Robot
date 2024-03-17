@@ -24,6 +24,8 @@ public class SmartController {
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
+  private boolean gotoTrap = false;
+
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
@@ -206,6 +208,14 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
     setTargetAimingParameters(
         new AimingParameters(setpointAngle, radialVelocity, 40.5, new Rotation2d(0)));
+  }
+
+  public boolean isGotoClimb() {
+    return gotoTrap;
+  }
+
+  public void setGotoClimb(boolean trap) {
+    gotoTrap = trap;
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {

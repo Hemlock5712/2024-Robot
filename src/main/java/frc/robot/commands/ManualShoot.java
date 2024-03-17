@@ -4,12 +4,10 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.linebreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
@@ -47,8 +45,6 @@ public class ManualShoot extends Command {
     // SmartController.getInstance().enableSmartControl();
     // if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
     flywheelTimer.restart();
-    arm.setArmAndWristTarget(ArmConstants.shoot.arm().getRadians(), Units.degreesToRadians(80));
-    flywheel.setSpeedRotPerSec(40.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -329,8 +329,10 @@ public class RobotContainer {
 
     controller2
         .y()
-        .whileTrue(
-            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+        .toggleOnTrue(
+            Commands.startEnd(
+                () -> SmartController.getInstance().setGotoClimb(true),
+                () -> SmartController.getInstance().setGotoClimb(false)));
 
     controller2
         .x()
