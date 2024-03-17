@@ -297,7 +297,7 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 10));
+        .whileTrue(new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.75));
 
     controller
         .rightTrigger()

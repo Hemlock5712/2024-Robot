@@ -63,16 +63,19 @@ public class SmartShoot extends Command {
     boolean isWristInTargetPose = isWristInTargetPose();
     boolean isDriveAngleInTarget = isDriveAngleInTarget();
     boolean isFlywheelAtTargetSpeed = isFlywheelAtTargetSpeed();
+    boolean isShooting = false;
     if ((isSmartControlEnabled
             && isWristInTargetPose
             && isDriveAngleInTarget
             && isFlywheelAtTargetSpeed)
         || flywheelTimer.hasElapsed(forceShootTimeout)) {
       magazine.forward();
+      isShooting = true;
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();
       }
     }
+    Logger.recordOutput("SmartShoot/IsShooting", isShooting);
   }
 
   // Called once the command ends or is interrupted.

@@ -29,48 +29,27 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
-    // NEW
-    // shooterSpeedMap.put(1.4, 40.5);
-    // shooterSpeedMap.put(1.57, 40.5);
-    // shooterSpeedMap.put(2.195, 40.5);
-    // shooterSpeedMap.put(2.361, 40.5);
-    // shooterSpeedMap.put(2.633, 40.5);
-    // shooterSpeedMap.put(2.709, 40.5);
-    // shooterSpeedMap.put(6.2, 40.5);
-    shooterSpeedMap.put(1.177, 25.0);
-    shooterSpeedMap.put(1.464, 26.0);
-    shooterSpeedMap.put(1.734, 27.0);
-    shooterSpeedMap.put(2.135, 28.0);
-    shooterSpeedMap.put(2.469, 29.0);
-    shooterSpeedMap.put(2.889, 30.0);
-    shooterSpeedMap.put(3.174, 31.0);
-    shooterSpeedMap.put(3.635, 32.0);
-    shooterSpeedMap.put(3.913, 34.0);
-    shooterSpeedMap.put(4.079, 36.0);
 
-    // Units: radians
-    // Old
-    // shooterAngleMap.put(1.4, Units.degreesToRadians(80));
-    // shooterAngleMap.put(1.57, Units.degreesToRadians(75));
-    // shooterAngleMap.put(2.195, Units.degreesToRadians(69));
-    // shooterAngleMap.put(2.361, Units.degreesToRadians(67));
-    // shooterAngleMap.put(2.633, Units.degreesToRadians(63));
-    // shooterAngleMap.put(2.709, Units.degreesToRadians(61.5));
-    // shooterAngleMap.put(5.2, Units.degreesToRadians(53));
-    // shooterAngleMap.put(6.2, Units.degreesToRadians(49));
-    shooterAngleMap.put(1.177, Units.degreesToRadians(80));
-    shooterAngleMap.put(1.464, Units.degreesToRadians(78));
-    shooterAngleMap.put(1.734, Units.degreesToRadians(74));
-    shooterAngleMap.put(2.135, Units.degreesToRadians(69));
-    shooterAngleMap.put(2.469, Units.degreesToRadians(61));
-    shooterAngleMap.put(2.889, Units.degreesToRadians(59));
-    shooterAngleMap.put(3.174, Units.degreesToRadians(56));
-    shooterAngleMap.put(3.635, Units.degreesToRadians(53));
-    shooterAngleMap.put(3.913, Units.degreesToRadians(52));
-    shooterAngleMap.put(4.079, Units.degreesToRadians(51));
+    // Units: RPS
+    shooterSpeedMap.put(1.24036, 30.0);
+    shooterSpeedMap.put(1.509, 32.5);
+    shooterSpeedMap.put(2.006, 35.0);
+    shooterSpeedMap.put(2.5018, 37.5);
+    shooterSpeedMap.put(3.002, 40.0);
+    shooterSpeedMap.put(3.5116, 42.5);
+    shooterSpeedMap.put(4.002, 45.0);
 
-    flightTimeMap.put(1.2, 0.3);
-    flightTimeMap.put(2.709, 0.75);
+    // Units: Degress
+    shooterAngleMap.put(1.24036, Units.degreesToRadians(78.5));
+    shooterAngleMap.put(1.509, Units.degreesToRadians(73.0));
+    shooterAngleMap.put(2.006, Units.degreesToRadians(65.0));
+    shooterAngleMap.put(2.5018, Units.degreesToRadians(60.0));
+    shooterAngleMap.put(3.002, Units.degreesToRadians(56.5));
+    shooterAngleMap.put(3.5116, Units.degreesToRadians(53.75));
+    shooterAngleMap.put(4.002, Units.degreesToRadians(50.75));
+
+    flightTimeMap.put(1.2, 0.2);
+    flightTimeMap.put(4.002, 1.0);
   }
 
   public static SmartController getInstance() {
@@ -205,7 +184,7 @@ public class SmartController {
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 10, ArmConstants.frontAmp.wrist()));
+        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist()));
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
