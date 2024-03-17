@@ -406,5 +406,24 @@
       "timestamp": 3.981456560724066
     }
   ],
-  "eventMarkers": []
+  "eventMarkers": [
+    {
+      "timestamp": 0.5,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeDown"
+        }
+      }
+    },
+    {
+      "timestamp": 2.07156036485548,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "EnableSmartControl"
+        }
+      }
+    }
+  ]
 }

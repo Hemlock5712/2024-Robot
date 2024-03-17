@@ -1,0 +1,109 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.113284226568453,
+        "y": 3.246403583716259
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.260719975985406,
+        "y": 2.220241531392154
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.887777957374096,
+        "y": 0.8769021174405992
+      },
+      "prevControl": {
+        "x": 7.4682756056922,
+        "y": 0.9077891398407152
+      },
+      "nextControl": {
+        "x": 8.345571239741682,
+        "y": 0.8431958192269665
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.8391022236589922,
+        "y": 2.8545962546470554
+      },
+      "prevControl": {
+        "x": 5.0704966864479175,
+        "y": 1.2313944627889262
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": 170.0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeDown"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Magazine"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.4,
+    "maxAcceleration": 4.418,
+    "maxAngularVelocity": 646.0,
+    "maxAngularAcceleration": 1277.1229
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 144.59957560947254,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source C5-C3-C4",
+  "previewStartingState": {
+    "rotation": 122.29430439517928,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SmartController;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -104,8 +105,9 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "Arm/isArmWristInTargetPose")
   public boolean isArmWristInTargetPose() {
-    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(1)))
+    return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(3)))
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
-            < (Units.degreesToRadians(0.25)));
+            < (Units.degreesToRadians(
+                SmartController.getInstance().getTargetAimingParameters().wristError())));
   }
 }

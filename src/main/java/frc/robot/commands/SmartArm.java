@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
@@ -62,10 +61,10 @@ public class SmartArm extends Command {
 
       if (SmartController.getInstance().isGotoClimb()) {
         arm.setArmAndWristTarget(
-            Rotation2d.fromDegrees(32).getRadians(), Rotation2d.fromDegrees(39).getRadians());
+            ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
       } else {
         arm.setArmAndWristTarget(
-            ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
+            ArmConstants.preclimb.arm().getRadians(), ArmConstants.preclimb.wrist().getRadians());
       }
       return;
     }

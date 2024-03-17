@@ -514,6 +514,15 @@
           "name": "IntakeDown"
         }
       }
+    },
+    {
+      "timestamp": 2.669834042588664,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "EnableSmartControl"
+        }
+      }
     }
   ]
 }

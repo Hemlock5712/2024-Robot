@@ -19,7 +19,7 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist());
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist(), 2);
 
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
@@ -29,6 +29,7 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap wristErrorMap = new InterpolatingDoubleTreeMap();
 
   private SmartController() {
 
@@ -51,7 +52,10 @@ public class SmartController {
     shooterAngleMap.put(4.002, Units.degreesToRadians(50.75));
 
     flightTimeMap.put(1.2, 0.2);
-    flightTimeMap.put(4.002, 1.0);
+    flightTimeMap.put(4.002, 0.8);
+
+    wristErrorMap.put(1.2, 2.0);
+    wristErrorMap.put(4.002, 0.25);
   }
 
   public static SmartController getInstance() {
@@ -181,12 +185,14 @@ public class SmartController {
             setpointAngle,
             radialVelocity,
             shooterSpeedMap.get(effectiveDistanceToSpeaker),
-            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker))));
+            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
+            wristErrorMap.get(effectiveDistanceToSpeaker)));
   }
 
   public void calculateAmp() {
     setTargetAimingParameters(
-        new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist()));
+        new AimingParameters(
+            Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist(), 1));
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
@@ -207,7 +213,7 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
     setTargetAimingParameters(
-        new AimingParameters(setpointAngle, radialVelocity, 40.5, new Rotation2d(0)));
+        new AimingParameters(setpointAngle, radialVelocity, 40.5, new Rotation2d(0), 2));
   }
 
   public boolean isGotoClimb() {
@@ -227,7 +233,11 @@ public class SmartController {
   }
 
   public record AimingParameters(
-      Rotation2d robotAngle, double radialVelocity, double shooterSpeed, Rotation2d shooterAngle) {}
+      Rotation2d robotAngle,
+      double radialVelocity,
+      double shooterSpeed,
+      Rotation2d shooterAngle,
+      double wristError) {}
 
   /** Possible Drive Modes. */
   public enum DriveModeType {

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1,
-      "y": 4.2
+      "x": 0.7885606288909912,
+      "y": 6.644497871398926
     },
-    "rotation": 128.91550390443524
+    "rotation": -121.67546584274628
   },
   "command": {
     "type": "sequential",
@@ -38,7 +38,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Source-C5"
+                              "pathName": "Amp-C1"
                             }
                           },
                           {
@@ -63,7 +63,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C5-C3"
+                              "pathName": "C1-C2"
                             }
                           },
                           {
@@ -88,7 +88,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C3-C4"
+                              "pathName": "C2-C3"
                             }
                           },
                           {

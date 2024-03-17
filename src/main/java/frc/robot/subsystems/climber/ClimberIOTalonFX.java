@@ -62,7 +62,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 
-    config.MotionMagic.MotionMagicCruiseVelocity = 0.5;
+    config.MotionMagic.MotionMagicCruiseVelocity = 1;
     config.MotionMagic.MotionMagicAcceleration = 20;
     config.MotionMagic.MotionMagicJerk = 200;
 
