@@ -17,7 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ClimberIOTalonFX implements ClimberIO {
 
-  private final TalonFX leader = new TalonFX(42);
+  private final TalonFX leader = new TalonFX(42, "chassis");
 
   private final DigitalInput limitSwitch = new DigitalInput(0);
 
@@ -35,9 +35,12 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<Double> leaderAppliedVolts = leader.getMotorVoltage();
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
 
-  final MotionMagicVoltage request = new MotionMagicVoltage(0);
+  final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 1, 10, 100);
 
   TalonFXConfiguration config = new TalonFXConfiguration();
+
+  double climberSlowZoneLowEnd = 2;
+  double climberSlowZoneHighEnd = 5;
 
   public ClimberIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = 40.0;
@@ -58,13 +61,9 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot1.kS = 0.228;
     config.Slot1.kV = 1.0 / 6.7;
     config.Slot1.kA = 0.0;
-    config.Slot1.kP = 16.0;
+    config.Slot1.kP = 20.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
-
-    config.MotionMagic.MotionMagicCruiseVelocity = 1;
-    config.MotionMagic.MotionMagicAcceleration = 20;
-    config.MotionMagic.MotionMagicJerk = 200;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = leader.getConfigurator().apply(config, 0.1) == StatusCode.OK;
@@ -87,6 +86,17 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   @Override
   public void setCustomPosition(double rotPosition, int slot) {
+    // Slot 1 is when robot is climbing
+    if (slot == 1) {
+      double climberPosition = leaderPosition.getValueAsDouble();
+      if (climberPosition > climberSlowZoneLowEnd && climberPosition < climberSlowZoneHighEnd) {
+        request.Velocity = 1;
+      } else {
+        request.Velocity = 8;
+      }
+    } else {
+      request.Velocity = 8;
+    }
     leader.setControl(request.withPosition(rotPosition).withSlot(slot));
   }
 

@@ -31,6 +31,11 @@ public class SmartController {
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap wristErrorMap = new InterpolatingDoubleTreeMap();
 
+  private final InterpolatingDoubleTreeMap feederSpeedMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap feederAngleMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap feederFlightTimeMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap feederWristErrorMap = new InterpolatingDoubleTreeMap();
+
   private SmartController() {
 
     // Units: RPS
@@ -56,6 +61,20 @@ public class SmartController {
 
     wristErrorMap.put(1.2, 2.0);
     wristErrorMap.put(4.002, 0.25);
+
+    // Feed Maps
+    feederSpeedMap.put(9.071, 30.0);
+    feederSpeedMap.put(5.4, 15.0);
+
+    feederAngleMap.put(9.071, Units.degreesToRadians(50.5 + 23));
+    feederAngleMap.put(5.4, Units.degreesToRadians(50.5 + 23));
+
+    feederFlightTimeMap.put(30.0, 3.0); // Way further than we should ever be shooting
+    feederFlightTimeMap.put(9.071, 1.9);
+    feederFlightTimeMap.put(5.4, 0.9);
+    feederFlightTimeMap.put(0.0, 0.0); // Way less than we should ever be shooting
+
+    feederWristErrorMap.put(9.071, 2.0);
   }
 
   public static SmartController getInstance() {
@@ -198,7 +217,7 @@ public class SmartController {
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
-    double shotTime = flightTimeMap.get(distanceToFeedLocation);
+    double shotTime = feederFlightTimeMap.get(distanceToFeedLocation);
     Translation2d movingGoalLocation = feedLocation.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
     double effectiveDistanceToFeedLocation = toTestGoal.getNorm();
@@ -213,7 +232,12 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
     setTargetAimingParameters(
-        new AimingParameters(setpointAngle, radialVelocity, 40.5, new Rotation2d(0), 2));
+        new AimingParameters(
+            setpointAngle,
+            radialVelocity,
+            feederSpeedMap.get(effectiveDistanceToFeedLocation),
+            new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
+            feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
   }
 
   public boolean isGotoClimb() {

@@ -234,6 +234,16 @@ public class RobotContainer {
             new SmartArm(arm, lineBreak, climber),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
+    NamedCommands.registerCommand(
+        "SmartIntake", new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
+
+    NamedCommands.registerCommand(
+        "PreRollShoot",
+        Commands.deadline(
+            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
+            new SmartFlywheel(flywheel),
+            new SmartArm(arm, lineBreak, climber)));
+
     NamedCommands.registerCommand("IntakeDown", new InstantCommand(intake::enableIntakeRequest));
     NamedCommands.registerCommand("IntakeUp", new InstantCommand(intake::disableIntakeRequest));
 

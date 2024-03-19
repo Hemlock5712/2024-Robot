@@ -15,7 +15,7 @@ public final class ArmConstants {
   public static final ArmPositions preclimb =
       new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(-48));
   public static final ArmPositions trap =
-      new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(39));
+      new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(37));
   public static final ArmPositions emergencyIntake =
       new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
   public static final ArmPositions feed =

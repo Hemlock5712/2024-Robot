@@ -45,15 +45,10 @@ public class SmartArm extends Command {
             ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
         return;
       }
-      if (driveModeType == DriveModeType.SPEAKER) {
+      if (driveModeType == DriveModeType.SPEAKER || driveModeType == DriveModeType.FEED) {
         arm.setArmAndWristTarget(
             ArmConstants.shoot.arm().getRadians(),
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
-        return;
-      }
-      if (driveModeType == DriveModeType.FEED) {
-        arm.setArmAndWristTarget(
-            ArmConstants.feed.arm().getRadians(), ArmConstants.feed.arm().getRadians());
         return;
       }
     }
