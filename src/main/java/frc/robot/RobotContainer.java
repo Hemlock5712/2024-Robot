@@ -18,6 +18,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -242,7 +243,8 @@ public class RobotContainer {
         Commands.deadline(
             new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
             new SmartFlywheel(flywheel),
-            new SmartArm(arm, lineBreak, climber)));
+            new SmartArm(arm, lineBreak, climber),
+            DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
 
     NamedCommands.registerCommand("IntakeDown", new InstantCommand(intake::enableIntakeRequest));
     NamedCommands.registerCommand("IntakeUp", new InstantCommand(intake::disableIntakeRequest));
@@ -252,7 +254,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Preload",
         new InstantCommand(() -> lineBreak.setGamePiece(false, false, false, false, true, false)));
-
+    // PodiumShot
+    // x=2.817 y=3.435
+    NamedCommands.registerCommand(
+        "PodiumPreroll",
+        new AutoPreRoll(
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(55), 41.6));
     // Run SmartController updates in autonomous
     new Trigger(DriverStation::isAutonomousEnabled)
         .and(
