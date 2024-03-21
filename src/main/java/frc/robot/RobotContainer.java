@@ -259,7 +259,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PodiumPreroll",
         new AutoPreRoll(
-            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(55), 41.6));
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(60), 37));
     // Run SmartController updates in autonomous
     new Trigger(DriverStation::isAutonomousEnabled)
         .and(
@@ -343,13 +343,6 @@ public class RobotContainer {
             Commands.startEnd(
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.AMP),
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
-
-    controller2
-        .y()
-        .toggleOnTrue(
-            Commands.startEnd(
-                () -> SmartController.getInstance().setGotoClimb(true),
-                () -> SmartController.getInstance().setGotoClimb(false)));
 
     controller2
         .x()

@@ -9,6 +9,7 @@ public interface ClimberIO {
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
     public boolean limitSwitchTriggered = false;
+    public boolean isFastMode = false;
   }
 
   public default void updateInputs(ClimberIOInputs inputs) {}

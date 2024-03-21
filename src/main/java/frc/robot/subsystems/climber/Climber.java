@@ -70,4 +70,8 @@ public class Climber extends SubsystemBase {
   public boolean isRequestingClimb() {
     return isRequestingClimb;
   }
+
+  public boolean isHighMode() {
+    return inputs.isFastMode;
+  }
 }

@@ -6,21 +6,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SmartControl"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -34,31 +22,57 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "deadline",
                       "data": {
-                        "pathName": "Amp-W1"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Amp-W1"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Magazine"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "QuickShoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
@@ -74,13 +88,7 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "parallel",
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
@@ -98,7 +106,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "EnableSmartControl"
+                              "name": "PodiumPreroll"
                             }
                           }
                         ]
@@ -107,7 +115,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "PreRollShoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -117,13 +131,7 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "SIMGamePiecePickup"
-                      }
-                    },
-                    {
-                      "type": "parallel",
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
@@ -141,7 +149,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "EnableSmartControl"
+                              "name": "PodiumPreroll"
                             }
                           }
                         ]
@@ -150,7 +158,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "QuickShoot"
+                        "name": "PreRollShoot"
                       }
                     }
                   ]

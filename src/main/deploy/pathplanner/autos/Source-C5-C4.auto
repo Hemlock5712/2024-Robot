@@ -6,21 +6,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Preload"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SmartControl"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -28,7 +16,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
@@ -50,7 +38,7 @@
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
@@ -64,6 +52,12 @@
                             "data": {
                               "name": "Magazine"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
+                            }
                           }
                         ]
                       }
@@ -71,7 +65,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
@@ -93,7 +87,7 @@
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
@@ -107,6 +101,12 @@
                             "data": {
                               "name": "Magazine"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
+                            }
                           }
                         ]
                       }
@@ -114,7 +114,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     }
                   ]

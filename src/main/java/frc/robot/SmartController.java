@@ -240,14 +240,6 @@ public class SmartController {
             feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
   }
 
-  public boolean isGotoClimb() {
-    return gotoTrap;
-  }
-
-  public void setGotoClimb(boolean trap) {
-    gotoTrap = trap;
-  }
-
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
     this.targetAimingParameters = targetAimingParameters;
   }

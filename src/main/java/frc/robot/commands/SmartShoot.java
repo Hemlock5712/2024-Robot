@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.SmartController;
+import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.linebreak.LineBreak;
@@ -64,11 +65,15 @@ public class SmartShoot extends Command {
     boolean isDriveAngleInTarget = isDriveAngleInTarget();
     boolean isFlywheelAtTargetSpeed = isFlywheelAtTargetSpeed();
     boolean isShooting = false;
+    double realForceShoot = forceShootTimeout;
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
+      realForceShoot = 0.0;
+    }
     if ((isSmartControlEnabled
             && isWristInTargetPose
             && isDriveAngleInTarget
             && isFlywheelAtTargetSpeed)
-        || flywheelTimer.hasElapsed(forceShootTimeout)) {
+        || flywheelTimer.hasElapsed(realForceShoot)) {
       magazine.forward();
       isShooting = true;
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {

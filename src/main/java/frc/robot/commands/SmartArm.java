@@ -53,8 +53,7 @@ public class SmartArm extends Command {
       }
     }
     if (driveModeType == DriveModeType.CLIMBER) {
-
-      if (SmartController.getInstance().isGotoClimb()) {
+      if (climber.isHighMode()) {
         arm.setArmAndWristTarget(
             ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
       } else {

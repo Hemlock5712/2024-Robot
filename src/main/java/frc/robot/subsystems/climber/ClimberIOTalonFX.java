@@ -41,6 +41,9 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   double climberSlowZoneLowEnd = 2;
   double climberSlowZoneHighEnd = 5;
+  double climberTrapTransitionPoint = 1;
+
+  boolean isHighMode = false;
 
   public ClimberIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = 40.0;
@@ -82,6 +85,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
     inputs.currentAmps = new double[] {leaderCurrent.getValueAsDouble()};
     inputs.limitSwitchTriggered = limitSwitch.get();
+    inputs.isFastMode = isHighMode();
   }
 
   @Override
@@ -97,7 +101,24 @@ public class ClimberIOTalonFX implements ClimberIO {
     } else {
       request.Velocity = 8;
     }
+    if (leaderPosition.getValueAsDouble() < climberTrapTransitionPoint) {
+      if (slot == 1) {
+        setHighMode(true);
+      } else {
+        setHighMode(false);
+      }
+    } else {
+      setHighMode(false);
+    }
     leader.setControl(request.withPosition(rotPosition).withSlot(slot));
+  }
+
+  public boolean isHighMode() {
+    return this.isHighMode;
+  }
+
+  public void setHighMode(boolean isHighMode) {
+    this.isHighMode = isHighMode;
   }
 
   @Override
