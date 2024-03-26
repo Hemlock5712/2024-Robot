@@ -233,15 +233,24 @@ public class RobotContainer {
         Commands.parallel(
             new SmartFlywheel(flywheel, lineBreak),
             new SmartArm(arm, lineBreak, climber),
-            new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
+            new SmartIntake(intake, lineBreak, magazine, arm::isArmWristInIntakePosition)));
 
     NamedCommands.registerCommand(
-        "SmartIntake", new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition));
+        "SmartIntake",
+        new SmartIntake(intake, lineBreak, magazine, arm::isArmWristInIntakePosition));
 
     NamedCommands.registerCommand(
         "PreRollShoot",
         Commands.deadline(
             new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
+            new SmartFlywheel(flywheel, lineBreak),
+            new SmartArm(arm, lineBreak, climber),
+            DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
+
+    NamedCommands.registerCommand(
+        "PreRollShootFast",
+        Commands.deadline(
+            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.5),
             new SmartFlywheel(flywheel, lineBreak),
             new SmartArm(arm, lineBreak, climber),
             DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
@@ -260,6 +269,10 @@ public class RobotContainer {
         "PodiumPreroll",
         new AutoPreRoll(
             arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(60), 37));
+    NamedCommands.registerCommand(
+        "ClosePreroll",
+        new AutoPreRoll(
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(61), 40));
     // Run SmartController updates in autonomous
     new Trigger(DriverStation::isAutonomousEnabled)
         .and(
@@ -298,7 +311,8 @@ public class RobotContainer {
     arm.setDefaultCommand(new SmartArm(arm, lineBreak, climber));
     flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak));
     intake.setDefaultCommand(
-        new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition).ignoringDisable(true));
+        new SmartIntake(intake, lineBreak, magazine, arm::isArmWristInIntakePosition)
+            .ignoringDisable(true));
     magazine.setDefaultCommand(new SmartMagazine(magazine, intake, lineBreak));
     lineBreak.setDefaultCommand(
         new InstantCommand(RobotGamePieceVisualizer::drawGamePieces, lineBreak));

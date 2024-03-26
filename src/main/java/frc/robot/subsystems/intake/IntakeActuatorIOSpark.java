@@ -17,7 +17,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     motor = new CANSparkMax(19, MotorType.kBrushless);
     motor.setInverted(false);
     motor.setIdleMode(IdleMode.kCoast);
-    motor.setSmartCurrentLimit(30);
+    motor.setSmartCurrentLimit(20);
     pidController = new PIDController(0.2, 0, 0);
     pidController.enableContinuousInput(0, 2 * Math.PI);
     // Create a new ArmFeedforward with gains kS, kG, kV, and kA
