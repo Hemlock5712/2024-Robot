@@ -26,6 +26,8 @@ public class SmartController {
 
   private boolean gotoTrap = false;
 
+  private boolean isFasterToFlipWrist = false;
+
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
@@ -155,6 +157,23 @@ public class SmartController {
     this.smartControl = false;
   }
 
+  private boolean calculateIsFlipFaster(Pose2d fieldRelativePose, Translation2d targetPose) {
+    if (Math.abs(
+            targetPose
+                .minus(fieldRelativePose.getTranslation())
+                .getAngle()
+                .minus(fieldRelativePose.getRotation())
+                .getDegrees())
+        > 90) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isFlipFaster() {
+    return isFasterToFlipWrist;
+  }
+
   public void calculateSpeaker(
       Pose2d fieldRelativePose,
       Translation2d fieldRelativeVelocity,
@@ -164,7 +183,14 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
+    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, speakerPose);
+    Logger.recordOutput("ShotCalculator/isFasterToFlipWrist", isFasterToFlipWrist);
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
+    if (isFasterToFlipWrist) {
+      // Add distance to where flywheel actually is to account for it not being centered in the
+      // robot
+      distanceToSpeaker += Units.inchesToMeters(13);
+    }
     double shotTime = flightTimeMap.get(distanceToSpeaker);
     Translation2d speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
     Translation2d movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
@@ -199,13 +225,23 @@ public class SmartController {
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
-    setTargetAimingParameters(
-        new AimingParameters(
-            setpointAngle,
-            radialVelocity,
-            shooterSpeedMap.get(effectiveDistanceToSpeaker),
-            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-            wristErrorMap.get(effectiveDistanceToSpeaker)));
+    if (!isFasterToFlipWrist) {
+      setTargetAimingParameters(
+          new AimingParameters(
+              setpointAngle,
+              radialVelocity,
+              shooterSpeedMap.get(effectiveDistanceToSpeaker),
+              new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
+              wristErrorMap.get(effectiveDistanceToSpeaker)));
+    } else {
+      setTargetAimingParameters(
+          new AimingParameters(
+              setpointAngle.rotateBy(Rotation2d.fromDegrees(180)),
+              radialVelocity,
+              shooterSpeedMap.get(effectiveDistanceToSpeaker),
+              new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
+              wristErrorMap.get(effectiveDistanceToSpeaker)));
+    }
   }
 
   public void calculateAmp() {
@@ -216,7 +252,13 @@ public class SmartController {
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
+    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, feedLocation);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
+    if (isFasterToFlipWrist) {
+      // Add distance to where flywheel actually is to account for it not being centered in the
+      // robot
+      distanceToFeedLocation += Units.inchesToMeters(13);
+    }
     double shotTime = feederFlightTimeMap.get(distanceToFeedLocation);
     Translation2d movingGoalLocation = feedLocation.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
@@ -231,13 +273,23 @@ public class SmartController {
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
-    setTargetAimingParameters(
-        new AimingParameters(
-            setpointAngle,
-            radialVelocity,
-            feederSpeedMap.get(effectiveDistanceToFeedLocation),
-            new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-            feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+    if (!isFasterToFlipWrist) {
+      setTargetAimingParameters(
+          new AimingParameters(
+              setpointAngle,
+              radialVelocity,
+              feederSpeedMap.get(effectiveDistanceToFeedLocation),
+              new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
+              feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+    } else {
+      setTargetAimingParameters(
+          new AimingParameters(
+              setpointAngle.rotateBy(Rotation2d.fromDegrees(180)),
+              radialVelocity,
+              feederSpeedMap.get(effectiveDistanceToFeedLocation),
+              new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
+              feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+    }
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {

@@ -46,9 +46,21 @@ public class SmartArm extends Command {
         return;
       }
       if (driveModeType == DriveModeType.SPEAKER || driveModeType == DriveModeType.FEED) {
-        arm.setArmAndWristTarget(
-            ArmConstants.shoot.arm().getRadians(),
-            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+        if (SmartController.getInstance().isFlipFaster()) {
+          arm.setArmAndWristTargetReversed(
+              ArmConstants.shoot.arm().getRadians(),
+              SmartController.getInstance()
+                  .getTargetAimingParameters()
+                  .shooterAngle()
+                  .getRadians());
+        } else {
+          arm.setArmAndWristTarget(
+              ArmConstants.shoot.arm().getRadians(),
+              SmartController.getInstance()
+                  .getTargetAimingParameters()
+                  .shooterAngle()
+                  .getRadians());
+        }
         return;
       }
     }
