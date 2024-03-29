@@ -114,21 +114,8 @@ public class DriveCommands {
           lastFieldRelativeVelocity = deadbandFieldRelativeVelocity;
           lastTime = currentTime;
 
-          // Speaker Mode
-          if (SmartController.getInstance().isSmartControlEnabled()
-              && SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER) {
-            SmartController.getInstance()
-                .calculateSpeaker(
-                    drive.getPose(),
-                    deadbandFieldRelativeVelocity,
-                    deadbandFieldRelativeAcceleration);
-            AimingParameters calculatedAim =
-                SmartController.getInstance().getTargetAimingParameters();
-            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
-            feedForwardRadialVelocity = calculatedAim.radialVelocity();
-          }
           // Amp Mode
-          else if (SmartController.getInstance().isSmartControlEnabled()
+          if (SmartController.getInstance().isSmartControlEnabled()
               && SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
             SmartController.getInstance().calculateAmp();
             AimingParameters calculatedAim =
@@ -140,6 +127,16 @@ public class DriveCommands {
               && SmartController.getInstance().getDriveModeType() == DriveModeType.FEED) {
             SmartController.getInstance()
                 .calculateFeed(drive.getPose(), deadbandFieldRelativeVelocity);
+            AimingParameters calculatedAim =
+                SmartController.getInstance().getTargetAimingParameters();
+            targetGyroAngle = Optional.of(calculatedAim.robotAngle());
+            feedForwardRadialVelocity = calculatedAim.radialVelocity();
+          } else {
+            SmartController.getInstance()
+                .calculateSpeaker(
+                    drive.getPose(),
+                    deadbandFieldRelativeVelocity,
+                    deadbandFieldRelativeAcceleration);
             AimingParameters calculatedAim =
                 SmartController.getInstance().getTargetAimingParameters();
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());

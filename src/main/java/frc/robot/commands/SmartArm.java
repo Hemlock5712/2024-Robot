@@ -51,6 +51,14 @@ public class SmartArm extends Command {
             SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
         return;
       }
+    } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+        && SmartController.getInstance().getTargetAimingParameters().effectiveDistanceToTarget()
+            < 5.002
+        && (lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
+      arm.setArmAndWristTarget(
+          ArmConstants.shoot.arm().getRadians(),
+          SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      return;
     }
     if (driveModeType == DriveModeType.CLIMBER) {
       if (climber.isHighMode()) {
@@ -62,7 +70,8 @@ public class SmartArm extends Command {
       }
       return;
     }
-    if (lineBreak.timeSinceLastGamePiece() > 0.5) {
+    if (lineBreak.timeSinceLastGamePiece() > 0.5
+        || ((lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && !isSmartControlled)) {
       arm.setArmAndWristTarget(
           ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
     }

@@ -19,12 +19,10 @@ public class SmartController {
 
   private DriveModeType driveModeType = DriveModeType.SAFE;
   private AimingParameters targetAimingParameters =
-      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist(), 2);
+      new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist(), 2, 0);
 
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
-
-  private boolean gotoTrap = false;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
@@ -205,13 +203,14 @@ public class SmartController {
             radialVelocity,
             shooterSpeedMap.get(effectiveDistanceToSpeaker),
             new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-            wristErrorMap.get(effectiveDistanceToSpeaker)));
+            wristErrorMap.get(effectiveDistanceToSpeaker),
+            effectiveDistanceToSpeaker));
   }
 
   public void calculateAmp() {
     setTargetAimingParameters(
         new AimingParameters(
-            Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist(), 1));
+            Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist(), 1, 0));
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
@@ -237,7 +236,8 @@ public class SmartController {
             radialVelocity,
             feederSpeedMap.get(effectiveDistanceToFeedLocation),
             new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-            feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+            feederWristErrorMap.get(effectiveDistanceToFeedLocation),
+            effectiveDistanceToFeedLocation));
   }
 
   public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
@@ -253,7 +253,8 @@ public class SmartController {
       double radialVelocity,
       double shooterSpeed,
       Rotation2d shooterAngle,
-      double wristError) {}
+      double wristError,
+      double effectiveDistanceToTarget) {}
 
   /** Possible Drive Modes. */
   public enum DriveModeType {

@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 public class SmartFlywheel extends Command {
   Flywheel flywheel;
+  LineBreak lineBreak;
 
   /** Creates a new SmartFlywheel. */
-  public SmartFlywheel(Flywheel flywheel) {
+  public SmartFlywheel(Flywheel flywheel, LineBreak lineBreak) {
     this.flywheel = flywheel;
+    this.lineBreak = lineBreak;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
   }
@@ -29,7 +32,6 @@ public class SmartFlywheel extends Command {
   @Override
   public void execute() {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
-      // 40.5 SHOOT SPEEED
       flywheel.stop();
       return;
     }
@@ -40,9 +42,17 @@ public class SmartFlywheel extends Command {
     if (SmartController.getInstance().isSmartControlEnabled()) {
       flywheel.setSpeedRotPerSec(
           SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
-
+      return;
+    } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+        && SmartController.getInstance().getTargetAimingParameters().effectiveDistanceToTarget()
+            < 5.002
+        && (lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
+      flywheel.setSpeedRotPerSec(
+          SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
+      return;
     } else {
       flywheel.stop();
+      return;
     }
   }
 

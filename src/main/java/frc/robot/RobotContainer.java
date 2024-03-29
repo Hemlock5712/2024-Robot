@@ -231,7 +231,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "SmartControl",
         Commands.parallel(
-            new SmartFlywheel(flywheel),
+            new SmartFlywheel(flywheel, lineBreak),
             new SmartArm(arm, lineBreak, climber),
             new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition)));
 
@@ -242,7 +242,7 @@ public class RobotContainer {
         "PreRollShoot",
         Commands.deadline(
             new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
-            new SmartFlywheel(flywheel),
+            new SmartFlywheel(flywheel, lineBreak),
             new SmartArm(arm, lineBreak, climber),
             DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
 
@@ -296,7 +296,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     arm.setDefaultCommand(new SmartArm(arm, lineBreak, climber));
-    flywheel.setDefaultCommand(new SmartFlywheel(flywheel));
+    flywheel.setDefaultCommand(new SmartFlywheel(flywheel, lineBreak));
     intake.setDefaultCommand(
         new SmartIntake(intake, lineBreak, arm::isArmWristInIntakePosition).ignoringDisable(true));
     magazine.setDefaultCommand(new SmartMagazine(magazine, intake, lineBreak));
@@ -321,9 +321,6 @@ public class RobotContainer {
         .whileTrue(
             Commands.startEnd(intake::enableIntakeRequest, intake::disableIntakeRequest)
                 .deadlineWith(new VibrateController(controller, lineBreak)));
-    // Commands.either(
-    //         new ManualArm(arm, flywheel, ArmConstants.frontAmp),
-    //         () -> SmartController.getInstance().getEmergencyIntakeMode())
 
     controller.a().whileTrue(Commands.runOnce(SmartController.getInstance()::enableSmartControl));
 
@@ -335,7 +332,10 @@ public class RobotContainer {
             Commands.parallel(
                 Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
 
-    controller.y().whileTrue(new ManualArm(arm, flywheel, ArmConstants.emergencyIntake, () -> -5));
+    controller
+        .y()
+        .whileTrue(
+            new ManualIntake(arm, flywheel, ArmConstants.emergencyIntake, () -> -5, lineBreak));
 
     controller2
         .a()
@@ -370,11 +370,6 @@ public class RobotContainer {
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     // controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
-
-    // controller2
-    //     .leftTrigger(0.5)
-    //     .and(controller2.pov(0))
-    //     .toggleOnTrue(new ManualArm(arm, flywheel, ArmConstants.trap));
 
     // controller2.x().whileTrue(new CalibrateClimber(climber));
 
