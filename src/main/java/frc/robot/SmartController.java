@@ -24,6 +24,8 @@ public class SmartController {
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
+  public static double prerollDistence = 7.002;
+
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();

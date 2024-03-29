@@ -53,7 +53,7 @@ public class SmartArm extends Command {
       }
     } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
         && SmartController.getInstance().getTargetAimingParameters().effectiveDistanceToTarget()
-            < 5.002
+            < SmartController.prerollDistence
         && (lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
       arm.setArmAndWristTarget(
           ArmConstants.shoot.arm().getRadians(),
