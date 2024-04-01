@@ -74,7 +74,7 @@ public class SmartShoot extends Command {
             && isDriveAngleInTarget
             && isFlywheelAtTargetSpeed)
         || flywheelTimer.hasElapsed(realForceShoot)) {
-      magazine.forward();
+      magazine.shoot();
       isShooting = true;
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();

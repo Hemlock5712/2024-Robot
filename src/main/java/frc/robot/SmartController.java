@@ -47,7 +47,7 @@ public class SmartController {
     shooterSpeedMap.put(3.5116, 42.5);
     shooterSpeedMap.put(4.002, 45.0);
 
-    // Units: Degress
+    // // Units: Degress
     shooterAngleMap.put(1.24036, Units.degreesToRadians(78.5));
     shooterAngleMap.put(1.509, Units.degreesToRadians(73.0));
     shooterAngleMap.put(2.006, Units.degreesToRadians(65.0));
