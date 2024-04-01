@@ -15,7 +15,7 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
 
   public IntakeActuatorIOSpark() {
     motor = new CANSparkMax(19, MotorType.kBrushless);
-    motor.setInverted(true);
+    motor.setInverted(false);
     motor.setIdleMode(IdleMode.kCoast);
     motor.setSmartCurrentLimit(30);
     pidController = new PIDController(0.2, 0, 0);

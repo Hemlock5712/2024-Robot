@@ -123,8 +123,7 @@ public class DriveCommands {
             targetGyroAngle = Optional.of(calculatedAim.robotAngle());
           }
           // Feed Mode
-          else if (SmartController.getInstance().isSmartControlEnabled()
-              && SmartController.getInstance().getDriveModeType() == DriveModeType.FEED) {
+          else if (SmartController.getInstance().getDriveModeType() == DriveModeType.FEED) {
             SmartController.getInstance()
                 .calculateFeed(drive.getPose(), deadbandFieldRelativeVelocity);
             AimingParameters calculatedAim =

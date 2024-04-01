@@ -162,6 +162,7 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
     Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
+    SmartController.prerollDistence = 7.002;
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
@@ -216,6 +217,7 @@ public class SmartController {
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
+    SmartController.prerollDistence = 9.071;
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
     double shotTime = feederFlightTimeMap.get(distanceToFeedLocation);

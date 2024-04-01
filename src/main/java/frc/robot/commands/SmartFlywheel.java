@@ -43,7 +43,8 @@ public class SmartFlywheel extends Command {
       flywheel.setSpeedRotPerSec(
           SmartController.getInstance().getTargetAimingParameters().shooterSpeed());
       return;
-    } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+    } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+            || SmartController.getInstance().getDriveModeType() == DriveModeType.FEED)
         && SmartController.getInstance().getTargetAimingParameters().effectiveDistanceToTarget()
             < SmartController.prerollDistence
         && (lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
