@@ -56,17 +56,17 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeMode(IntakePositions intakePositions) {
     if (intakePositions == IntakePositions.FLOOR) {
-      if (!actuatorInputs.downLimitSwitchTriggered) {
-        actuatorIO.setVoltage(6);
+      if (actuatorInputs.downLimitSwitchTriggered) {
+        actuatorIO.setVoltage(0.01);
       } else {
-        actuatorIO.setVoltage(0);
+        actuatorIO.setVoltage(4);
       }
       actuatorIO.coastMode();
     } else {
-      if (!actuatorInputs.upLimitSwitchTriggered) {
-        actuatorIO.setVoltage(-4.4);
-      } else {
+      if (actuatorInputs.upLimitSwitchTriggered) {
         actuatorIO.setVoltage(-0.01);
+      } else {
+        actuatorIO.setVoltage(-4.4);
       }
       actuatorIO.brakeMode();
     }

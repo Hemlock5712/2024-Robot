@@ -31,9 +31,9 @@ public class IntakeActuatorIOSpark implements IntakeActuatorIO {
     inputs.tempCelcius = new double[] {motor.getMotorTemperature()};
     inputs.targetAngle = pidController.getSetpoint();
     inputs.upLimitSwitchTriggered =
-        motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
-    inputs.downLimitSwitchTriggered =
         motor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
+    inputs.downLimitSwitchTriggered =
+        motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
   }
 
   @Override
