@@ -63,10 +63,10 @@ public class Arm extends SubsystemBase {
   public void setArmAndWristTargetReversed(double armTarget, double wristTarget) {
     this.armTarget = armTarget;
 
-    double angleOffVertical = (Math.PI / 2) - wristTarget;
-    this.armTarget = wristTarget + 2 * angleOffVertical - armTarget;
+    double angleOffVertical = (Math.PI / 2) - wristTarget - armTarget;
+    this.wristTarget = wristTarget + (2 * angleOffVertical);
 
-    io.setWristTarget(wristTarget, inputs.wristAbsolutePositionRad);
+    io.setWristTarget(this.wristTarget, inputs.wristAbsolutePositionRad);
     Logger.recordOutput("Arm/WristTargetPositionRad", this.wristTarget);
 
     io.setArmTarget(armTarget);

@@ -18,6 +18,8 @@ public final class ArmConstants {
   //       new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(34));
   public static final ArmPositions trap =
       new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(37));
+  public static final ArmPositions midClimb =
+      new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(10));
   public static final ArmPositions emergencyIntake =
       new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
   public static final ArmPositions feed =
@@ -36,7 +38,7 @@ public final class ArmConstants {
   public static final MotorFeedbackController wristControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(55.0, 0, 0.0, 0.0);
+        case COMPBOT -> new MotorFeedbackController(68.0, 0, 0.0, 0.0);
           // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 

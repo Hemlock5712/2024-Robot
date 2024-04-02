@@ -233,7 +233,8 @@ public class SmartController {
               radialVelocity,
               shooterSpeedMap.get(effectiveDistanceToSpeaker),
               new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-              wristErrorMap.get(effectiveDistanceToSpeaker)));
+              wristErrorMap.get(effectiveDistanceToSpeaker),
+              effectiveDistanceToSpeaker));
     } else {
       setTargetAimingParameters(
           new AimingParameters(
@@ -241,7 +242,8 @@ public class SmartController {
               radialVelocity,
               shooterSpeedMap.get(effectiveDistanceToSpeaker),
               new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-              wristErrorMap.get(effectiveDistanceToSpeaker)));
+              wristErrorMap.get(effectiveDistanceToSpeaker),
+              effectiveDistanceToSpeaker));
     }
   }
 
@@ -283,7 +285,8 @@ public class SmartController {
               radialVelocity,
               feederSpeedMap.get(effectiveDistanceToFeedLocation),
               new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-              feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+              feederWristErrorMap.get(effectiveDistanceToFeedLocation),
+              effectiveDistanceToFeedLocation));
     } else {
       setTargetAimingParameters(
           new AimingParameters(
@@ -291,7 +294,8 @@ public class SmartController {
               radialVelocity,
               feederSpeedMap.get(effectiveDistanceToFeedLocation),
               new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-              feederWristErrorMap.get(effectiveDistanceToFeedLocation)));
+              feederWristErrorMap.get(effectiveDistanceToFeedLocation),
+              effectiveDistanceToFeedLocation));
     }
   }
 
