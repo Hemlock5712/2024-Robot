@@ -24,7 +24,7 @@ public class SmartController {
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
-  public static double prerollDistence = 7.002;
+  public static double prerollDistance = 7.002;
 
   private boolean isFasterToFlipWrist = false;
 
@@ -157,7 +157,10 @@ public class SmartController {
     this.smartControl = false;
   }
 
-  private boolean calculateIsFlipFaster(Pose2d fieldRelativePose, Translation2d targetPose) {
+  private boolean calculateIsFlipFaster(Pose2d fieldRelativePose, Translation2d targetPose, boolean isSpeakerShot) {
+    if (isSpeakerShot && fieldRelativePose.getTranslation().getDistance(targetPose) > 4.0) {
+      return false;
+    }
     if (Math.abs(
             targetPose
                 .minus(fieldRelativePose.getTranslation())
@@ -181,10 +184,10 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
     Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
-    SmartController.prerollDistence = 7.002;
+    SmartController.prerollDistance = 7.002;
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
-    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, speakerPose);
+    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, speakerPose, true);
     Logger.recordOutput("ShotCalculator/isFasterToFlipWrist", isFasterToFlipWrist);
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
     if (isFasterToFlipWrist) {
@@ -254,9 +257,9 @@ public class SmartController {
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
-    SmartController.prerollDistence = 9.071;
+    SmartController.prerollDistance = 9.071;
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
-    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, feedLocation);
+    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, feedLocation, false);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
     if (isFasterToFlipWrist) {
       // Add distance to where flywheel actually is to account for it not being centered in the
