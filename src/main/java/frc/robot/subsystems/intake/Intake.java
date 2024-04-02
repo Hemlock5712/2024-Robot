@@ -66,7 +66,7 @@ public class Intake extends SubsystemBase {
       if (actuatorInputs.upLimitSwitchTriggered) {
         actuatorIO.setVoltage(-0.01);
       } else {
-        actuatorIO.setVoltage(-6.0);
+        actuatorIO.setVoltage(-5.2);
       }
       actuatorIO.brakeMode();
     }

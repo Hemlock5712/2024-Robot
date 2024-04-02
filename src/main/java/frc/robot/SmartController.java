@@ -157,7 +157,8 @@ public class SmartController {
     this.smartControl = false;
   }
 
-  private boolean calculateIsFlipFaster(Pose2d fieldRelativePose, Translation2d targetPose, boolean isSpeakerShot) {
+  private boolean calculateIsFlipFaster(
+      Pose2d fieldRelativePose, Translation2d targetPose, boolean isSpeakerShot) {
     if (isSpeakerShot && fieldRelativePose.getTranslation().getDistance(targetPose) > 4.0) {
       return false;
     }
