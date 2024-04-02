@@ -53,11 +53,9 @@ import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeActuatorIO;
-import frc.robot.subsystems.intake.IntakeActuatorIOSpark;
 import frc.robot.subsystems.intake.IntakeActuatorSim;
 import frc.robot.subsystems.intake.IntakeWheelsIO;
 import frc.robot.subsystems.intake.IntakeWheelsIOSIM;
-import frc.robot.subsystems.intake.IntakeWheelsIOTalonFX;
 import frc.robot.subsystems.leds.LedController;
 import frc.robot.subsystems.linebreak.LineBreak;
 import frc.robot.subsystems.linebreak.LineBreakIO;
@@ -119,8 +117,8 @@ public class RobotContainer {
         arm = new Arm(new ArmIOTalonFX());
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
-        intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
+        // intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
+        intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight("limelight-fl"),
