@@ -87,6 +87,7 @@ public class SmartShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartController.getInstance().disableSmartControl();
+    magazine.stop();
   }
 
   // Returns true when the command should end.

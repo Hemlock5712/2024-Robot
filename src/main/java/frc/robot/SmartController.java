@@ -159,7 +159,7 @@ public class SmartController {
 
   private boolean calculateIsFlipFaster(
       Pose2d fieldRelativePose, Translation2d targetPose, boolean isSpeakerShot) {
-    if (isSpeakerShot && fieldRelativePose.getTranslation().getDistance(targetPose) > 4.0) {
+    if (isSpeakerShot && fieldRelativePose.getTranslation().getDistance(targetPose) > 1.8) {
       return false;
     }
     if (Math.abs(

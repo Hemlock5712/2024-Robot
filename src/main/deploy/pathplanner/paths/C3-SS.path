@@ -36,15 +36,21 @@
         "y": 3.4328213852157243
       },
       "prevControl": {
-        "x": 3.057807471857422,
-        "y": 2.5179413043291525
+        "x": 3.0578074718574215,
+        "y": 2.517941304329152
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "SS"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 134.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {

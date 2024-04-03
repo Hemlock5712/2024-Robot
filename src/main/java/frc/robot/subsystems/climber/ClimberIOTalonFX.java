@@ -28,14 +28,14 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   private final TalonFX leader = new TalonFX(42, "chassis");
 
-  private final DigitalInput limitSwitch = new DigitalInput(0);
+  private final DigitalInput limitSwitch = new DigitalInput(1);
 
   private final StatusSignal<Double> leaderPosition = leader.getPosition();
   private final StatusSignal<Double> leaderVelocity = leader.getVelocity();
   private final StatusSignal<Double> leaderAppliedVolts = leader.getMotorVoltage();
   private final StatusSignal<Double> leaderCurrent = leader.getSupplyCurrent();
 
-  final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 1, 10, 100);
+  final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 2, 10, 100);
 
   TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -64,7 +64,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     config.Slot1.kS = 0.228;
     config.Slot1.kV = 1.0 / 6.7;
     config.Slot1.kA = 0.0;
-    config.Slot1.kP = 20.0;
+    config.Slot1.kP = 30.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 0.0;
 

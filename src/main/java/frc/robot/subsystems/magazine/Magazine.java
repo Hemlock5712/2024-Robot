@@ -24,6 +24,7 @@ public class Magazine extends SubsystemBase {
     // This method will be called once per scheduler run
     magazineIO.updateInputs(inputs);
     Logger.processInputs("Magazine", inputs);
+    isShooting();
   }
 
   public void forward() {
@@ -56,6 +57,7 @@ public class Magazine extends SubsystemBase {
     isShooting = false;
   }
 
+  @AutoLogOutput(key = "Magazine/isShooting")
   public boolean isShooting() {
     return isShooting;
   }

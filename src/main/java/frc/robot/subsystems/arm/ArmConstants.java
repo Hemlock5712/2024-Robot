@@ -21,7 +21,7 @@ public final class ArmConstants {
   public static final ArmPositions midClimb =
       new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(10));
   public static final ArmPositions emergencyIntake =
-      new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
+      new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(35));
   public static final ArmPositions feed =
       new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
 
