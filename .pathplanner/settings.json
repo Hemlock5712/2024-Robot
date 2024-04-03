@@ -3,6 +3,8 @@
   "robotLength": 0.8762995267982555,
   "holonomicMode": true,
   "pathFolders": [
+    "Source-C5-C4",
+    "Middle-C3-C2",
     "Source C5-C3-C4",
     "Source-W3-W2-W1"
   ],

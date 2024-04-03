@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.754132329142476,
+        "y": 2.1229260014866425
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.981781263681151,
+        "y": 1.2464886614233497
+      },
+      "isLocked": false,
+      "linkedName": "Shoot-C4End"
+    },
+    {
+      "anchor": {
+        "x": 2.923988766126999,
+        "y": 2.9409341855457143
+      },
+      "prevControl": {
+        "x": 3.3524692434912753,
+        "y": 1.811303836130804
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "C4-ShootEnd"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.4,
+    "maxAcceleration": 4.418,
+    "maxAngularVelocity": 646.0,
+    "maxAngularAcceleration": 1277.1229
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 139.22498659993042,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source-C5-C4",
+  "previewStartingState": {
+    "rotation": -143.13010235415598,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
