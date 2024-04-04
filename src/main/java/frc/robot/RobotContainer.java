@@ -268,7 +268,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PodiumPreroll",
         new AutoPreRoll(
-            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(60), 37));
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(59), 39));
     NamedCommands.registerCommand(
         "ClosePreroll",
         new AutoPreRoll(

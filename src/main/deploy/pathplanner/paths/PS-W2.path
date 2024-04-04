@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2468327017578886,
-        "y": 5.414959434377994
+        "x": 1.553559470755305,
+        "y": 5.521816553472311
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8780516504055305,
-        "y": 5.442276549292984
+        "x": 1.7681206271503458,
+        "y": 5.522617590689727
       },
       "isLocked": false,
-      "linkedName": "A1-P3End"
+      "linkedName": "PS"
     },
     {
       "anchor": {
-        "x": 2.048783618624215,
-        "y": 6.377887735131375
+        "x": 2.78495393354423,
+        "y": 5.521816553472311
       },
       "prevControl": {
-        "x": 1.625368337441877,
-        "y": 6.1456922583539635
+        "x": 2.5797215230794097,
+        "y": 5.513288844759509
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "A1-P4End"
+      "linkedName": "W2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -156.33159909845693,
+    "rotation": 179.30413406049124,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Source-W3-W2-W1",
+  "folder": "Close 4 Piece",
   "previewStartingState": {
-    "rotation": -179.13630995540044,
+    "rotation": 178.9285661758656,
     "velocity": 0
   },
   "useDefaultConstraints": true

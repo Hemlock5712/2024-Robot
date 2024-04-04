@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.3174970193309226,
-        "y": 4.260121829852201
+        "x": 2.2625441614519595,
+        "y": 4.3751818412727745
       },
       "prevControl": {
-        "x": 1.8135093921385863,
-        "y": 4.621471449348593
+        "x": 1.7585565342596232,
+        "y": 4.736531460769166
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Close 4 Piece",
   "previewStartingState": {
     "rotation": 120.57922687248902,
     "velocity": 0

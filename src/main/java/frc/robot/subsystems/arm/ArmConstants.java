@@ -26,7 +26,7 @@ public final class ArmConstants {
       new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
 
   public static final ArmPositions manualShot =
-      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(58.75));
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(78.5));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {

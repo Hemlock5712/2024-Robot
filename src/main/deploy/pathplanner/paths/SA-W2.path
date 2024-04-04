@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.572211799164207,
-        "y": 5.565873600441298
+        "x": 2.78495393354423,
+        "y": 5.521816553472311
       },
       "prevControl": {
-        "x": 2.307869517349053,
-        "y": 5.609930647410491
+        "x": 2.520611651729076,
+        "y": 5.5658736004415035
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "W2"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 166.75948008481282,
+    "rotation": -179.94573916563937,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Close 4 Piece",
   "previewStartingState": {
     "rotation": -173.7965520983081,
     "velocity": 0

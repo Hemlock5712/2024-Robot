@@ -185,7 +185,7 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
     Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
-    SmartController.prerollDistance = 7.002;
+    setPrerollDistance(7.002);
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, speakerPose, true);
@@ -258,7 +258,7 @@ public class SmartController {
   }
 
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
-    SmartController.prerollDistance = 9.071;
+    setPrerollDistance(FieldConstants.fieldLength);
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
     isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, feedLocation, false);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
@@ -303,12 +303,20 @@ public class SmartController {
     }
   }
 
-  public void setTargetAimingParameters(AimingParameters targetAimingParameters) {
+  private void setTargetAimingParameters(AimingParameters targetAimingParameters) {
     this.targetAimingParameters = targetAimingParameters;
   }
 
   public AimingParameters getTargetAimingParameters() {
     return targetAimingParameters;
+  }
+
+  public double getPrerollDistance() {
+    return prerollDistance;
+  }
+
+  private void setPrerollDistance(double prerollDistance) {
+    this.prerollDistance = prerollDistance;
   }
 
   public record AimingParameters(

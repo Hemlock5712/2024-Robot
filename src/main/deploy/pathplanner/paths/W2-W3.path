@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.25321541552174,
-        "y": 5.364028909876002
+        "x": 2.78495393354423,
+        "y": 5.521816553472311
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7214768974992496,
-        "y": 5.028194056388113
+        "x": 2.2532154155217397,
+        "y": 5.1859816999844215
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "W2"
     },
     {
       "anchor": {
-        "x": 2.3558316207541505,
-        "y": 4.319209365691459
+        "x": 2.2625441614519595,
+        "y": 4.3751818412727745
       },
       "prevControl": {
-        "x": 2.03720237916976,
-        "y": 4.529848777375227
+        "x": 1.9439149198675691,
+        "y": 4.585821252956542
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "W3"
     }
   ],
   "rotationTargets": [
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Close 4 Piece",
   "previewStartingState": {
     "rotation": 178.40049102926614,
     "velocity": 0

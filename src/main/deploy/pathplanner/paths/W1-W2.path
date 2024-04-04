@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4694120229027585,
-        "y": 6.770099550932555
+        "x": 2.5890502690096286,
+        "y": 6.632738356385804
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2309360743156779,
-        "y": 6.502017436973018
+        "x": 1.350574320422548,
+        "y": 6.364656242426268
       },
       "isLocked": false,
       "linkedName": "W1"
     },
     {
       "anchor": {
-        "x": 2.513469069871951,
-        "y": 5.580559282764361
+        "x": 2.78495393354423,
+        "y": 5.521816553472311
       },
       "prevControl": {
-        "x": 1.6095319463366198,
-        "y": 5.69986376336389
+        "x": 1.8810168100088989,
+        "y": 5.64112103407184
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Close 4 Piece",
   "previewStartingState": {
     "rotation": 179.52844044592385,
     "velocity": 0
