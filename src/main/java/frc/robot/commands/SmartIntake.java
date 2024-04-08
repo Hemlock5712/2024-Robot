@@ -9,22 +9,28 @@ import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakePositions;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
+import frc.robot.subsystems.magazine.Magazine;
 import java.util.function.BooleanSupplier;
 
 public class SmartIntake extends Command {
 
   Intake intake;
+  Magazine magazine;
   Boolean runArmDown;
   BooleanSupplier isArmWristInIntakePosition;
   LineBreak lineBreak;
 
   /** Creates a new IntakeDown. */
   public SmartIntake(
-      Intake intake, LineBreak lineBreak, BooleanSupplier isArmWristInIntakePosition) {
+      Intake intake,
+      LineBreak lineBreak,
+      Magazine magazine,
+      BooleanSupplier isArmWristInIntakePosition) {
     this.intake = intake;
     this.isArmWristInIntakePosition = isArmWristInIntakePosition;
     this.lineBreak = lineBreak;
+    this.magazine = magazine;
 
     addRequirements(intake);
   }
@@ -39,6 +45,10 @@ public class SmartIntake extends Command {
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE) {
       intake.setIntakeMode(IntakePositions.UP);
       intake.stop();
+      return;
+    }
+    if (magazine.isShooting()) {
+      intake.intake();
       return;
     }
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {

@@ -4,13 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 public class SmartArm extends Command {
   Arm arm;
@@ -45,30 +46,49 @@ public class SmartArm extends Command {
             ArmConstants.frontAmp.arm().getRadians(), ArmConstants.frontAmp.wrist().getRadians());
         return;
       }
-      if (driveModeType == DriveModeType.SPEAKER) {
-        arm.setArmAndWristTarget(
-            ArmConstants.shoot.arm().getRadians(),
-            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      if (driveModeType == DriveModeType.SPEAKER || driveModeType == DriveModeType.FEED) {
+        if (SmartController.getInstance().isFlipFaster()) {
+          arm.setArmAndWristTargetReversed(
+              ArmConstants.shoot.arm().getRadians() + Units.degreesToRadians(5),
+              SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians()
+                  - Units.degreesToRadians(5));
+        } else {
+          arm.setArmAndWristTarget(
+              ArmConstants.shoot.arm().getRadians(),
+              SmartController.getInstance()
+                  .getTargetAimingParameters()
+                  .shooterAngle()
+                  .getRadians());
+        }
         return;
       }
-      if (driveModeType == DriveModeType.FEED) {
-        arm.setArmAndWristTarget(
-            ArmConstants.feed.arm().getRadians(), ArmConstants.feed.arm().getRadians());
-        return;
-      }
+    } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER
+            || SmartController.getInstance().getDriveModeType() == DriveModeType.FEED)
+        && SmartController.getInstance().getTargetAimingParameters().effectiveDistanceToTarget()
+            < SmartController.getInstance().getPrerollDistance()
+        && (lineBreak.isShooterLoaded() || lineBreak.isShooterLong())) {
+      arm.setArmAndWristTarget(
+          ArmConstants.shoot.arm().getRadians(),
+          SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
+      return;
     }
     if (driveModeType == DriveModeType.CLIMBER) {
-      if (climber.getPosition() < 3.5) {
-        arm.setArmAndWristTarget(
-            (climber.getPosition() / 3.5) * ArmConstants.trap.arm().getRadians(),
-            ArmConstants.trap.wrist().getRadians());
-      } else {
+      if (climber.isHighMode()) {
         arm.setArmAndWristTarget(
             ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
+      } else {
+        if (climber.getPosition() < 5) {
+          arm.setArmAndWristTarget(
+              ArmConstants.midClimb.arm().getRadians(), ArmConstants.midClimb.wrist().getRadians());
+        } else {
+          arm.setArmAndWristTarget(
+              ArmConstants.preclimb.arm().getRadians(), ArmConstants.preclimb.wrist().getRadians());
+        }
       }
       return;
     }
-    if (lineBreak.timeSinceLastGamePiece() > 0.5) {
+    if (lineBreak.timeSinceLastGamePiece() > 0.5
+        || ((lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && !isSmartControlled)) {
       arm.setArmAndWristTarget(
           ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
     }

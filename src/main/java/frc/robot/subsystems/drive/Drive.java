@@ -13,7 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -24,6 +23,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -50,8 +50,10 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
-  private double velocityX = 0;
-  private double velocityY = 0;
+  private double filteredX = 0;
+  private double filteredY = 0;
+  private final LinearFilter xFilter = LinearFilter.movingAverage(10);
+  private final LinearFilter yFilter = LinearFilter.movingAverage(10);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -175,8 +177,8 @@ public class Drive extends SubsystemBase {
           new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
               .rotateBy(getRotation());
 
-      velocityX = rawFieldRelativeVelocity.getX();
-      velocityY = rawFieldRelativeVelocity.getY();
+      filteredX = xFilter.calculate(rawFieldRelativeVelocity.getX());
+      filteredY = yFilter.calculate(rawFieldRelativeVelocity.getY());
     }
   }
 
@@ -279,7 +281,7 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   public Translation2d getFieldRelativeVelocity() {
-    return new Translation2d(velocityX, velocityY);
+    return new Translation2d(filteredX, filteredY);
   }
 
   public Optional<Rotation2d> getRotationTargetOverride() {

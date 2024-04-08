@@ -12,6 +12,7 @@ public class Magazine extends SubsystemBase {
   private final MagazineIO magazineIO;
   private final MagazineIOInputsAutoLogged inputs = new MagazineIOInputsAutoLogged();
   private double targetVoltage = 0;
+  private boolean isShooting = false;
 
   /** Creates a new Magazine. */
   public Magazine(MagazineIO magazineIO) {
@@ -23,26 +24,42 @@ public class Magazine extends SubsystemBase {
     // This method will be called once per scheduler run
     magazineIO.updateInputs(inputs);
     Logger.processInputs("Magazine", inputs);
+    isShooting();
   }
 
   public void forward() {
     setSpeedRadPerSec(6);
+    isShooting = false;
+  }
+
+  public void shoot() {
+    setSpeedRadPerSec(7);
+    isShooting = true;
   }
 
   public void backward() {
     setSpeedRadPerSec(-5);
+    isShooting = false;
   }
 
   public void slowForward() {
     setSpeedRadPerSec(1.8);
+    isShooting = false;
   }
 
   public void slowBackward() {
     setSpeedRadPerSec(-1.8);
+    isShooting = false;
   }
 
   public void stop() {
     magazineIO.stop();
+    isShooting = false;
+  }
+
+  @AutoLogOutput(key = "Magazine/isShooting")
+  public boolean isShooting() {
+    return isShooting;
   }
 
   public void setSpeedRadPerSec(double speedRadPerSec) {

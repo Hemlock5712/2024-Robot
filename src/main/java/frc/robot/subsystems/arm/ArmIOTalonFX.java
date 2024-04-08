@@ -90,7 +90,7 @@ public class ArmIOTalonFX implements ArmIO {
     wristConfig.Slot0.kI = ArmConstants.wristControlConstants.kI();
     wristConfig.Slot0.kD = ArmConstants.wristControlConstants.kD();
     wristConfig.Slot0.kG = ArmConstants.wristControlConstants.kG();
-    wristConfig.Slot0.kS = 0.2;
+    wristConfig.Slot0.kS = 0.216;
 
     for (int i = 0; i < 4; i++) {
       boolean statusOK = wristMotor.getConfigurator().apply(wristConfig, 0.1) == StatusCode.OK;
@@ -162,7 +162,7 @@ public class ArmIOTalonFX implements ArmIO {
             .withPosition(Units.radiansToRotations(target))
             .withSlot(0)
             .withEnableFOC(true)
-            .withFeedForward(Rotation2d.fromRadians(wristAbsolutePosition).getCos() * 0.06));
+            .withFeedForward(Rotation2d.fromRadians(wristAbsolutePosition).getCos() * 0.173));
   }
 
   @Override

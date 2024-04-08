@@ -4,14 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 import frc.robot.subsystems.magazine.Magazine;
 
 public class ManualShoot extends Command {
@@ -46,9 +45,10 @@ public class ManualShoot extends Command {
   public void initialize() {
     // SmartController.getInstance().enableSmartControl();
     // if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
+    flywheel.setSpeedRotPerSec(30);
+    arm.setArmAndWristTarget(
+        ArmConstants.manualShot.arm().getRadians(), ArmConstants.manualShot.wrist().getRadians());
     flywheelTimer.restart();
-    arm.setArmAndWristTarget(ArmConstants.shoot.arm().getRadians(), Units.degreesToRadians(80));
-    flywheel.setSpeedRotPerSec(40.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,7 +56,7 @@ public class ManualShoot extends Command {
   public void execute() {
     if ((arm.isArmWristInTargetPose() && (flywheel.atTargetSpeed() || flywheelTimer.hasElapsed(2)))
         || flywheelTimer.hasElapsed(forceShootTimeout)) {
-      magazine.forward();
+      magazine.shoot();
       if (Constants.getMode() == Constants.Mode.SIM && timer.hasElapsed(0.75)) {
         lineBreak.shootGamePiece();
       }
@@ -65,7 +65,9 @@ public class ManualShoot extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    magazine.stop();
+  }
 
   // Returns true when the command should end.
   @Override

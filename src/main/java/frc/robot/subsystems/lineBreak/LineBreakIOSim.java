@@ -1,9 +1,9 @@
-package frc.robot.subsystems.lineBreak;
+package frc.robot.subsystems.linebreak;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.subsystems.lineBreak.LineBreakHelper.LineBreakValues;
+import frc.robot.subsystems.linebreak.LineBreakHelper.LineBreakValues;
 
 public class LineBreakIOSim implements LineBreakIO {
   NetworkTable table;

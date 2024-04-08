@@ -12,26 +12,33 @@ public final class ArmConstants {
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(66));
   public static final ArmPositions shoot =
       new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(65));
-  public static final ArmPositions trap =
+  public static final ArmPositions preclimb =
       new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(-48));
+  //   public static final ArmPositions trap =
+  //       new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(34));
+  public static final ArmPositions trap =
+      new ArmPositions(Rotation2d.fromDegrees(32), Rotation2d.fromDegrees(37));
+  public static final ArmPositions midClimb =
+      new ArmPositions(Rotation2d.fromDegrees(53), Rotation2d.fromDegrees(10));
   public static final ArmPositions emergencyIntake =
-      new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(25));
+      new ArmPositions(Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(35));
   public static final ArmPositions feed =
       new ArmPositions(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
 
   public static final ArmPositions manualShot =
-      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(58.75));
+      new ArmPositions(Rotation2d.fromDegrees(-23), Rotation2d.fromDegrees(78.5));
 
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
         case COMPBOT -> new MotorFeedbackController(160, 0, 0, 0.3);
+          // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 
   public static final MotorFeedbackController wristControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(35, 0, 0, 0.0);
+        case COMPBOT -> new MotorFeedbackController(68.0, 0, 0.0, 0.0);
           // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 

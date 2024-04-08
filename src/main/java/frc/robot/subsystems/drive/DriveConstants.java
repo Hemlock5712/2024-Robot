@@ -76,13 +76,13 @@ public final class DriveConstants {
         case COMPBOT ->
             new ModuleConfig[] {
               // 0.454346
-              new ModuleConfig(1, 2, 9, Rotation2d.fromRotations(-0.041504 + .5), true),
+              new ModuleConfig(1, 2, 9, Rotation2d.fromRotations(0.360840), true),
               // -0.305420
-              new ModuleConfig(3, 4, 10, Rotation2d.fromRotations(-0.310547 + .5), true),
+              new ModuleConfig(3, 4, 10, Rotation2d.fromRotations(-0.307861 + 0.5), true),
               // -0.486084
-              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(-0.487061), true),
+              new ModuleConfig(5, 6, 11, Rotation2d.fromRotations(-0.488770), true),
               // -0.052002
-              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(0.336914), true)
+              new ModuleConfig(7, 8, 12, Rotation2d.fromRotations(-0.163086 + 0.5), true)
             };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];
@@ -118,8 +118,8 @@ public final class DriveConstants {
 
   public static HeadingControllerConstants headingControllerConstants =
       switch (Constants.getRobot()) {
-        case COMPBOT -> new HeadingControllerConstants(5.0, 0.0);
-        case SIMBOT -> new HeadingControllerConstants(7, 0.0);
+        case COMPBOT -> new HeadingControllerConstants(7.0, 0.0);
+        case SIMBOT -> new HeadingControllerConstants(7, 0.125);
       };
 
   public static final PIDConstants PPtranslationConstants =

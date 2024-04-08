@@ -24,7 +24,7 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-    Logger.processInputs("Elevator", inputs);
+    Logger.processInputs("Climber", inputs);
   }
 
   public void setCustomPosition(double targetPosition, int slot) {
@@ -69,5 +69,9 @@ public class Climber extends SubsystemBase {
 
   public boolean isRequestingClimb() {
     return isRequestingClimb;
+  }
+
+  public boolean isHighMode() {
+    return inputs.isFastMode;
   }
 }

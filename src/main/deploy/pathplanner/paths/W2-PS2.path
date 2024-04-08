@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3174970193309226,
-        "y": 4.260121829852201
+        "x": 2.78495393354423,
+        "y": 5.521816553472311
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.984675001378474,
-        "y": 4.497851842678775
+        "x": 2.4140951135347755,
+        "y": 5.692982162707444
       },
       "isLocked": false,
-      "linkedName": "W3"
+      "linkedName": "W2"
     },
     {
       "anchor": {
-        "x": 2.513469069871951,
-        "y": 5.580559282764361
+        "x": 2.0666404969173575,
+        "y": 6.548779643013831
       },
       "prevControl": {
-        "x": 1.857334234470608,
-        "y": 5.276264866346347
+        "x": 2.3465028748239316,
+        "y": 6.054356108712217
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "W2"
+      "linkedName": "PS2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 180.0,
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -156.11120938419998,
       "rotateFast": false
     }
   ],
@@ -45,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.30413406049124,
+    "rotation": -149.34933204294714,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Close 4 Piece",
   "previewStartingState": {
-    "rotation": 149.36458244963626,
+    "rotation": 179.52844044592385,
     "velocity": 0
   },
   "useDefaultConstraints": true

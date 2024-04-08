@@ -10,56 +10,13 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "SmartControl"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Source-W3-W2-W1-P1"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Source-W3-W2-W1-P2"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
@@ -71,23 +28,35 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Source-W3-W2-W1-P3"
+                        "pathName": "SS-C4"
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "named",
+                      "data": {
+                        "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Source-W3-W2-W1-P4"
+                              "pathName": "C4-SS"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
                             }
                           }
                         ]
@@ -96,7 +65,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     },
                     {
@@ -106,32 +75,37 @@
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "path",
+                      "data": {
+                        "pathName": "SS-C3"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SIMGamePiecePickup"
+                      }
+                    },
+                    {
+                      "type": "deadline",
                       "data": {
                         "commands": [
                           {
-                            "type": "sequential",
+                            "type": "path",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "Source-W3-W2-W1-P5"
-                                  }
-                                },
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "Source-W3-W2-W1-P6"
-                                  }
-                                }
-                              ]
+                              "pathName": "C3-SS"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
                               "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
                             }
                           }
                         ]
@@ -140,7 +114,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "PreRollShoot"
                       }
                     }
                   ]

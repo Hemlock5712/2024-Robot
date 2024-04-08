@@ -1,6 +1,6 @@
-package frc.robot.subsystems.lineBreak;
+package frc.robot.subsystems.linebreak;
 
-import frc.robot.subsystems.lineBreak.LineBreakHelper.LineBreakValues;
+import frc.robot.subsystems.linebreak.LineBreakHelper.LineBreakValues;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 

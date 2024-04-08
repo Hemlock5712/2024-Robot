@@ -6,7 +6,7 @@ package frc.robot.commands.sim;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.lineBreak.LineBreak;
+import frc.robot.subsystems.linebreak.LineBreak;
 
 public class SimulatePreload extends Command {
   LineBreak lineBreak;

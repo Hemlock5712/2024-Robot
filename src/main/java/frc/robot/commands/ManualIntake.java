@@ -8,29 +8,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.ArmPositions;
 import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.linebreak.LineBreak;
 import java.util.function.DoubleSupplier;
 
-public class ManualArm extends Command {
+public class ManualIntake extends Command {
   Arm arm;
   Flywheel flywheel;
   ArmPositions armPosition;
   DoubleSupplier flywheelSpeed;
+  LineBreak lineBreak;
 
   /** Creates a new moveArm. */
-  public ManualArm(
-      Arm arm, Flywheel flywheel, ArmPositions armPosition, DoubleSupplier flywheelSpeed) {
+  public ManualIntake(
+      Arm arm,
+      Flywheel flywheel,
+      ArmPositions armPosition,
+      DoubleSupplier flywheelSpeed,
+      LineBreak lineBreak) {
     this.arm = arm;
     this.flywheel = flywheel;
     this.armPosition = armPosition;
     this.flywheelSpeed = flywheelSpeed;
+    this.lineBreak = lineBreak;
     addRequirements(arm, flywheel);
-  }
-
-  /** Move arm without any flywheel speed */
-  public ManualArm(Arm arm, Flywheel flywheel, ArmPositions armPositions) {
-    this(arm, flywheel, armPositions, () -> 0);
   }
 
   @Override
@@ -51,12 +54,14 @@ public class ManualArm extends Command {
   @Override
   public void end(boolean interrupted) {
     flywheel.stop();
+    arm.setArmAndWristTarget(
+        ArmConstants.intake.arm().getRadians(), ArmConstants.intake.arm().getRadians());
     SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return lineBreak.isShooterLoaded();
   }
 }

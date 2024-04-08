@@ -1,4 +1,4 @@
-package frc.robot.subsystems.lineBreak;
+package frc.robot.subsystems.linebreak;
 
 public class LineBreakHelper {
   public record LineBreakValues(

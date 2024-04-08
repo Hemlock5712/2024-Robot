@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SmartController;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -59,6 +60,21 @@ public class Arm extends SubsystemBase {
     visualizerSetpoint.update(this.armTarget, this.wristTarget);
   }
 
+  public void setArmAndWristTargetReversed(double armTarget, double wristTarget) {
+    this.armTarget = armTarget;
+
+    double angleOffVertical = (Math.PI / 2) - wristTarget - armTarget;
+    this.wristTarget = wristTarget + (2 * angleOffVertical);
+
+    io.setWristTarget(this.wristTarget, inputs.wristAbsolutePositionRad);
+    Logger.recordOutput("Arm/WristTargetPositionRad", this.wristTarget);
+
+    io.setArmTarget(armTarget);
+    Logger.recordOutput("Arm/ArmTargetPositionRad", this.armTarget);
+
+    visualizerSetpoint.update(this.armTarget, this.wristTarget);
+  }
+
   public void stop() {
     io.stop();
   }
@@ -106,6 +122,7 @@ public class Arm extends SubsystemBase {
   public boolean isArmWristInTargetPose() {
     return (Math.abs(armTarget - getArmAngleRelative()) < (Units.degreesToRadians(3)))
         && (Math.abs(getRelativeWristTarget() - getWristAngleRelative())
-            < (Units.degreesToRadians(3)));
+            < (Units.degreesToRadians(
+                SmartController.getInstance().getTargetAimingParameters().wristError())));
   }
 }
