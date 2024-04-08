@@ -165,68 +165,6 @@
           "data": {
             "name": "PreRollShoot"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeDown"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "W1-C1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Magazine"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PodiumPreroll"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C1-SA"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Magazine"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PodiumPreroll"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PreRollShoot"
-          }
         }
       ]
     }

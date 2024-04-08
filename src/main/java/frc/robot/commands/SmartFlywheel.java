@@ -36,7 +36,7 @@ public class SmartFlywheel extends Command {
       return;
     }
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
-      flywheel.setSpeedRotPerSec(4);
+      flywheel.setSpeedRotPerSec(3.6);
       return;
     }
     if (SmartController.getInstance().isSmartControlEnabled()) {
