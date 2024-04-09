@@ -54,23 +54,16 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
       mt = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
     }
 
-    if (Math.abs(gyroRateDegrees.get()) > 720
-        || mt.tagCount
-            == 0) // if our angular velocity is greater than 720 degrees per second, ignore vision
-    // updates
-    {
+    // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+    if (Math.abs(gyroRateDegrees.get()) > 720 || mt.tagCount == 0) {
       inputs.poseEstimates = poseEstimates;
       return;
     }
-    poseEstimates.add(
-        new PoseEstimate(
-            mt.pose,
-            mt.avgTagDist,
-            mt.avgTagDist,
-            mt.tagCount)); // Creates a new PoseEstimate object and adds it to the poseEstimates
-    // ArrayList
 
-    inputs.poseEstimates =
-        poseEstimates; // Assigns the poseEstimates ArrayList to the inputs.poseEstimates variable
+    // Creates a new PoseEstimate object and adds it to the poseEstimates ArrayList
+    poseEstimates.add(new PoseEstimate(mt.pose, mt.timestampSeconds, mt.avgTagDist, mt.tagCount));
+
+    // Assigns the poseEstimates ArrayList to the inputs.poseEstimates variable
+    inputs.poseEstimates = poseEstimates;
   }
 }
