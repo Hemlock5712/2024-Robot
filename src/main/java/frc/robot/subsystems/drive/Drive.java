@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,6 +58,7 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
+  private double yawVelocityRadPerSec = 0;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -164,6 +166,7 @@ public class Drive extends SubsystemBase {
       if (gyroInputs.connected) {
         // Use the real gyro angle
         rawGyroRotation = gyroInputs.odometryYawPositions[i];
+        yawVelocityRadPerSec = gyroInputs.yawVelocityRadPerSec;
       } else {
         // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
@@ -252,6 +255,11 @@ public class Drive extends SubsystemBase {
   /** Returns the current poseEstimator rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
+  }
+
+  @AutoLogOutput(key = "Drive/GyroRate")
+  public double gyroRateDegrees() {
+    return Units.radiansToDegrees(yawVelocityRadPerSec);
   }
 
   /**

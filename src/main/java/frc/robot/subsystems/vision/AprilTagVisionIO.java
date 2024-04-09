@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.PoseEstimate;
@@ -27,7 +27,7 @@ public interface AprilTagVisionIO {
         int posePosition = poseEstimates.indexOf(poseEstimate);
         table.put(
             "estimatedPose/" + Integer.toString(posePosition),
-            VisionHelpers.getPose3dToArray(poseEstimate.pose()));
+            VisionHelpers.getPose2dToArray(poseEstimate.pose()));
         table.put(
             "captureTimestamp/" + Double.toString(posePosition), poseEstimate.timestampSeconds());
         table.put("tagIDs/" + Double.toString(posePosition), poseEstimate.tagCount());
@@ -42,12 +42,12 @@ public interface AprilTagVisionIO {
     public void fromLog(LogTable table) {
       int estimatedPoseCount = table.get("poseEstimates", 0);
       for (int i = 0; i < estimatedPoseCount; i++) {
-        Pose3d poseEstimation =
-            LimelightHelpers.toPose3D(
+        Pose2d poseEstimation =
+            LimelightHelpers.toPose2D(
                 table.get("estimatedPose/" + Integer.toString(i), new double[] {}));
         double timestamp = table.get("captureTimestamp/" + Double.toString(i), 0.0);
         double averageTagDistance = table.get("averageTagDistance/" + Double.toString(i), 0.0);
-        double tagCount = table.get("tagCount/" + Double.toString(i), 0.0);
+        int tagCount = table.get("tagCount/" + Integer.toString(i), 0);
         poseEstimates.add(
             new PoseEstimate(poseEstimation, timestamp, averageTagDistance, tagCount));
       }

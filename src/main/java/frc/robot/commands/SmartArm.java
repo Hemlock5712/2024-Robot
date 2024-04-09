@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SmartController;
 import frc.robot.SmartController.DriveModeType;
@@ -47,19 +46,9 @@ public class SmartArm extends Command {
         return;
       }
       if (driveModeType == DriveModeType.SPEAKER || driveModeType == DriveModeType.FEED) {
-        if (SmartController.getInstance().isFlipFaster()) {
-          arm.setArmAndWristTargetReversed(
-              ArmConstants.shoot.arm().getRadians() + Units.degreesToRadians(5),
-              SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians()
-                  - Units.degreesToRadians(5));
-        } else {
-          arm.setArmAndWristTarget(
-              ArmConstants.shoot.arm().getRadians(),
-              SmartController.getInstance()
-                  .getTargetAimingParameters()
-                  .shooterAngle()
-                  .getRadians());
-        }
+        arm.setArmAndWristTarget(
+            ArmConstants.shoot.arm().getRadians(),
+            SmartController.getInstance().getTargetAimingParameters().shooterAngle().getRadians());
         return;
       }
     } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.SPEAKER

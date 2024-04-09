@@ -123,10 +123,14 @@ public class RobotContainer {
         // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
         aprilTagVision =
             new AprilTagVision(
-                new AprilTagVisionIOLimelight("limelight-fl"),
-                new AprilTagVisionIOLimelight("limelight-fr"),
-                new AprilTagVisionIOLimelight("limelight-bl"),
-                new AprilTagVisionIOLimelight("limelight-br"));
+                new AprilTagVisionIOLimelight(
+                    "limelight-fl", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-fr", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-br", drive::getRotation, drive::gyroRateDegrees));
         ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIOTalonFX());
         break;
