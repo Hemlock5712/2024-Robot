@@ -348,7 +348,24 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             Commands.parallel(
-                Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
+                Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)),
+                Commands.run(intake::outtake, intake),
+                Commands.run(magazine::backward, magazine)))
+        .onFalse(
+            Commands.runOnce(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+
+    controller
+        .leftBumper()
+        .whileTrue(
+            Commands.parallel(
+                Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)),
+                Commands.run(intake::intake, intake),
+                Commands.run(magazine::forward, magazine),
+                Commands.run(() -> flywheel.setSpeedRotPerSec(6), flywheel)))
+        .onFalse(
+            Commands.runOnce(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller
         .y()

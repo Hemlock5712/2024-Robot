@@ -21,11 +21,11 @@ public final class DriveConstants {
                 Units.inchesToMeters(22.75),
                 Units.inchesToMeters(22.75),
                 4.608,
-                // 4.418
-                6.627,
+                4.418,
+                // 5.522,
                 11.277,
-                // 22.290
-                33.436);
+                22.290);
+          // 27.863);
       };
   public static final double wheelRadius = Units.inchesToMeters(2.0);
   public static final Translation2d[] moduleTranslations =

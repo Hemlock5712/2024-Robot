@@ -57,7 +57,7 @@
       "name": "New Event Marker",
       "waypointRelativePos": 1.15,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {

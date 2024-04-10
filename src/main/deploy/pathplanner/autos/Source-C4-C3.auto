@@ -2,14 +2,7 @@
   "version": 1.0,
   "startingPose": null,
   "command": {
-    "type": "sequential",
-    "data": {
-      "commands": [
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
+  
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -17,12 +10,6 @@
                       "type": "named",
                       "data": {
                         "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -66,12 +53,6 @@
                       "type": "named",
                       "data": {
                         "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
                       }
                     },
                     {
@@ -119,13 +100,7 @@
                     }
                   ]
                 }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
+          },
   "folder": null,
   "choreoAuto": false
 }

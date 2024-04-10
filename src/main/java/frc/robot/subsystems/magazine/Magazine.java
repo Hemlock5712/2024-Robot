@@ -38,7 +38,7 @@ public class Magazine extends SubsystemBase {
   }
 
   public void backward() {
-    setSpeedRadPerSec(-5);
+    setSpeedRadPerSec(-7);
     isShooting = false;
   }
 

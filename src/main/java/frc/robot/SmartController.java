@@ -24,7 +24,7 @@ public class SmartController {
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
-  private double prerollDistance = 7.002;
+  private double prerollDistance = 8.002;
 
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
@@ -162,7 +162,7 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
     Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
-    setPrerollDistance(7.002);
+    setPrerollDistance(8.002);
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);

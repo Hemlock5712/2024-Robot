@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -93,6 +94,9 @@ public class SmartShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (DriverStation.isAutonomous()) {
+      return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.1;
+    }
     return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
   }
 

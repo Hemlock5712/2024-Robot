@@ -42,11 +42,12 @@ public class SmartMagazine extends Command {
     if (lineBreak.isShooterLong()) {
       magazine.slowBackward();
     } else {
-      if (lineBreak.isMagazine2Sensor()) {
-        magazine.slowForward();
+      if (intake.getIntakeRequest()) {
+        magazine.forward();
+
       } else {
-        if (intake.getIntakeRequest()) {
-          magazine.forward();
+        if (lineBreak.isMagazine2Sensor()) {
+          magazine.slowForward();
         }
       }
     }

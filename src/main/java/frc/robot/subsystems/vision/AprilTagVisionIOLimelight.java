@@ -9,7 +9,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.VisionHelpers.PoseEstimate;
 import java.util.ArrayList;
@@ -45,14 +44,15 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
     ArrayList<PoseEstimate> poseEstimates = new ArrayList<>();
-    LimelightHelpers.PoseEstimate mt;
-    if (DriverStation.isDisabled()) {
-      mt = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-    } else {
-      LimelightHelpers.SetRobotOrientation(
-          limelightName, driveHeadingSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
-      mt = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-    }
+    LimelightHelpers.PoseEstimate mt = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    // LimelightHelpers.PoseEstimate mt;
+    // if (DriverStation.isDisabled()) {
+    //   mt = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    // } else {
+    //   LimelightHelpers.SetRobotOrientation(
+    //       limelightName, driveHeadingSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
+    //   mt = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+    // }
 
     // if our angular velocity is greater than 720 degrees per second, ignore vision updates
     if (Math.abs(gyroRateDegrees.get()) > 720 || mt.tagCount == 0) {

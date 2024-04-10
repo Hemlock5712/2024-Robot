@@ -66,13 +66,8 @@ public class SmartArm extends Command {
         arm.setArmAndWristTarget(
             ArmConstants.trap.arm().getRadians(), ArmConstants.trap.wrist().getRadians());
       } else {
-        if (climber.getPosition() < 5) {
-          arm.setArmAndWristTarget(
-              ArmConstants.midClimb.arm().getRadians(), ArmConstants.midClimb.wrist().getRadians());
-        } else {
-          arm.setArmAndWristTarget(
-              ArmConstants.preclimb.arm().getRadians(), ArmConstants.preclimb.wrist().getRadians());
-        }
+        arm.setArmAndWristTarget(
+            ArmConstants.preclimb.arm().getRadians(), ArmConstants.preclimb.wrist().getRadians());
       }
       return;
     }
