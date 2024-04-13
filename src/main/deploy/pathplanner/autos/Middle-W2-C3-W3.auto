@@ -18,25 +18,31 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp-W1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PodiumPreroll"
+                  "pathName": "Mid-W2"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Magazine"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PodiumPreroll"
                 }
               }
             ]
@@ -64,7 +70,57 @@
         {
           "type": "named",
           "data": {
+            "name": "IntakeUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "PreRollShoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "W2-C3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SIMGamePiecePickup"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3-SM"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
+                }
+              }
+            ]
           }
         },
         {
@@ -74,9 +130,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "W1-C1"
+            "name": "ManualUpCloseShot"
           }
         },
         {
@@ -86,7 +142,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C1-SA"
+                  "pathName": "Mid-W3"
                 }
               },
               {
@@ -98,7 +154,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "PodiumPreroll"
+                  "name": "ManualPreroll"
                 }
               }
             ]
@@ -107,50 +163,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PreRollShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SA-C2"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C2-SA"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Magazine"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PodiumPreroll"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PreRollShoot"
+            "name": "ManualUpCloseShot"
           }
         }
       ]

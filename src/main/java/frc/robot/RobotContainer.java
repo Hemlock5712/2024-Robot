@@ -128,10 +128,11 @@ public class RobotContainer {
                     "limelight-fl", drive::getRotation, drive::gyroRateDegrees),
                 new AprilTagVisionIOLimelight(
                     "limelight-fr", drive::getRotation, drive::gyroRateDegrees),
-                // new AprilTagVisionIOLimelight(
-                //     "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
                 new AprilTagVisionIOLimelight(
                     "limelight-br", drive::getRotation, drive::gyroRateDegrees));
+
         ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIOTalonFX());
         break;
@@ -305,12 +306,21 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PodiumPreroll",
         new AutoPreRoll(
-            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(59), 39));
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(61), 39));
     NamedCommands.registerCommand(
         "ClosePreroll",
         new AutoPreRoll(
             arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(61), 40));
-    // Run SmartController updates in autonomous
+    NamedCommands.registerCommand(
+        "ManualPreroll",
+        new AutoPreRoll(
+            arm,
+            flywheel,
+            lineBreak,
+            ArmConstants.manualShot.arm(),
+            ArmConstants.manualShot.wrist(),
+            20));
+    // Run SmartController updates in autonomousma
     new Trigger(DriverStation::isAutonomousEnabled)
         .and(
             new Trigger(

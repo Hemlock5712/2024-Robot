@@ -11,6 +11,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.AprilTagVisionIO.AprilTagVisionIOInputs;
 import frc.robot.util.FieldConstants;
@@ -102,11 +103,11 @@ public class AprilTagVision extends SubsystemBase {
         double timestamp = poseEstimates.timestampSeconds();
         Pose2d robotPose = poseEstimates.pose();
         double xyStdDev = calculateXYStdDev(poseEstimates, poseEstimates.tagCount());
-        // double thetaStdDev = 9999999;
-        // if (DriverStation.isDisabled()) {
-        //   thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
-        // }
-        double thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
+        double thetaStdDev = 9999999;
+        if (DriverStation.isDisabled()) {
+          thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
+        }
+        // double thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
         visionUpdates.add(
             new TimestampedVisionUpdate(
                 timestamp, robotPose, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
@@ -148,7 +149,7 @@ public class AprilTagVision extends SubsystemBase {
    * @return The standard deviation of the x and y coordinates
    */
   private double calculateXYStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
-    return xyStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.25) / tagPosesSize;
+    return xyStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
   }
 
   /**
@@ -160,7 +161,7 @@ public class AprilTagVision extends SubsystemBase {
    */
   private double calculateThetaStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
     return thetaStdDevCoefficient
-        * Math.pow(poseEstimates.averageTagDistance(), 2.25)
+        * Math.pow(poseEstimates.averageTagDistance(), 2.0)
         / tagPosesSize;
   }
 
