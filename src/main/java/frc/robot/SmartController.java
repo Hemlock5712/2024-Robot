@@ -275,6 +275,7 @@ public class SmartController {
     SPEAKER,
     SAFE,
     CLIMBER,
+    QUICK_CLIMB,
     FEED
   }
 }

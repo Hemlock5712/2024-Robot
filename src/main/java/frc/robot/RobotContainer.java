@@ -449,20 +449,16 @@ public class RobotContainer {
     controller2
         .pov(0)
         .toggleOnTrue(
-            Commands.runEnd(
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
-
-    // controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
-
-    // controller2.x().whileTrue(new CalibrateClimber(climber));
+            Commands.either(
+                Commands.runEnd(
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)),
+                Commands.runEnd(
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.QUICK_CLIMB),
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)),
+                lineBreak::hasGamePiece));
 
     controller.x().whileTrue(new ManualShoot(arm, flywheel, magazine, lineBreak, 1.5));
-
-    // controller2
-    //     .start()
-    //     .and(controller2.back())
-    //     .onTrue(Commands.runOnce(SmartController.getInstance()::toggleEmergencyIntakeMode));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));

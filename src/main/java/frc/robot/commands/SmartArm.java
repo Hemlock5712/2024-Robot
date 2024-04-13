@@ -71,6 +71,17 @@ public class SmartArm extends Command {
       }
       return;
     }
+    if (driveModeType == DriveModeType.QUICK_CLIMB) {
+      if (climber.getPosition() < 4.0 && !climber.isRequestingClimb()) {
+        arm.setArmAndWristTarget(
+            ArmConstants.quickClimb.arm().getRadians(),
+            ArmConstants.quickClimb.wrist().getRadians());
+      } else {
+        arm.setArmAndWristTarget(
+            ArmConstants.intake.arm().getRadians(), ArmConstants.intake.wrist().getRadians());
+      }
+      return;
+    }
     if (lineBreak.timeSinceLastGamePiece() > 0.5
         || ((lineBreak.isShooterLoaded() || lineBreak.isShooterLong()) && !isSmartControlled)) {
       arm.setArmAndWristTarget(
