@@ -325,6 +325,11 @@ public class RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    autoChooser.addOption(
+        "Drive FF Characterization",
+        new FeedForwardCharacterization(
+            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
+
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
     SmartController.getInstance().disableSmartControl();
