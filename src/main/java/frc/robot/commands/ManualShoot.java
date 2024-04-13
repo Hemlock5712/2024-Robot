@@ -45,7 +45,8 @@ public class ManualShoot extends Command {
   public void initialize() {
     // SmartController.getInstance().enableSmartControl();
     // if (Constants.getMode() == Constants.Mode.SIM) timer.restart();
-    flywheel.setSpeedRotPerSec(30);
+    // flywheel.setSpeedRotPerSec(30);
+    flywheel.setSpeedRotPerSec(20);
     arm.setArmAndWristTarget(
         ArmConstants.manualShot.arm().getRadians(), ArmConstants.manualShot.wrist().getRadians());
     flywheelTimer.restart();
@@ -72,6 +73,6 @@ public class ManualShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.5;
+    return lineBreak.hasNoGamePiece() && lineBreak.timeSinceLastGamePiece() > 0.05;
   }
 }

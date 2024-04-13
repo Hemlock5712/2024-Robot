@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SmartController.DriveModeType;
@@ -127,8 +128,8 @@ public class RobotContainer {
                     "limelight-fl", drive::getRotation, drive::gyroRateDegrees),
                 new AprilTagVisionIOLimelight(
                     "limelight-fr", drive::getRotation, drive::gyroRateDegrees),
-                new AprilTagVisionIOLimelight(
-                    "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
+                // new AprilTagVisionIOLimelight(
+                //     "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
                 new AprilTagVisionIOLimelight(
                     "limelight-br", drive::getRotation, drive::gyroRateDegrees));
         ledController = new LedController(aprilTagVision);
@@ -246,10 +247,42 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PreRollShoot",
         Commands.deadline(
-            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
-            new SmartFlywheel(flywheel, lineBreak),
-            new SmartArm(arm, lineBreak, climber),
-            DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
+                new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
+                new SmartFlywheel(flywheel, lineBreak),
+                new SmartArm(arm, lineBreak, climber),
+                DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0))
+            .andThen(
+                Commands.runOnce(
+                    () -> {
+                      arm.setArmAndWristTarget(
+                          ArmConstants.intake.arm().getRadians(),
+                          ArmConstants.intake.wrist().getRadians());
+                    })));
+
+    NamedCommands.registerCommand(
+        "PreRollShootAndMove",
+        Commands.deadline(
+                new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.5),
+                new SmartFlywheel(flywheel, lineBreak),
+                new SmartArm(arm, lineBreak, climber))
+            .andThen(
+                Commands.runOnce(
+                    () -> {
+                      arm.setArmAndWristTarget(
+                          ArmConstants.intake.arm().getRadians(),
+                          ArmConstants.intake.wrist().getRadians());
+                    })));
+
+    NamedCommands.registerCommand(
+        "ManualUpCloseShot",
+        new SequentialCommandGroup(
+            new ManualShoot(arm, flywheel, magazine, lineBreak, 0.5),
+            Commands.runOnce(
+                () -> {
+                  arm.setArmAndWristTarget(
+                      ArmConstants.intake.arm().getRadians(),
+                      ArmConstants.intake.wrist().getRadians());
+                })));
 
     NamedCommands.registerCommand(
         "PreRollShootFast",
@@ -375,8 +408,9 @@ public class RobotContainer {
     controller2
         .a()
         .whileTrue(
-            Commands.startEnd(
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.AMP),
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)))
+        .onFalse(
+            Commands.runOnce(
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller2

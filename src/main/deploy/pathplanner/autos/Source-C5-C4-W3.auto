@@ -16,12 +16,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "ManualUpCloseShot"
                       }
                     },
@@ -32,13 +26,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Amp-W1"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
+                              "pathName": "Source-C5"
                             }
                           },
                           {
@@ -51,40 +39,9 @@
                       }
                     },
                     {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
-                        "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W1-C1"
+                        "name": "SIMGamePiecePickup"
                       }
                     },
                     {
@@ -94,7 +51,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C1-SA"
+                              "pathName": "C5-SS"
                             }
                           },
                           {
@@ -125,9 +82,28 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "deadline",
                       "data": {
-                        "pathName": "SA-C2"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "SS-C4"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SIMGamePiecePickup"
                       }
                     },
                     {
@@ -137,7 +113,44 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "C2-SA"
+                              "pathName": "C4-SS"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PodiumPreroll"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeDown"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PreRollShoot"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "SS-W3"
                             }
                           },
                           {

@@ -16,19 +16,26 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PreRollShoot"
+                        "name": "ManualUpCloseShot"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Source-C5"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Source-C5"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -75,9 +82,22 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "deadline",
                       "data": {
-                        "pathName": "SS-C4"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "SS-C4"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Magazine"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

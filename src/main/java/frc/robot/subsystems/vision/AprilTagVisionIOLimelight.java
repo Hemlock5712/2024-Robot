@@ -44,11 +44,10 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
     ArrayList<PoseEstimate> poseEstimates = new ArrayList<>();
+    // LimelightHelpers.PoseEstimate mt =
+    // LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
     LimelightHelpers.PoseEstimate mt = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-    // LimelightHelpers.PoseEstimate mt;
-    // if (DriverStation.isDisabled()) {
-    //   mt = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-    // } else {
+    // if (DriverStation.isEnabled()) {
     //   LimelightHelpers.SetRobotOrientation(
     //       limelightName, driveHeadingSupplier.get().getDegrees(), 0, 0, 0, 0, 0);
     //   mt = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);

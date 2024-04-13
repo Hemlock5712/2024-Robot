@@ -49,6 +49,12 @@
               "data": {
                 "name": "IntakeUp"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableSmartControl"
+              }
             }
           ]
         }

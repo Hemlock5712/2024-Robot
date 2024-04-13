@@ -16,13 +16,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
+                        "name": "ManualUpCloseShot"
                       }
                     },
                     {
