@@ -12,22 +12,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Amp-W1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Magazine"
-                }
-              }
-            ]
+            "pathName": "SS-C2"
           }
         },
         {
@@ -43,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "SA-C2"
+                  "pathName": "C2-SS"
                 }
               },
               {
@@ -68,28 +55,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "IntakeDown"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C2-SA"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Magazine"
-                }
-              }
-            ]
+            "pathName": "SS-C4"
           }
         },
         {
@@ -105,7 +73,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "SA-W2"
+                  "pathName": "C4-SS"
                 }
               },
               {

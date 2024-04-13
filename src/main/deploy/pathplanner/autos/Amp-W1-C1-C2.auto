@@ -5,14 +5,7 @@
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
+       
                     {
                       "type": "named",
                       "data": {
@@ -162,12 +155,8 @@
                       }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        }
-      ]
+                
+              
     }
   },
   "folder": null,
