@@ -55,7 +55,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     }
 
     // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-    if (Math.abs(gyroRateDegrees.get()) > 360 || mt.tagCount == 0) {
+    if (Math.abs(gyroRateDegrees.get()) > 80 || mt.tagCount == 0) {
       inputs.poseEstimates = poseEstimates;
       return;
     }

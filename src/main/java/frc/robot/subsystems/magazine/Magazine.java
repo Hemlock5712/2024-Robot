@@ -68,7 +68,7 @@ public class Magazine extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Magazine/TargetRadPerSec")
-  public double getTargetVoltage() {
+  public double getTargetRadPerSec() {
     return targetVoltage;
   }
 
