@@ -172,14 +172,14 @@ public class SmartController {
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
     double effectiveDistanceToSpeaker = toTestGoal.getNorm();
     double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
-    // for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
-    //   shotTime = newShotTime;
-    //   speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
-    //   movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
-    //   toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
-    //   effectiveDistanceToSpeaker = toTestGoal.getNorm()`;
-    //   newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
-    // }
+    for (int i = 0; i < 3 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
+      shotTime = newShotTime;
+      speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
+      movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
+      toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
+      effectiveDistanceToSpeaker = toTestGoal.getNorm();
+      newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
+    }
     Rotation2d setpointAngle =
         movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
     double angleDifference = setpointAngle.minus(fieldRelativePose.getRotation()).getRadians();
