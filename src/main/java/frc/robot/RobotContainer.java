@@ -121,7 +121,7 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
         intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight(

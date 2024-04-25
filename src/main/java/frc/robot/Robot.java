@@ -15,6 +15,7 @@ package frc.robot;
 
 // import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.SmartController.DriveModeType;
@@ -67,6 +68,7 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
+        RobotController.setBrownoutVoltage(6.5);
         // SignalLogger.start();
         // StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/ntlog");
         // NetworkTableInstance.getDefault()

@@ -17,7 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -35,13 +35,16 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
   public IntakeWheelsIOTalonFX() {
     config.CurrentLimits.SupplyCurrentLimit = 40.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = 80;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.Slot0.kP = 0.1;
-    config.Slot0.kI = 0.0;
+    config.Slot0.kP = 13;
+    config.Slot0.kI = 5;
     config.Slot0.kD = 0.0;
-    config.Slot0.kV = 0.1719;
+    config.Slot0.kV = 0.21;
+    config.Slot0.kS = 24;
     // config.Slot0.kP = 0.1;
     // config.Slot0.kI = 0.0;
     // config.Slot0.kD = 0.0;
@@ -68,7 +71,7 @@ public class IntakeWheelsIOTalonFX implements IntakeWheelsIO {
 
   @Override
   public void setSpeedRotPerSec(double velocityRotPerSec) {
-    leader.setControl(new VelocityVoltage(velocityRotPerSec).withEnableFOC(true));
+    leader.setControl(new VelocityTorqueCurrentFOC(velocityRotPerSec));
   }
 
   @Override
