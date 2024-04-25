@@ -13,6 +13,12 @@ import org.littletonrobotics.junction.Logger;
 /**
  * The SmartController class represents a controller for the robot's system. It provides methods to
  * control the robot.
+ * 
+ * Most of the methods in this class handle state machine logic, which is a way to represent the
+ * state of the robot and the transitions between states.
+ * 
+ * The SmartController class is a singleton, which means that there is only one instance of the
+ * class that is shared across the entire robot code.
  */
 public class SmartController {
   private static SmartController instance;
@@ -21,18 +27,21 @@ public class SmartController {
   private AimingParameters targetAimingParameters =
       new AimingParameters(Rotation2d.fromDegrees(90), 0.0, 40.5, ArmConstants.shoot.wrist(), 2, 0);
 
+  // Whether or not the robot is in smart control mode. Smart control mode is a mode where the robot
+  // automatically adjusts its heading to face a target.
   private boolean smartControl = false;
   private boolean emergencyIntakeMode = false;
 
-  public static double prerollDistance = 7.002;
+  // Distance to the target when we should start running flywheel if we have a game piece
+  private double prerollDistance = 8.002;
 
-  private boolean isFasterToFlipWrist = false;
-
+  // Interpolation maps for shooting into the speaker
   private final InterpolatingDoubleTreeMap shooterSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flightTimeMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap wristErrorMap = new InterpolatingDoubleTreeMap();
 
+  // Interpolation maps for feeding shots (passing from mid field to amp area)
   private final InterpolatingDoubleTreeMap feederSpeedMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap feederAngleMap = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap feederFlightTimeMap = new InterpolatingDoubleTreeMap();
@@ -79,6 +88,11 @@ public class SmartController {
     feederWristErrorMap.put(9.071, 2.0);
   }
 
+  /**
+   * Gets the instance of the SmartController.
+   * 
+   * @return The instance of the SmartController.
+   */
   public static SmartController getInstance() {
     if (instance == null) {
       instance = new SmartController();
@@ -117,14 +131,26 @@ public class SmartController {
     return this.smartControl;
   }
 
+  /**
+   * Sets the emergency intake mode. This is used if the normal intake is not working properly.
+   * Emergency intake mode allows us to pick up directly from the source using the shooter.
+   *
+   * @param emergencyMode The emergency mode to set.
+   */
   public void setEmergencyIntakeMode(boolean emergencyMode) {
     this.emergencyIntakeMode = emergencyMode;
   }
 
+  /**
+   * Gets the emergency intake mode.
+   *
+   * @return True if the emergency intake mode is enabled, false otherwise.
+   */
   public boolean getEmergencyIntakeMode() {
     return this.emergencyIntakeMode;
   }
 
+  /** Toggles the emergency intake mode. */
   public void toggleEmergencyIntakeMode() {
     this.emergencyIntakeMode = !emergencyIntakeMode;
   }
@@ -157,27 +183,19 @@ public class SmartController {
     this.smartControl = false;
   }
 
-  private boolean calculateIsFlipFaster(
-      Pose2d fieldRelativePose, Translation2d targetPose, boolean isSpeakerShot) {
-    if (isSpeakerShot && fieldRelativePose.getTranslation().getDistance(targetPose) > 1.8) {
-      return false;
-    }
-    if (Math.abs(
-            targetPose
-                .minus(fieldRelativePose.getTranslation())
-                .getAngle()
-                .minus(fieldRelativePose.getRotation())
-                .getDegrees())
-        > 90) {
-      return true;
-    }
-    return false;
-  }
-
-  public boolean isFlipFaster() {
-    return isFasterToFlipWrist;
-  }
-
+  /**
+   * Calculates the shooter parameters for a given field relative pose, velocity, and acceleration.
+   * 
+   * This handles calculating target robot angle, radial velocity, shooter speed, shooter angle, and
+   * wrist error.
+   * 
+   * It also is done in a way that if the robot is moving, it will adjust the location of the target
+   * to account for the robot's movement so the shot will still hit.
+   * 
+   * @param fieldRelativePose The pose of the robot on the field
+   * @param fieldRelativeVelocity The velocity of the robot on the field
+   * @param fieldRelativeAcceleration The acceleration of the robot on the field
+   */
   public void calculateSpeaker(
       Pose2d fieldRelativePose,
       Translation2d fieldRelativeVelocity,
@@ -185,24 +203,27 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/fieldRelativePose", fieldRelativePose);
     Logger.recordOutput("ShotCalculator/fieldRelativeVelocity", fieldRelativeVelocity);
     Logger.recordOutput("ShotCalculator/fieldRelativeAcceleration", fieldRelativeAcceleration);
-    setPrerollDistance(7.002);
+
+    setPrerollDistance(8.002);
+
     Translation2d speakerPose =
         AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.getTranslation());
-    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, speakerPose, true);
-    Logger.recordOutput("ShotCalculator/isFasterToFlipWrist", isFasterToFlipWrist);
+
+    // Calculate the distance to the speaker and the time it will take to get there
     double distanceToSpeaker = fieldRelativePose.getTranslation().getDistance(speakerPose);
-    if (isFasterToFlipWrist) {
-      // Add distance to where flywheel actually is to account for it not being centered in the
-      // robot
-      distanceToSpeaker += Units.inchesToMeters(13);
-    }
     double shotTime = flightTimeMap.get(distanceToSpeaker);
+
+    // Calculate the new location of the speaker based on the robot's movement
     Translation2d speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
     Translation2d movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
+
+    // Calculate the new time it will take to get to the new location of the speaker
     double effectiveDistanceToSpeaker = toTestGoal.getNorm();
     double newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
-    for (int i = 0; i < 5 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
+
+    // Iterate through the calculation a few times to get a more accurate shot time
+    for (int i = 0; i < 3 && Math.abs(newShotTime - shotTime) > 0.01; i++) {
       shotTime = newShotTime;
       speedAccComp = fieldRelativeVelocity.plus(fieldRelativeAcceleration.times(0.025));
       movingGoalLocation = speakerPose.minus(speedAccComp.times(shotTime));
@@ -210,6 +231,8 @@ public class SmartController {
       effectiveDistanceToSpeaker = toTestGoal.getNorm();
       newShotTime = flightTimeMap.get(effectiveDistanceToSpeaker);
     }
+
+    // Set the target angle of the robot to point at the target
     Rotation2d setpointAngle =
         movingGoalLocation.minus(fieldRelativePose.getTranslation()).getAngle();
     double angleDifference = setpointAngle.minus(fieldRelativePose.getRotation()).getRadians();
@@ -225,48 +248,44 @@ public class SmartController {
 
     // double radialVelocity = tangentialVelocity / newDistanceToSpeaker;
     double radialVelocity = 0.0;
+    // Log the outputs
     Logger.recordOutput("ShotCalculator/effectiveDistanceToSpeaker", effectiveDistanceToSpeaker);
     Logger.recordOutput(
         "ShotCalculator/effectiveAimingPose", new Pose2d(movingGoalLocation, setpointAngle));
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
-    if (!isFasterToFlipWrist) {
-      setTargetAimingParameters(
-          new AimingParameters(
-              setpointAngle,
-              radialVelocity,
-              shooterSpeedMap.get(effectiveDistanceToSpeaker),
-              new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-              wristErrorMap.get(effectiveDistanceToSpeaker),
-              effectiveDistanceToSpeaker));
-    } else {
-      setTargetAimingParameters(
-          new AimingParameters(
-              setpointAngle.rotateBy(Rotation2d.fromDegrees(180)),
-              radialVelocity,
-              shooterSpeedMap.get(effectiveDistanceToSpeaker),
-              new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
-              wristErrorMap.get(effectiveDistanceToSpeaker),
-              effectiveDistanceToSpeaker));
-    }
+
+    // Set the target aiming parameters
+    setTargetAimingParameters(
+        new AimingParameters(
+            setpointAngle,
+            radialVelocity,
+            shooterSpeedMap.get(effectiveDistanceToSpeaker),
+            new Rotation2d(shooterAngleMap.get(effectiveDistanceToSpeaker)),
+            wristErrorMap.get(effectiveDistanceToSpeaker),
+            effectiveDistanceToSpeaker));
   }
 
+  /**
+   * Calculates the shooter parameters for the amp shot.
+   * 
+   * This will always be static and will not adjust for the robot's movement.
+   */
   public void calculateAmp() {
     setTargetAimingParameters(
         new AimingParameters(
             Rotation2d.fromDegrees(90), 0.0, 20, ArmConstants.frontAmp.wrist(), 1, 0));
   }
 
+  /**
+   * Calculates the shooter parameters for the feeding shot.
+   * 
+   * This is identical to the speaker shot, but the target is the feed location next to the amp.
+   */
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     setPrerollDistance(FieldConstants.fieldLength);
     Translation2d feedLocation = AllianceFlipUtil.apply(FieldConstants.cornerFeedLocation);
-    isFasterToFlipWrist = calculateIsFlipFaster(fieldRelativePose, feedLocation, false);
     double distanceToFeedLocation = fieldRelativePose.getTranslation().getDistance(feedLocation);
-    if (isFasterToFlipWrist) {
-      // Add distance to where flywheel actually is to account for it not being centered in the
-      // robot
-      distanceToFeedLocation += Units.inchesToMeters(13);
-    }
     double shotTime = feederFlightTimeMap.get(distanceToFeedLocation);
     Translation2d movingGoalLocation = feedLocation.minus(fieldRelativeVelocity.times(shotTime));
     Translation2d toTestGoal = movingGoalLocation.minus(fieldRelativePose.getTranslation());
@@ -282,39 +301,53 @@ public class SmartController {
     Logger.recordOutput("ShotCalculator/angleDifference", angleDifference);
     Logger.recordOutput("ShotCalculator/radialVelocity", radialVelocity);
 
-    if (!isFasterToFlipWrist) {
-      setTargetAimingParameters(
-          new AimingParameters(
-              setpointAngle,
-              radialVelocity,
-              feederSpeedMap.get(effectiveDistanceToFeedLocation),
-              new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-              feederWristErrorMap.get(effectiveDistanceToFeedLocation),
-              effectiveDistanceToFeedLocation));
-    } else {
-      setTargetAimingParameters(
-          new AimingParameters(
-              setpointAngle.rotateBy(Rotation2d.fromDegrees(180)),
-              radialVelocity,
-              feederSpeedMap.get(effectiveDistanceToFeedLocation),
-              new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
-              feederWristErrorMap.get(effectiveDistanceToFeedLocation),
-              effectiveDistanceToFeedLocation));
-    }
+    setTargetAimingParameters(
+        new AimingParameters(
+            setpointAngle,
+            radialVelocity,
+            feederSpeedMap.get(effectiveDistanceToFeedLocation),
+            new Rotation2d(feederAngleMap.get(effectiveDistanceToFeedLocation)),
+            feederWristErrorMap.get(effectiveDistanceToFeedLocation),
+            effectiveDistanceToFeedLocation));
   }
 
+  /**
+   * Sets the target aiming parameters.
+   * 
+   * @param targetAimingParameters The target aiming parameters to set.
+   */
   private void setTargetAimingParameters(AimingParameters targetAimingParameters) {
     this.targetAimingParameters = targetAimingParameters;
   }
 
+
+  /**
+   * Gets the target aiming parameters.
+   * 
+   * The target aiming parameters are the information that the robot should use to hit the target.
+   * 
+   * @return The target aiming parameters.
+   */
   public AimingParameters getTargetAimingParameters() {
     return targetAimingParameters;
   }
 
+  /**
+   * Gets the distance to the target when we should start running the flywheel if we have a game
+   * piece.
+   * 
+   * @return The preroll distance.
+   */
   public double getPrerollDistance() {
     return prerollDistance;
   }
 
+  /**
+   * Sets the distance to the target when we should start running the flywheel if we have a game
+   * piece.
+   * 
+   * @param prerollDistance The preroll distance to set.
+   */
   private void setPrerollDistance(double prerollDistance) {
     this.prerollDistance = prerollDistance;
   }
@@ -333,6 +366,7 @@ public class SmartController {
     SPEAKER,
     SAFE,
     CLIMBER,
+    QUICK_CLIMB,
     FEED
   }
 }

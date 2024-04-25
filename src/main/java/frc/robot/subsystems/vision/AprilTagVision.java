@@ -10,7 +10,8 @@ package frc.robot.subsystems.vision;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.AprilTagVisionIO.AprilTagVisionIOInputs;
 import frc.robot.util.FieldConstants;
@@ -79,8 +80,6 @@ public class AprilTagVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    long startTime = Logger.getRealTimestamp();
-    // && (Logger.getRealTimestamp() - startTime) < (targetProcessSecs * 1.0e6)
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs(VISION_PATH + Integer.toString(i), inputs[i]);
@@ -102,12 +101,16 @@ public class AprilTagVision extends SubsystemBase {
           continue;
         }
         double timestamp = poseEstimates.timestampSeconds();
-        Pose3d robotPose = poseEstimates.pose();
-        double xyStdDev = calculateXYStdDev(poseEstimates, (int) poseEstimates.tagCount());
-        double thetaStdDev = calculateThetaStdDev(poseEstimates, (int) poseEstimates.tagCount());
+        Pose2d robotPose = poseEstimates.pose();
+        double xyStdDev = calculateXYStdDev(poseEstimates, poseEstimates.tagCount());
+        double thetaStdDev = 9999999;
+        if (DriverStation.isDisabled()) {
+          thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
+        }
+        // double thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
         visionUpdates.add(
             new TimestampedVisionUpdate(
-                timestamp, robotPose.toPose2d(), VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+                timestamp, robotPose, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
       }
     }
     return visionUpdates;
@@ -131,13 +134,11 @@ public class AprilTagVision extends SubsystemBase {
    * @param robotPose The robot pose
    * @return True if the robot pose is outside the field border, false otherwise
    */
-  private boolean isOutsideFieldBorder(Pose3d robotPose) {
+  private boolean isOutsideFieldBorder(Pose2d robotPose) {
     return robotPose.getX() < -fieldBorderMargin
         || robotPose.getX() > FieldConstants.fieldLength + fieldBorderMargin
         || robotPose.getY() < -fieldBorderMargin
-        || robotPose.getY() > FieldConstants.fieldWidth + fieldBorderMargin
-        || robotPose.getZ() < -zMargin
-        || robotPose.getZ() > zMargin;
+        || robotPose.getY() > FieldConstants.fieldWidth + fieldBorderMargin;
   }
 
   /**

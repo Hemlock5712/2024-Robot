@@ -48,7 +48,7 @@ public class SmartIntake extends Command {
       return;
     }
     if (magazine.isShooting()) {
-      intake.intake();
+      intake.intakeSlow();
       return;
     }
     if (intake.getIntakeRequest() && lineBreak.hasNoGamePiece()) {

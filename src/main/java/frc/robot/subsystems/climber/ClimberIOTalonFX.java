@@ -23,6 +23,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.SmartController;
+import frc.robot.SmartController.DriveModeType;
 
 public class ClimberIOTalonFX implements ClimberIO {
 
@@ -90,25 +92,32 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   @Override
   public void setCustomPosition(double rotPosition, int slot) {
-    // Slot 1 is when robot is climbing
-    if (slot == 1) {
-      double climberPosition = leaderPosition.getValueAsDouble();
-      if (climberPosition > climberSlowZoneLowEnd && climberPosition < climberSlowZoneHighEnd) {
-        request.Velocity = 1;
+
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.QUICK_CLIMB) {
+      request.Velocity = 8;
+
+    } else {
+
+      // Slot 1 is when robot is climbing
+      if (slot == 1) {
+        double climberPosition = leaderPosition.getValueAsDouble();
+        if (climberPosition > climberSlowZoneLowEnd && climberPosition < climberSlowZoneHighEnd) {
+          request.Velocity = 1;
+        } else {
+          request.Velocity = 8;
+        }
       } else {
         request.Velocity = 8;
       }
-    } else {
-      request.Velocity = 8;
-    }
-    if (leaderPosition.getValueAsDouble() < climberTrapTransitionPoint) {
-      if (slot == 1) {
-        setHighMode(true);
+      if (leaderPosition.getValueAsDouble() < climberTrapTransitionPoint) {
+        if (slot == 1) {
+          setHighMode(true);
+        } else {
+          setHighMode(false);
+        }
       } else {
         setHighMode(false);
       }
-    } else {
-      setHighMode(false);
     }
     leader.setControl(request.withPosition(rotPosition).withSlot(slot));
   }

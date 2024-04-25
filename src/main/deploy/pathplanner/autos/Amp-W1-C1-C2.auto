@@ -6,165 +6,151 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PreRollShoot"
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Amp-W1"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W1-C1"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "C1-SA"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PreRollShoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SA-C2"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "C2-SA"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Magazine"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PodiumPreroll"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PreRollShoot"
-                      }
-                    }
-                  ]
+                  "pathName": "Amp-W1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PodiumPreroll"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PodiumPreroll"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PreRollShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W1-C1"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C1-SA"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PodiumPreroll"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PreRollShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SA-C2"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C2-SA"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Magazine"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PodiumPreroll"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PreRollShoot"
           }
         }
       ]

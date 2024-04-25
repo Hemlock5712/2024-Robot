@@ -38,7 +38,7 @@ public class Magazine extends SubsystemBase {
   }
 
   public void backward() {
-    setSpeedRadPerSec(-5);
+    setSpeedRadPerSec(-7);
     isShooting = false;
   }
 
@@ -68,7 +68,7 @@ public class Magazine extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Magazine/TargetRadPerSec")
-  public double getTargetVoltage() {
+  public double getTargetRadPerSec() {
     return targetVoltage;
   }
 

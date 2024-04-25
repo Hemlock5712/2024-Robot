@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 134.0,
+      "rotationDegrees": 127.0,
       "rotateFast": true
     }
   ],
@@ -39,7 +39,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -48,6 +48,12 @@
               "type": "named",
               "data": {
                 "name": "EnableSmartControl"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeUp"
               }
             }
           ]
@@ -63,7 +69,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 132.87890360333853,
+    "rotation": 127.0,
     "rotateFast": false
   },
   "reversed": false,

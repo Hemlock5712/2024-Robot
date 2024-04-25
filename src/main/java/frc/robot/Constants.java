@@ -31,6 +31,7 @@ public final class Constants {
   public static final boolean characterizationMode = false;
 
   public static RobotType getRobot() {
+    // If the code is running on a real robot, always use the COMPBOT configuration.
     if (RobotBase.isReal() && robotType == RobotType.SIMBOT) {
       new Alert("Invalid Robot Selected, using COMPBOT as default", Alert.AlertType.ERROR)
           .set(true);

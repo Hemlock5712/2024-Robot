@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.SmartController.DriveModeType;
@@ -120,13 +121,18 @@ public class RobotContainer {
         magazine = new Magazine(new MagazineIOSpark());
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
         intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
-        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIO() {});
+        // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
         aprilTagVision =
             new AprilTagVision(
-                new AprilTagVisionIOLimelight("limelight-fl"),
-                new AprilTagVisionIOLimelight("limelight-fr"),
-                new AprilTagVisionIOLimelight("limelight-bl"),
-                new AprilTagVisionIOLimelight("limelight-br"));
+                new AprilTagVisionIOLimelight(
+                    "limelight-fl", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-fr", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-bl", drive::getRotation, drive::gyroRateDegrees),
+                new AprilTagVisionIOLimelight(
+                    "limelight-br", drive::getRotation, drive::gyroRateDegrees));
+
         ledController = new LedController(aprilTagVision);
         climber = new Climber(new ClimberIOTalonFX());
         break;
@@ -242,10 +248,42 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PreRollShoot",
         Commands.deadline(
-            new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
-            new SmartFlywheel(flywheel, lineBreak),
-            new SmartArm(arm, lineBreak, climber),
-            DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0)));
+                new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 1.5),
+                new SmartFlywheel(flywheel, lineBreak),
+                new SmartArm(arm, lineBreak, climber),
+                DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0))
+            .andThen(
+                Commands.runOnce(
+                    () -> {
+                      arm.setArmAndWristTarget(
+                          ArmConstants.intake.arm().getRadians(),
+                          ArmConstants.intake.wrist().getRadians());
+                    })));
+
+    NamedCommands.registerCommand(
+        "PreRollShootAndMove",
+        Commands.deadline(
+                new SmartShoot(arm, flywheel, magazine, lineBreak, drive::getPose, 0.5),
+                new SmartFlywheel(flywheel, lineBreak),
+                new SmartArm(arm, lineBreak, climber))
+            .andThen(
+                Commands.runOnce(
+                    () -> {
+                      arm.setArmAndWristTarget(
+                          ArmConstants.intake.arm().getRadians(),
+                          ArmConstants.intake.wrist().getRadians());
+                    })));
+
+    NamedCommands.registerCommand(
+        "ManualUpCloseShot",
+        new SequentialCommandGroup(
+            new ManualShoot(arm, flywheel, magazine, lineBreak, 0.5),
+            Commands.runOnce(
+                () -> {
+                  arm.setArmAndWristTarget(
+                      ArmConstants.intake.arm().getRadians(),
+                      ArmConstants.intake.wrist().getRadians());
+                })));
 
     NamedCommands.registerCommand(
         "PreRollShootFast",
@@ -268,12 +306,21 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PodiumPreroll",
         new AutoPreRoll(
-            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(59), 39));
+            arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(61), 39));
     NamedCommands.registerCommand(
         "ClosePreroll",
         new AutoPreRoll(
             arm, flywheel, lineBreak, ArmConstants.shoot.arm(), Rotation2d.fromDegrees(61), 40));
-    // Run SmartController updates in autonomous
+    NamedCommands.registerCommand(
+        "ManualPreroll",
+        new AutoPreRoll(
+            arm,
+            flywheel,
+            lineBreak,
+            ArmConstants.manualShot.arm(),
+            ArmConstants.manualShot.wrist(),
+            20));
+    // Run SmartController updates in autonomousma
     new Trigger(DriverStation::isAutonomousEnabled)
         .and(
             new Trigger(
@@ -287,6 +334,11 @@ public class RobotContainer {
                 }));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+    autoChooser.addOption(
+        "Drive FF Characterization",
+        new FeedForwardCharacterization(
+            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
 
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
@@ -344,7 +396,24 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             Commands.parallel(
-                Commands.run(intake::outtake, intake), Commands.run(magazine::backward, magazine)));
+                Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)),
+                Commands.run(intake::outtake, intake),
+                Commands.run(magazine::backward, magazine)))
+        .onFalse(
+            Commands.runOnce(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
+
+    controller
+        .leftBumper()
+        .whileTrue(
+            Commands.parallel(
+                Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)),
+                Commands.run(intake::intake, intake),
+                Commands.run(magazine::forward, magazine),
+                Commands.run(() -> flywheel.setSpeedRotPerSec(6), flywheel)))
+        .onFalse(
+            Commands.runOnce(
+                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller
         .y()
@@ -354,8 +423,9 @@ public class RobotContainer {
     controller2
         .a()
         .whileTrue(
-            Commands.startEnd(
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.AMP),
+            Commands.run(() -> SmartController.getInstance().setDriveMode(DriveModeType.AMP)))
+        .onFalse(
+            Commands.runOnce(
                 () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
 
     controller2
@@ -379,20 +449,16 @@ public class RobotContainer {
     controller2
         .pov(0)
         .toggleOnTrue(
-            Commands.runEnd(
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),
-                () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)));
-
-    // controller2.leftTrigger(0.5).whileTrue(new MoveArmForClimbing(arm, climber));
-
-    // controller2.x().whileTrue(new CalibrateClimber(climber));
+            Commands.either(
+                Commands.runEnd(
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.CLIMBER),
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)),
+                Commands.runEnd(
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.QUICK_CLIMB),
+                    () -> SmartController.getInstance().setDriveMode(DriveModeType.SPEAKER)),
+                lineBreak::hasGamePiece));
 
     controller.x().whileTrue(new ManualShoot(arm, flywheel, magazine, lineBreak, 1.5));
-
-    // controller2
-    //     .start()
-    //     .and(controller2.back())
-    //     .onTrue(Commands.runOnce(SmartController.getInstance()::toggleEmergencyIntakeMode));
 
     if (Constants.getMode() == Constants.Mode.SIM) {
       controller.pov(0).onTrue(new InstantCommand(lineBreak::bumpGamePiece));

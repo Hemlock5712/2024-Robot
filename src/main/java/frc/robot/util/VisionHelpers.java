@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -25,13 +24,13 @@ public class VisionHelpers {
    */
   public record PoseEstimate(
       /** The pose (position and orientation) estimate. */
-      Pose3d pose,
+      Pose2d pose,
       /** The timestamp in seconds when the pose estimate was recorded. */
       double timestampSeconds,
       /** The average distance to the detected tags. */
       double averageTagDistance,
       /** The IDs of the detected tags. */
-      double tagCount) {
+      int tagCount) {
 
     /**
      * Checks if this pose estimate is equal to another object.
@@ -52,17 +51,6 @@ public class VisionHelpers {
           && Objects.equals(pose, other.pose)
           && Double.compare(timestampSeconds, other.timestampSeconds) == 0
           && Double.compare(averageTagDistance, other.averageTagDistance) == 0;
-    }
-
-    /**
-     * Computes the hash code of this pose estimate.
-     *
-     * @return The hash code value.
-     */
-    @Override
-    public int hashCode() {
-      return Objects.hash(
-          Arrays.hashCode(getPose3dToArray(pose)), timestampSeconds, averageTagDistance, tagCount);
     }
 
     /**
@@ -99,6 +87,17 @@ public class VisionHelpers {
     result[3] = Units.radiansToDegrees(pose.getRotation().getX());
     result[4] = Units.radiansToDegrees(pose.getRotation().getY());
     result[5] = Units.radiansToDegrees(pose.getRotation().getZ());
+    return result;
+  }
+
+  public static double[] getPose2dToArray(Pose2d pose) {
+    double[] result = new double[6];
+    result[0] = pose.getTranslation().getX();
+    result[1] = pose.getTranslation().getY();
+    result[2] = 0;
+    result[3] = Units.radiansToDegrees(0);
+    result[4] = Units.radiansToDegrees(0);
+    result[5] = Units.radiansToDegrees(pose.getRotation().getRadians());
     return result;
   }
 

@@ -20,12 +20,6 @@
                       }
                     },
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "SS-C4"

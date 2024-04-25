@@ -33,7 +33,12 @@ public class SmartClimb extends Command {
       } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER)
           && climber.isRequestingClimb()) {
         climber.setCustomPosition(0.0, 1);
-
+      } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.QUICK_CLIMB
+          && !climber.isRequestingClimb()) {
+        climber.setCustomPosition(5.6, 0);
+      } else if (SmartController.getInstance().getDriveModeType() == DriveModeType.QUICK_CLIMB
+          && climber.isRequestingClimb()) {
+        climber.setCustomPosition(2.6, 1);
       } else if ((SmartController.getInstance().getDriveModeType() == DriveModeType.SAFE)) {
         return;
       } else {

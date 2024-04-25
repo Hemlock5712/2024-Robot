@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.65252730505461,
+        "y": 5.82113746045674
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.247742859122082,
+        "y": 6.632738356385804
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.925092941094973,
+        "y": 5.82113746045674
+      },
+      "prevControl": {
+        "x": 6.609739764934075,
+        "y": 6.6140808645253655
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeDown"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.4,
+    "maxAcceleration": 4.418,
+    "maxAngularVelocity": 646.0,
+    "maxAngularAcceleration": 1277.1229
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 153.51034807242428,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Random Middle",
+  "previewStartingState": {
+    "rotation": 179.62426175825718,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
