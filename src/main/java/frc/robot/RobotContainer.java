@@ -340,6 +340,12 @@ public class RobotContainer {
         new FeedForwardCharacterization(
             drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
 
+    autoChooser.addOption(
+        "Wheel Radius Characterization",
+        Commands.run(drive::setWheelsToCircle)
+            .withTimeout(2)
+            .andThen(new WheelRadiusCharacterization(drive)));
+
     // Configure the button bindings
     aprilTagVision.setDataInterfaces(drive::addVisionData);
     SmartController.getInstance().disableSmartControl();
