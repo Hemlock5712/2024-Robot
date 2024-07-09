@@ -17,7 +17,7 @@ public final class DriveConstants {
       switch (Constants.getRobot()) {
         default ->
             new DrivetrainConfig(
-                Units.inchesToMeters(2.0),
+                Units.inchesToMeters(1.88),
                 Units.inchesToMeters(22.75),
                 Units.inchesToMeters(22.75),
                 4.608,
@@ -27,7 +27,6 @@ public final class DriveConstants {
                 22.290);
           // 27.863);
       };
-  public static final double wheelRadius = Units.inchesToMeters(2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
         new Translation2d(

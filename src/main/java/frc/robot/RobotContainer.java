@@ -122,6 +122,7 @@ public class RobotContainer {
         lineBreak = new LineBreak(new LineBreakIODigitalInput());
         intake = new Intake(new IntakeActuatorIOSpark(), new IntakeWheelsIOTalonFX());
         // intake = new Intake(new IntakeActuatorIO() {}, new IntakeWheelsIOTalonFX());
+        // aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {});
         aprilTagVision =
             new AprilTagVision(
                 new AprilTagVisionIOLimelight(
@@ -337,8 +338,11 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "Drive FF Characterization",
-        new FeedForwardCharacterization(
-            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
+        Commands.run(drive::setWheelsToCircle)
+            .withTimeout(2)
+            .andThen(
+                new FeedForwardCharacterization(
+                    drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity)));
 
     autoChooser.addOption(
         "Wheel Radius Characterization",

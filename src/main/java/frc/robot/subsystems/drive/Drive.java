@@ -343,4 +343,16 @@ public class Drive extends SubsystemBase {
             .toArray(SwerveModuleState[]::new);
     setModuleStates(desiredStates);
   }
+
+  public void setWheelsToForward() {
+    Rotation2d[] turnAngles =
+        Arrays.stream(DriveConstants.moduleTranslations)
+            .map(translation -> translation.getAngle().plus(new Rotation2d(0.0)))
+            .toArray(Rotation2d[]::new);
+    SwerveModuleState[] desiredStates =
+        Arrays.stream(turnAngles)
+            .map(angle -> new SwerveModuleState(0, angle))
+            .toArray(SwerveModuleState[]::new);
+    setModuleStates(desiredStates);
+  }
 }
