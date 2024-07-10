@@ -89,8 +89,8 @@ public final class DriveConstants {
       switch (Constants.getRobot()) {
         case COMPBOT ->
             new ModuleConstants(
-                0.1,
-                0.13,
+                0.24212,
+                0.10548,
                 0.1,
                 0.0,
                 10.0,

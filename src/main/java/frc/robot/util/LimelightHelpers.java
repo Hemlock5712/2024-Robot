@@ -450,6 +450,18 @@ public class LimelightHelpers {
     public double avgTagArea;
     public RawFiducial[] rawFiducials;
 
+    /** Makes a PoseEstimate object with default values */
+    public PoseEstimate() {
+      this.pose = new Pose2d();
+      this.timestampSeconds = 0;
+      this.latency = 0;
+      this.tagCount = 0;
+      this.tagSpan = 0;
+      this.avgTagDist = 0;
+      this.avgTagArea = 0;
+      this.rawFiducials = new RawFiducial[] {};
+    }
+
     public PoseEstimate(
         Pose2d pose,
         double timestampSeconds,
@@ -547,6 +559,40 @@ public class LimelightHelpers {
 
     return new PoseEstimate(
         pose, timestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials);
+  }
+
+  /**
+   * Converts a Pose3d object to an array of doubles.
+   *
+   * @param pose The Pose3d object to convert.
+   * @return The array of doubles representing the pose.
+   */
+  public static double[] pose3dToArray(Pose3d pose) {
+    double[] result = new double[6];
+    result[0] = pose.getTranslation().getX();
+    result[1] = pose.getTranslation().getY();
+    result[2] = pose.getTranslation().getZ();
+    result[3] = Units.radiansToDegrees(pose.getRotation().getX());
+    result[4] = Units.radiansToDegrees(pose.getRotation().getY());
+    result[5] = Units.radiansToDegrees(pose.getRotation().getZ());
+    return result;
+  }
+
+  /**
+   * Converts a Pose2d object to an array of doubles.
+   *
+   * @param pose The Pose2d object to convert.
+   * @return The array of doubles representing the pose.
+   */
+  public static double[] pose2dToArray(Pose2d pose) {
+    double[] result = new double[6];
+    result[0] = pose.getTranslation().getX();
+    result[1] = pose.getTranslation().getY();
+    result[2] = 0;
+    result[3] = Units.radiansToDegrees(0);
+    result[4] = Units.radiansToDegrees(0);
+    result[5] = Units.radiansToDegrees(pose.getRotation().getRadians());
+    return result;
   }
 
   private static RawFiducial[] getRawFiducials(String limelightName) {

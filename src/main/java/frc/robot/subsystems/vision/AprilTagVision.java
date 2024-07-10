@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.AprilTagVisionIO.AprilTagVisionIOInputs;
 import frc.robot.util.FieldConstants;
-import frc.robot.util.VisionHelpers.PoseEstimate;
+import frc.robot.util.LimelightHelpers.PoseEstimate;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,12 +100,12 @@ public class AprilTagVision extends SubsystemBase {
         if (shouldSkipPoseEstimate(poseEstimates)) {
           continue;
         }
-        double timestamp = poseEstimates.timestampSeconds();
-        Pose2d robotPose = poseEstimates.pose();
-        double xyStdDev = calculateXYStdDev(poseEstimates, poseEstimates.tagCount());
+        double timestamp = poseEstimates.timestampSeconds;
+        Pose2d robotPose = poseEstimates.pose;
+        double xyStdDev = calculateXYStdDev(poseEstimates, poseEstimates.tagCount);
         double thetaStdDev = 9999999;
         if (DriverStation.isDisabled()) {
-          thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
+          thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount);
         }
         // double thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
         visionUpdates.add(
@@ -123,9 +123,9 @@ public class AprilTagVision extends SubsystemBase {
    * @return True if the pose estimate should be skipped, false otherwise
    */
   private boolean shouldSkipPoseEstimate(PoseEstimate poseEstimates) {
-    return poseEstimates.tagCount() < 1
-        || poseEstimates.pose() == null
-        || isOutsideFieldBorder(poseEstimates.pose());
+    return poseEstimates.tagCount < 1
+        || poseEstimates.pose == null
+        || isOutsideFieldBorder(poseEstimates.pose);
   }
 
   /**
@@ -149,7 +149,7 @@ public class AprilTagVision extends SubsystemBase {
    * @return The standard deviation of the x and y coordinates
    */
   private double calculateXYStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
-    return xyStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
+    return xyStdDevCoefficient * Math.pow(poseEstimates.avgTagDist, 2.0) / tagPosesSize;
   }
 
   /**
@@ -160,9 +160,7 @@ public class AprilTagVision extends SubsystemBase {
    * @return The standard deviation of the theta coordinate
    */
   private double calculateThetaStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
-    return thetaStdDevCoefficient
-        * Math.pow(poseEstimates.averageTagDistance(), 2.0)
-        / tagPosesSize;
+    return thetaStdDevCoefficient * Math.pow(poseEstimates.avgTagDist, 2.0) / tagPosesSize;
   }
 
   /**
