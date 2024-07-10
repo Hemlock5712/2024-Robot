@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SmartController;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -194,6 +195,10 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
+    setModuleStates(setpointStates);
+  }
+
+  public void setModuleStates(SwerveModuleState[] setpointStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         setpointStates, drivetrainConfig.maxLinearVelocity());
 
@@ -321,5 +326,21 @@ public class Drive extends SubsystemBase {
       // return an empty optional when we don't want to override the path's rotation
       return Optional.empty();
     }
+  }
+
+  public double[] getWheelRadiusCharacterizationPosition() {
+    return Arrays.stream(modules).mapToDouble(Module::getPositionRadians).toArray();
+  }
+
+  public void setWheelsToCircle() {
+    Rotation2d[] turnAngles =
+        Arrays.stream(DriveConstants.moduleTranslations)
+            .map(translation -> translation.getAngle().plus(new Rotation2d(Math.PI / 2.0)))
+            .toArray(Rotation2d[]::new);
+    SwerveModuleState[] desiredStates =
+        Arrays.stream(turnAngles)
+            .map(angle -> new SwerveModuleState(0, angle))
+            .toArray(SwerveModuleState[]::new);
+    setModuleStates(desiredStates);
   }
 }

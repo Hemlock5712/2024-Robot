@@ -13,11 +13,11 @@ import org.littletonrobotics.junction.Logger;
 /**
  * The SmartController class represents a controller for the robot's system. It provides methods to
  * control the robot.
- * 
- * Most of the methods in this class handle state machine logic, which is a way to represent the
+ *
+ * <p>Most of the methods in this class handle state machine logic, which is a way to represent the
  * state of the robot and the transitions between states.
- * 
- * The SmartController class is a singleton, which means that there is only one instance of the
+ *
+ * <p>The SmartController class is a singleton, which means that there is only one instance of the
  * class that is shared across the entire robot code.
  */
 public class SmartController {
@@ -90,7 +90,7 @@ public class SmartController {
 
   /**
    * Gets the instance of the SmartController.
-   * 
+   *
    * @return The instance of the SmartController.
    */
   public static SmartController getInstance() {
@@ -185,13 +185,13 @@ public class SmartController {
 
   /**
    * Calculates the shooter parameters for a given field relative pose, velocity, and acceleration.
-   * 
-   * This handles calculating target robot angle, radial velocity, shooter speed, shooter angle, and
-   * wrist error.
-   * 
-   * It also is done in a way that if the robot is moving, it will adjust the location of the target
-   * to account for the robot's movement so the shot will still hit.
-   * 
+   *
+   * <p>This handles calculating target robot angle, radial velocity, shooter speed, shooter angle,
+   * and wrist error.
+   *
+   * <p>It also is done in a way that if the robot is moving, it will adjust the location of the
+   * target to account for the robot's movement so the shot will still hit.
+   *
    * @param fieldRelativePose The pose of the robot on the field
    * @param fieldRelativeVelocity The velocity of the robot on the field
    * @param fieldRelativeAcceleration The acceleration of the robot on the field
@@ -268,8 +268,8 @@ public class SmartController {
 
   /**
    * Calculates the shooter parameters for the amp shot.
-   * 
-   * This will always be static and will not adjust for the robot's movement.
+   *
+   * <p>This will always be static and will not adjust for the robot's movement.
    */
   public void calculateAmp() {
     setTargetAimingParameters(
@@ -279,8 +279,8 @@ public class SmartController {
 
   /**
    * Calculates the shooter parameters for the feeding shot.
-   * 
-   * This is identical to the speaker shot, but the target is the feed location next to the amp.
+   *
+   * <p>This is identical to the speaker shot, but the target is the feed location next to the amp.
    */
   public void calculateFeed(Pose2d fieldRelativePose, Translation2d fieldRelativeVelocity) {
     setPrerollDistance(FieldConstants.fieldLength);
@@ -313,19 +313,19 @@ public class SmartController {
 
   /**
    * Sets the target aiming parameters.
-   * 
+   *
    * @param targetAimingParameters The target aiming parameters to set.
    */
   private void setTargetAimingParameters(AimingParameters targetAimingParameters) {
     this.targetAimingParameters = targetAimingParameters;
   }
 
-
   /**
    * Gets the target aiming parameters.
-   * 
-   * The target aiming parameters are the information that the robot should use to hit the target.
-   * 
+   *
+   * <p>The target aiming parameters are the information that the robot should use to hit the
+   * target.
+   *
    * @return The target aiming parameters.
    */
   public AimingParameters getTargetAimingParameters() {
@@ -335,7 +335,7 @@ public class SmartController {
   /**
    * Gets the distance to the target when we should start running the flywheel if we have a game
    * piece.
-   * 
+   *
    * @return The preroll distance.
    */
   public double getPrerollDistance() {
@@ -345,7 +345,7 @@ public class SmartController {
   /**
    * Sets the distance to the target when we should start running the flywheel if we have a game
    * piece.
-   * 
+   *
    * @param prerollDistance The preroll distance to set.
    */
   private void setPrerollDistance(double prerollDistance) {
