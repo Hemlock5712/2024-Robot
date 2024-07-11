@@ -27,7 +27,7 @@ public final class DriveConstants {
                 22.290);
           // 27.863);
       };
-  public static final double wheelRadius = Units.inchesToMeters(2.0);
+  public static final double wheelRadius = Units.inchesToMeters(1.915);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
         new Translation2d(
@@ -89,8 +89,8 @@ public final class DriveConstants {
       switch (Constants.getRobot()) {
         case COMPBOT ->
             new ModuleConstants(
-                0.24212,
-                0.10548,
+                0.26002,
+                0.10382,
                 0.1,
                 0.0,
                 10.0,

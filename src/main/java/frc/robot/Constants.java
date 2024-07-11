@@ -28,7 +28,7 @@ public final class Constants {
   public static final int loopPeriodMs = 20;
   private static RobotType robotType = RobotType.SIMBOT;
   public static final boolean tuningMode = true;
-  public static final boolean characterizationMode = false;
+  public static final boolean characterizationMode = true;
 
   public static RobotType getRobot() {
     // If the code is running on a real robot, always use the COMPBOT configuration.
