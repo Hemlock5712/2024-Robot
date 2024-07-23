@@ -42,15 +42,15 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    setSpeedRotPerSec(40);
+    setSpeedRotPerSec(80);
   }
 
   public void intakeSlow() {
-    setSpeedRotPerSec(20);
+    setSpeedRotPerSec(40);
   }
 
   public void outtake() {
-    setSpeedRotPerSec(-50);
+    setSpeedRotPerSec(-80);
   }
 
   /** Stops the intake. */
