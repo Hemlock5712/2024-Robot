@@ -98,7 +98,7 @@ public class Module {
         double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
 
         // Run drive controller
-        double velocityRadPerSec = adjustSpeedSetpoint / wheelRadius;
+        double velocityRadPerSec = adjustSpeedSetpoint / drivetrainConfig.wheelRadius();
         io.setDriveVoltage(
             driveFeedforward.calculate(velocityRadPerSec)
                 + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
@@ -109,7 +109,7 @@ public class Module {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
-      double positionMeters = inputs.odometryDrivePositionsRad[i] * wheelRadius;
+      double positionMeters = inputs.odometryDrivePositionsRad[i] * drivetrainConfig.wheelRadius();
       Rotation2d angle =
           inputs.odometryTurnPositions[i].plus(
               turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
@@ -167,7 +167,7 @@ public class Module {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRad * wheelRadius;
+    return inputs.drivePositionRad * drivetrainConfig.wheelRadius();
   }
 
   public double getPositionRadians() {
@@ -176,7 +176,7 @@ public class Module {
 
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadPerSec * wheelRadius;
+    return inputs.driveVelocityRadPerSec * drivetrainConfig.wheelRadius();
   }
 
   /** Returns the module position (turn angle and drive position). */

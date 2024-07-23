@@ -67,6 +67,9 @@ public class SmartShoot extends Command {
     boolean isFlywheelAtTargetSpeed = isFlywheelAtTargetSpeed();
     boolean isShooting = false;
     double realForceShoot = forceShootTimeout;
+    if (SmartController.getInstance().getDriveModeType() == DriveModeType.AMP) {
+      realForceShoot = 0.5;
+    }
     if (SmartController.getInstance().getDriveModeType() == DriveModeType.CLIMBER) {
       realForceShoot = 0.0;
     }

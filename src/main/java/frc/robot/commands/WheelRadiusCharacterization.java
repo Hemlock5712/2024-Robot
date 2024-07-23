@@ -88,6 +88,6 @@ public class WheelRadiusCharacterization extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return accumGyroYawRads > Math.PI * 2;
+    return false;
   }
 }
