@@ -13,10 +13,10 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drive.PoseEstimator.VisionObservation;
 import frc.robot.subsystems.vision.AprilTagVisionIO.AprilTagVisionIOInputs;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
-import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,28 +27,22 @@ import org.littletonrobotics.junction.Logger;
 
 public class AprilTagVision extends SubsystemBase {
 
-  // Time interval for logging tag poses
-  private static final double targetProcessSecs = 0.1;
-
   // Margin around the field border
   private static final double fieldBorderMargin = 0.5;
-
-  // Margin for the z-axis
-  private static final double zMargin = 0.75;
 
   // Path for logging vision data
   private static final String VISION_PATH = "AprilTagVision/Inst";
 
   private boolean enableVisionUpdates = true;
 
-  private Consumer<List<TimestampedVisionUpdate>> visionConsumer = x -> {};
+  private Consumer<List<VisionObservation>> visionConsumer = x -> {};
   private Map<Integer, Double> lastFrameTimes = new HashMap<>();
   private Map<Integer, Double> lastTagDetectionTimes = new HashMap<>();
 
   private final AprilTagVisionIO[] io;
   private final AprilTagVisionIOInputs[] inputs;
 
-  public void setDataInterfaces(Consumer<List<TimestampedVisionUpdate>> visionConsumer) {
+  public void setDataInterfaces(Consumer<List<VisionObservation>> visionConsumer) {
     this.visionConsumer = visionConsumer;
   }
 
@@ -84,7 +78,7 @@ public class AprilTagVision extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs(VISION_PATH + Integer.toString(i), inputs[i]);
     }
-    List<TimestampedVisionUpdate> visionUpdates = processPoseEstimates();
+    List<VisionObservation> visionUpdates = processPoseEstimates();
     sendResultsToPoseEstimator(visionUpdates);
   }
 
@@ -93,8 +87,8 @@ public class AprilTagVision extends SubsystemBase {
    *
    * @return List of timestamped vision updates
    */
-  private List<TimestampedVisionUpdate> processPoseEstimates() {
-    List<TimestampedVisionUpdate> visionUpdates = new ArrayList<>();
+  private List<VisionObservation> processPoseEstimates() {
+    List<VisionObservation> visionUpdates = new ArrayList<>();
     for (int instanceIndex = 0; instanceIndex < io.length; instanceIndex++) {
       for (PoseEstimate poseEstimates : inputs[instanceIndex].poseEstimates) {
         if (shouldSkipPoseEstimate(poseEstimates)) {
@@ -109,8 +103,8 @@ public class AprilTagVision extends SubsystemBase {
         }
         // double thetaStdDev = calculateThetaStdDev(poseEstimates, poseEstimates.tagCount());
         visionUpdates.add(
-            new TimestampedVisionUpdate(
-                timestamp, robotPose, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
+            new VisionObservation(
+                robotPose, timestamp, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
       }
     }
     return visionUpdates;
@@ -168,7 +162,7 @@ public class AprilTagVision extends SubsystemBase {
    *
    * @param visionUpdates The list of vision updates
    */
-  private void sendResultsToPoseEstimator(List<TimestampedVisionUpdate> visionUpdates) {
+  private void sendResultsToPoseEstimator(List<VisionObservation> visionUpdates) {
     if (enableVisionUpdates) {
       visionConsumer.accept(visionUpdates);
     }

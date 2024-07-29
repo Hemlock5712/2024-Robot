@@ -20,9 +20,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +27,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveWheelPositions;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -37,8 +35,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SmartController;
-import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
+import frc.robot.subsystems.drive.PoseEstimator.OdometryObservation;
+import frc.robot.subsystems.drive.PoseEstimator.VisionObservation;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -60,6 +60,8 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
   private double yawVelocityRadPerSec = 0;
+  private double yawTimeStamp = 0;
+
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -67,15 +69,7 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
-  private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(
-          kinematics,
-          rawGyroRotation,
-          lastModulePositions,
-          new Pose2d(),
-          stateStdDevs,
-          new Matrix<>(
-              VecBuilder.fill(xyStdDevCoefficient, xyStdDevCoefficient, thetaStdDevCoefficient)));
+  private final PoseEstimator poseEstimator;
 
   public Drive(
       GyroIO gyroIO,
@@ -117,6 +111,7 @@ public class Drive extends SubsystemBase {
     PathPlannerLogging.setLogTargetPoseCallback(
         targetPose -> Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose));
 
+    poseEstimator = new PoseEstimator(DriveConstants.stateStdDevs, DriveConstants.kinematics);
     // PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
   }
 
@@ -168,14 +163,19 @@ public class Drive extends SubsystemBase {
         // Use the real gyro angle
         rawGyroRotation = gyroInputs.odometryYawPositions[i];
         yawVelocityRadPerSec = gyroInputs.yawVelocityRadPerSec;
+        yawTimeStamp = gyroInputs.odometryYawTimestamps[i];
       } else {
         // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+        yawTimeStamp = sampleTimestamps[i];
       }
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      poseEstimator.addOdometryObservation(
+          new OdometryObservation(
+              new SwerveDriveWheelPositions(modulePositions), rawGyroRotation, yawTimeStamp));
+
       ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(getModuleStates());
       Translation2d rawFieldRelativeVelocity =
           new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
@@ -270,7 +270,7 @@ public class Drive extends SubsystemBase {
   /** Returns the current pose estimation. */
   @AutoLogOutput(key = "Odometry/PoseEstimation")
   public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
+    return poseEstimator.getEstimatedPose();
   }
 
   /** Returns the current poseEstimator rotation. */
@@ -289,7 +289,7 @@ public class Drive extends SubsystemBase {
    * @param pose The pose to reset to.
    */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    poseEstimator.resetPose(pose);
   }
 
   /**
@@ -297,15 +297,10 @@ public class Drive extends SubsystemBase {
    *
    * @param visionData The vision data to add.
    */
-  public void addVisionData(List<TimestampedVisionUpdate> visionData) {
-    visionData.forEach(
-        visionUpdate -> {
-          long startUpdateTime = Logger.getRealTimestamp();
-          poseEstimator.addVisionMeasurement(
-              visionUpdate.pose(), visionUpdate.timestamp(), visionUpdate.stdDevs());
-          Logger.recordOutput(
-              "Odometry/addVisionMeasurement", Logger.getRealTimestamp() - startUpdateTime);
-        });
+  public void addVisionData(List<VisionObservation> visionData) {
+    visionData.stream()
+        .sorted(Comparator.comparingDouble(VisionObservation::timestamp))
+        .forEach(poseEstimator::addVisionObservation);
   }
 
   @AutoLogOutput
