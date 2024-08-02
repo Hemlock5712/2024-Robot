@@ -35,7 +35,7 @@ public final class ArmConstants {
   public static final MotorFeedbackController armControlConstants =
       switch (Constants.getRobot()) {
         case SIMBOT -> new MotorFeedbackController(0, 0, 0, 0);
-        case COMPBOT -> new MotorFeedbackController(160, 0, 0, 0.3);
+        case COMPBOT -> new MotorFeedbackController(200, 0, 0, 0.3);
           // case COMPBOT -> new MotorFeedbackController(0, 0, 0, 0);
       };
 
